@@ -87,7 +87,6 @@ void loop()
         bytesRead += 1;
 }
 
-bool force_digital = false;
 int joy_min = 3950;
 int joy_max = 62000;
 int in_min = -820;
@@ -98,23 +97,18 @@ void sendJoyOutput()
     sbus_data_t* c = &controllerState;
     for(int i = 0; i < 8; i++)
     Joystick.slider(i+1,millis());
-    Joystick.X(mapAnalog(c->analog[1]));
-    Joystick.Y(mapAnalog(c->analog[0]));
-    Joystick.Z(mapAnalog(c->analog[3]));
-    Joystick.Zrotate(mapAnalog(c->analog[2]));
+    Joystick.X(mapAnalog(c->analog[0]));
+    Joystick.Y(mapAnalog(c->analog[1]));
+    Joystick.Z(mapAnalog(c->analog[2]));
+    Joystick.Xrotate(mapAnalog(c->analog[3]));
+    Joystick.Yrotate(mapAnalog(c->analog[4]));
+    Joystick.Zrotate(mapAnalog(c->analog[5]));
 
-    int sliderCount = 4;
-    if(!force_digital)
-        sliderCount = 8;
+    int sliderCount = 10;
+    
     for(int i = 0; i < sliderCount; i++)
-       Joystick.slider(i+1, mapAnalog(c->analog[i+4]));
-    for(int i = 8; i < 17; i++)
-       Joystick.slider(i+1, millis());
-    if(!force_digital)
-    {
-        Joystick.Xrotate(mapAnalog(c->analog[12]));
-        Joystick.Yrotate(mapAnalog(c->analog[14]));
-    }    
+       Joystick.slider(i+1, mapAnalog(c->analog[i+6]));
+        
     Joystick.button(4, c->analog[13] < 0);
     Joystick.button(5, c->analog[15] < 0);
     Joystick.button(2, c->frame_lost);
