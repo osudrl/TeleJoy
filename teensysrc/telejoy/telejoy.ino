@@ -95,7 +95,7 @@ int in_max = 819;
 int d = 0;
 void sendJoyOutput()
 {
-  sbus_data_t* c = &controllerState;
+    sbus_data_t* c = &controllerState;
     for(int i = 0; i < 8; i++)
     Joystick.slider(i+1,millis());
     Joystick.X(mapAnalog(c->analog[1]));
@@ -122,10 +122,7 @@ void sendJoyOutput()
     Joystick.button(1, c->signal_good);
     Joystick.send_now();
 }
-int m()
-{
-  return millis() * 10;
-}
+
 int mapAnalog(int analog)
 {
     return (int) map(analog,in_min,in_max,joy_min,joy_max);   

@@ -7,16 +7,13 @@
 
 SDL_Joystick *get_xbox_joystick()
 {
+    
     const int n = SDL_NumJoysticks();
+    char name[] = "Teensyduino Serial/Keyboard/Mouse/Joystick";
     for (int i = 0; i < n; ++i) {
-        /*
-        char name[] = "Microsoft X-Box One pad";
         if (strncmp(SDL_JoystickNameForIndex(i), name, sizeof name) == 0)
             return SDL_JoystickOpen(i);
-        */
-        printf("Joystick %i name is %s\n",i,SDL_JoystickNameForIndex(i));
     }
-
     return NULL;
 }
 
@@ -26,7 +23,29 @@ int main(void)
     printf("about to init\n");
     SDL_Init(SDL_INIT_JOYSTICK);
     printf("has init\n");
-    SDL_Joystick *xbox = get_xbox_joystick();
+    SDL_Joystick *ctrl = get_xbox_joystick();
+    
+
+    double radio_input[16] = {0};
+
+
+    while(ctrl) 
+    {
+        SDL_JoystickUpdate();
+        for (int i = 0; i < 16; i++)
+        {
+                 radio_input[i] = SDL_JoystickGetAxis(ctrl, i) / 32768.0;
+                 printf("A%d:%.3f ",i,radio_input[i]);
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            printf("D%i:%d ",i,SDL_JoystickGetButton(ctrl, i));
+        }
+        printf("\n");
+        //cpSleep(1000);        
+    }
+    SDL_Quit();
     printf("k done\n");
     /*
     int motor_index = 0;
