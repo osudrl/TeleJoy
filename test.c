@@ -1,4 +1,3 @@
-#include "cassie.h"
 #include <math.h>
 #include <stdio.h>
 #include <SDL2/SDL.h>
@@ -10,9 +9,12 @@ SDL_Joystick *get_xbox_joystick()
 {
     const int n = SDL_NumJoysticks();
     for (int i = 0; i < n; ++i) {
+        /*
         char name[] = "Microsoft X-Box One pad";
         if (strncmp(SDL_JoystickNameForIndex(i), name, sizeof name) == 0)
             return SDL_JoystickOpen(i);
+        */
+        printf("Joystick %i name is %s\n",i,SDL_JoystickNameForIndex(i));
     }
 
     return NULL;
@@ -20,10 +22,13 @@ SDL_Joystick *get_xbox_joystick()
 
 
 int main(void)
-{
+{   
+    printf("about to init\n");
     SDL_Init(SDL_INIT_JOYSTICK);
+    printf("has init\n");
     SDL_Joystick *xbox = get_xbox_joystick();
-
+    printf("k done\n");
+    /*
     int motor_index = 0;
     int mode_index = 1;
     int hat_last = 0;
@@ -77,8 +82,10 @@ int main(void)
     cassie_vis_free(v);
     cassie_free(c);
     cassie_cleanup();
-
+    
     SDL_Quit();
+    */
 
     return 0;
+
 }
