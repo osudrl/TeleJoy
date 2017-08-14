@@ -22,37 +22,37 @@ To start, the Teensy program will do the following:
 
 ## Output of the TARANIS (sbus_data_t struct)
 
-XSR Output | Label | Description | States
---- | --- | --- | ---
-A1 | None | Lstick up/down | Analog
-A2 | None | Lstick left/right | Analog
-A3 | None | Rstick up/down | Analog
-A4 | None | Rstick left/right | Analog
-A5 | S1 | Left Top Knob | Analog
-A6 | S2 | Right Top Knob  | Analog
-A7 | None | Left Side Knob | Analog
-A8 | None | Right Side Knob | Analog
-A9 | SA | Far Left Switch | 3
-A10 | SB | Round Left Switch | 3
-A11 | SC | Round Right Switch | 3
-A12 | SD | Far Right Switch | 3
-A13 | SE | Left Front Switch | 3
-A14 | SF | Left Back Switch | 2
-A15 | SG | Right Front Switch | 3
-A16 | SH | Right Back **Button** | 2\*
-D1 | ? | Haven't seen these digital outputs change from `0` | Digital
-D2 | ? | See above | Digital
-frame_lost | N/A | This value goes from `0` to `1` as soon as the controller is turned off after previously being connected | Digital
-failsafe_active | N/A | This value goes from `0` to `1` a few seconds after the above goes to 1 | Digital
+Input | Struct Call | Label | Description | States
+--- | --- | --- | --- | ---
+A0 | analog[0] | None | Lstick up/down | Analog
+A1 | analog[1] | None | Lstick left/right | Analog
+A2 | analog[2] | None | Rstick up/down | Analog
+A3 | analog[3] | None | Rstick left/right | Analog
+A4 | analog[4] | S1 | Left Top Knob | Analog
+A5 | analog[5] | S2 | Right Top Knob  | Analog
+A6 | analog[6] | None | Left Side Knob | Analog
+A7 | analog[7] | None | Right Side Knob | Analog
+A8 | analog[8] | SA | Far Left Switch | 3
+A9 | analog[9] | SB | Round Left Switch | 3
+A10 | analog[10] | SC | Round Right Switch | 3
+A11 | analog[11] | SD | Far Right Switch | 3
+A12 | analog[12] | SE | Left Front Switch | 3
+A13 | analog[13] | SF | Left Back Switch | 2
+A14 | analog[14] | SG | Right Front Switch | 3
+A15 | analog[15] | SH | Right Back **Button** | 2\*
+D0 | digital[0] | ? | Haven't seen these digital outputs change from `0` | Digital
+D1 | digital[1] | ? | See above | Digital
+FL | frame_lost | N/A | This value goes from `0` to `1` as soon as the controller is turned off after previously being connected | Digital
+FA | failsafe_active | N/A | This value goes from `0` to `1` a few seconds after the above goes to 1 | Digital
 
 States Type | Numerical Outputs
 -- | ---
 Analog | -820 to 819
-3 | -820, 0 and 819
+3 | -820, 0, and 819
 2 | -820 and 819
 Digital | 0 and 1
 
->\* For the A16/SH button, a value of 819 represents the "unpressed" state and -820 is the "pressed" state
+>\* For the A15/SH button, a value of 819 represents the "unpressed" state and -820 is the "pressed" state
 
 ## Uploading to the Teensy
 

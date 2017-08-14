@@ -84,21 +84,13 @@ void loop()
         {
             for (int i = 0; i < 16; i++)
             {
-                Serial.print("A");
+                char label = 65+i;
                 Serial.print(label);
-                Serial.print(":");
+                Serial.print(": ");
                 Serial.print(controllerState.analog[i]);
                 Serial.print("  ");
             }
-            Serial.print("D0:");
-            Serial.print(controllerState.digital[0]);
-            Serial.print(" D1:");
-            Serial.print(controllerState.digital[1]);
-            Serial.print(" FL:");
-            Serial.print(controllerState.frame_lost);
-            Serial.print(" FA:");
-            Serial.print(controllerState.failsafe_active);
-            Serial.println("");
+            Serial.println(" ");
             count++;
         }
     }
