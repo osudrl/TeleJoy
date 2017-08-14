@@ -65,8 +65,16 @@ void setup() {
 
 long time = micros();
 int count = 0;
+int joy_min = 3950;
+int joy_max = 62000;
+int in_min = -820;
+int in_max = 819;
+int mitigate_deadzone = 3800; // 0 for very sticky deadzone, 3800 is normally pretty good
+int avg = ((joy_max+joy_min)/2);
+
 void loop() 
 {
+    
     while (!Serial1.available()){};
     int nByte = Serial1.read();
     if (nByte < 0)
@@ -84,14 +92,9 @@ void loop()
         sendJoyOutput();
     }
     else
-        bytesRead += 1;
+        bytesRead += 1;   
 }
 
-int joy_min = 3950;
-int joy_max = 62000;
-int in_min = -820;
-int in_max = 819;
-int d = 0;
 void sendJoyOutput()
 {
     sbus_data_t* c = &controllerState;
@@ -118,8 +121,13 @@ void sendJoyOutput()
 }
 
 int mapAnalog(int analog)
-{
-    return (int) map(analog,in_min,in_max,joy_min,joy_max);   
+{    
+    if(analog < 0)
+        return (int) map(analog,in_min,0,joy_min,avg-mitigate_deadzone);
+    else if(analog > 0)
+        return (int) map(analog,0,in_max,avg+mitigate_deadzone,joy_max);
+    else
+        return avg;
 }
 
 
