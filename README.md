@@ -20,6 +20,33 @@ To start, the Teensy program will do the following:
 * After calling the decode function, reset the buffer and index
 * If ever a >3000us delay between availible bytes, reset the index before saving that byte
 
+## Output of the TARANIS (sbus_data_t struct)
+
+XSR Output | Label | Description | States
+--- | --- | --- | ---
+A1 | None | Lstick up/down | Analog (-820-819)
+A2 | None | Lstick left/right | Analog
+A3 | None | Rstick up/down | Analog
+A4 | None | Rstick left/right | Analog
+A5 | S1 | Left Top Knob | Analog
+A6 | S2 | Right Top Knob  | Analog
+A7 | None | Left Side Knob | Analog
+A8 | None | Right Side Knob | Analog
+A9 | SA | Far Left Switch | 3 (-820, 0, 819)
+A10 | SB | Round Left Switch | 3
+A11 | SC | Round Right Switch | 3
+A12 | SD | Far Right Switch | 3
+A13 | SE | Left Front Switch | 3
+A14 | SF | Left Back Switch | 2 (-820,819)
+A15 | SG | Right Front Switch | 3
+A16 | SH | Right Back **Button** | 2\*
+D1 | ? | In experimenting with the controller, haven't seen the digital outputs change from `0` | Digital (0,1)
+D2 | ? | See above | Digital (0,1)
+frame_lost | N/A | This value goes from `0` to `1` as soon as the controller is turned off after previously being connected | Digital (0,1)
+failsafe_active | N/A | This value goes from `0` to `1` a few seconds after the above goes to 1 | Digital (0,1)
+
+>\* For the A16/SH button, a value of 819 represents the "unpressed" state and -820 is the "pressed" state
+
 ## Uploading to the Teensy
 
 ## Pairing with the TARANIS plus
