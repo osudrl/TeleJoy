@@ -42,8 +42,8 @@ A14 | analog[14] | SG | Right Front Switch | 3
 A15 | analog[15] | SH | Right Back **Button** | 2\*
 D0 | digital[0] | ? | Haven't seen these digital outputs change from `0` | Digital
 D1 | digital[1] | ? | See above | Digital
-FL | frame_lost | N/A | This value goes from `0` to `1` as soon as the controller is turned off after previously being connected | Digital
-FA | failsafe_active | N/A | This value goes from `0` to `1` a few seconds after the above goes to 1 | Digital
+FL | frame_lost | N/A | `1` when controller off, otherwise `0` | Digital
+FA | failsafe_active | N/A | `1` few seconds after controller off, otherwise `0` | Digital
 
 States Type | Numerical Outputs
 -- | ---
