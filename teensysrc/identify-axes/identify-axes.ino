@@ -85,7 +85,7 @@ void loop()
             for (int i = 0; i < 16; i++)
             {
                 Serial.print("A");
-                Serial.print(label);
+                Serial.print(i);
                 Serial.print(":");
                 Serial.print(controllerState.analog[i]);
                 Serial.print("  ");
