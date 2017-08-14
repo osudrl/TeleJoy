@@ -20,7 +20,7 @@ To start, the Teensy program will do the following:
 * After calling the decode function, reset the buffer and index
 * If ever a >3000us delay between availible bytes, reset the index before saving that byte
 
-## Output of the TARANIS (sbus_data_t struct)
+## Input from the TARANIS (sbus_data_t struct)
 
 Input | Struct Call | Label | Description | States
 --- | --- | --- | --- | ---

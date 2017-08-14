@@ -60,6 +60,7 @@ void setup() {
   Serial1.begin(100000, SERIAL_8E1_RXINV);
   Serial.begin(9600);
   Serial.println("THIS SHOULD SHOW UP");
+  Joystick.useManualSend(true);
 }
 
 long time = micros();
@@ -80,22 +81,54 @@ void loop()
         sbus_decode_packet(buffer, &controllerState);
         bytesRead = 0;
 
-        if(millis()/100 > count)
-        {
-            for (int i = 0; i < 16; i++)
-            {
-                char label = 65+i;
-                Serial.print(label);
-                Serial.print(": ");
-                Serial.print(controllerState.analog[i]);
-                Serial.print("  ");
-            }
-            Serial.println(" ");
-            count++;
-        }
+        sendJoyOutput();
     }
     else
         bytesRead += 1;
+}
+
+bool force_digital = false;
+int joy_min = 3950;
+int joy_max = 62000;
+int in_min = -820;
+int in_max = 819;
+int d = 0;
+void sendJoyOutput()
+{
+  sbus_data_t* c = &controllerState;
+    for(int i = 0; i < 8; i++)
+    Joystick.slider(i+1,millis());
+    Joystick.X(mapAnalog(c->analog[1]));
+    Joystick.Y(mapAnalog(c->analog[0]));
+    Joystick.Z(mapAnalog(c->analog[3]));
+    Joystick.Zrotate(mapAnalog(c->analog[2]));
+
+    int sliderCount = 4;
+    if(!force_digital)
+        sliderCount = 8;
+    for(int i = 0; i < sliderCount; i++)
+       Joystick.slider(i+1, mapAnalog(c->analog[i+4]));
+    for(int i = 8; i < 17; i++)
+       Joystick.slider(i+1, millis());
+    if(!force_digital)
+    {
+        Joystick.Xrotate(mapAnalog(c->analog[12]));
+        Joystick.Yrotate(mapAnalog(c->analog[14]));
+    }    
+    Joystick.button(4, c->analog[13] < 0);
+    Joystick.button(5, c->analog[15] < 0);
+    Joystick.button(2, c->frame_lost);
+    Joystick.button(3, c->failsafe_active);
+    Joystick.button(1, c->signal_good);
+    Joystick.send_now();
+}
+int m()
+{
+  return millis() * 10;
+}
+int mapAnalog(int analog)
+{
+    return (int) map(analog,in_min,in_max,joy_min,joy_max);   
 }
 
 
