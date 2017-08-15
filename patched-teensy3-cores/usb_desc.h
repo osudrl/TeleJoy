@@ -203,7 +203,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define MOUSE_INTERVAL        1
   #define JOYSTICK_INTERFACE    3	// Joystick
   #define JOYSTICK_ENDPOINT     4
-  #define JOYSTICK_SIZE         12	//  12 = normal, 64 = extreme joystick
+  #define JOYSTICK_SIZE         64	//  12 = normal, 64 = extreme joystick
   #define JOYSTICK_INTERVAL     2
   #define ENDPOINT1_CONFIG	ENDPOINT_TRANSIMIT_ONLY
   #define ENDPOINT2_CONFIG	ENDPOINT_RECEIVE_ONLY

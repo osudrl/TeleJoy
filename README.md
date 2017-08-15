@@ -10,17 +10,31 @@ Back of the XSR receiver:
 
 <img src="http://i.imgur.com/2jpbEeh.jpg?1" width="400"> 
 
-## Code Routine
+## Patching Teensy Cores
 
-To start, the Teensy program will do the following:
+Patching teensy cores with the files in patched-teensy3-cores allows for the emulated to joystick to have additional analog outputs to accommodate all 16 channels of the TARANIS.
 
-* Read Serial1 (pin0) with a custom Serial protocol (inverted, 2 stop bits, even parity)
-* Fill a 25-byte buffer with the bytes coming in from Serial1
-* Once full, decode the 25-length buffer
-* After calling the decode function, reset the buffer and index
-* If ever a >3000us delay between availible bytes, reset the index before saving that byte
+## Uploading to the Teensy
 
-## Input from the TARANIS (sbus_data_t struct)
+
+
+## Binding with the TARANIS plus
+
+The TARANIS plus controller:
+
+![controller](http://cdn.shopify.com/s/files/1/0412/2761/products/taranis-x9d-plus3_grande.jpg?v=1468705173)
+
+XSR when searching for controller to bind to:
+
+![searching](http://i.imgur.com/orpNlgs.gif?1)
+
+XSR when properly bound to a controller and recieving data:
+
+![bound](http://i.imgur.com/f1CMw7O.jpg?1)
+
+## Input from the XSR reciever (sbus_data_t struct)
+
+Although the output channels can be configured within the TARANIS menu, at the time of this writing, the 16 analog channels corrospond to the following features on the controller.
 
 Input | Struct Call | Label | Description | States
 --- | --- | --- | --- | ---
@@ -54,6 +68,3 @@ Digital | 0 and 1
 
 >\* For the A15/SH button, a value of 819 represents the "unpressed" state and -820 is the "pressed" state
 
-## Uploading to the Teensy
-
-## Pairing with the TARANIS plus
