@@ -1,4 +1,4 @@
-# CASSIE Telemetry in MuJoCo 
+# TARANIS Telemetry to SDL Joystick
 
 This teensy (Arduino) sketch will read serial data from the XSR (X4RS_Rev1.1) telemetry reciever and decode the information into controller axes and buttons.  This controller data can then be used to interact with the operating system as a Joystick device.
 
@@ -40,7 +40,7 @@ The TARANIS plus controller:
 
 When the reciever is searching for a controller to bind to, the **red LED will flash about once a second**.  If the red LED is solid, it may need to be put into binding mode by holding down the button on the bottom right of the chip while simultaneously plugging in the power for the device, and then releasing the button.
 
-When properly bound to a controller and recieving data, the reciever will light a green LED and hold it solid:
+While properly bound to a controller and recieving data, the reciever will keep the green LED lit:
 
 <img src="http://i.imgur.com/f1CMw7O.jpg?1" width="600"> 
 
