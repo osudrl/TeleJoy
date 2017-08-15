@@ -22,15 +22,15 @@ Patching teensy cores with the files in patched-teensy3-cores allows for the emu
 
 The TARANIS plus controller:
 
-![controller](http://cdn.shopify.com/s/files/1/0412/2761/products/taranis-x9d-plus3_grande.jpg?v=1468705173)
+<img src="http://cdn.shopify.com/s/files/1/0412/2761/products/taranis-x9d-plus3_grande.jpg?v=1468705173" width="400"> 
 
 XSR when searching for controller to bind to:
 
-![searching](http://i.imgur.com/orpNlgs.gif?1)
+<img src="http://i.imgur.com/orpNlgs.gif?1" width="600"> 
 
 XSR when properly bound to a controller and recieving data:
 
-![bound](http://i.imgur.com/f1CMw7O.jpg?1)
+<img src="http://i.imgur.com/f1CMw7O.jpg?1" width="600"> 
 
 ## Input from the XSR reciever (sbus_data_t struct)
 
