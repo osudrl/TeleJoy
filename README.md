@@ -6,17 +6,31 @@ The Teensy 3.2 (left) connected to the XSR reciever (right):
 
 <img src="http://i.imgur.com/vlCQ2Rf.jpg?1" width="600"> 
 
-Back of the XSR receiver:
+This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
-<img src="http://i.imgur.com/2jpbEeh.jpg?1" width="400"> 
+# Setup Guide
+
+To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
+
+1. Teensyduino setup (Teensy for the Arduino IDE)
+2. Patching teensy cores to allow for more axes to be sent to the operating system
+3. Uploading the source to the teensy
+4. Binding with the TARANIS plus
+5. Testing the teensy's output
+
+## Teensy installation for Arduino IDE
+
+placeholder
 
 ## Patching Teensy Cores
 
 Patching teensy cores with the files in patched-teensy3-cores allows for the emulated to joystick to have additional analog outputs to accommodate all 16 channels of the TARANIS.
 
+Navigate to 
+
 ## Uploading to the Teensy
 
-
+placeholder
 
 ## Binding with the TARANIS plus
 
@@ -24,13 +38,18 @@ The TARANIS plus controller:
 
 <img src="http://cdn.shopify.com/s/files/1/0412/2761/products/taranis-x9d-plus3_grande.jpg?v=1468705173" width="400"> 
 
-XSR when searching for controller to bind to:
+When the reciever is searching for a controller to bind to, the **red LED will flash about once a second**.  If the red LED is solid, it may need to be put into binding mode by holding down the button on the bottom right of the chip while simultaneously plugging in the power for the device, and then releasing the button.
 
-<img src="http://i.imgur.com/YlfNyUW.gifv" width="600"> 
-
-XSR when properly bound to a controller and recieving data:
+When properly bound to a controller and recieving data, the reciever will light a green LED and hold it solid:
 
 <img src="http://i.imgur.com/f1CMw7O.jpg?1" width="600"> 
+
+
+## Testing the virtual joystick
+
+placeholder
+
+# placeholder
 
 ## Input from the XSR reciever (sbus_data_t struct)
 
