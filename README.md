@@ -26,12 +26,14 @@ Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere i
 
 Patching teensy cores with the files in patched-teensy3-cores allows for the emulated to joystick to have additional analog outputs to accommodate all 16 channels of the TARANIS.
 
-Navigate to this repository's patched-teensy3-cores directory to see the following files:
+Navigate to this repository's `patched-teensy3-cores` directory to see the following files:
 
 * usb_desc.c
 * usb_desc.h
 * usb_joystick.c
 * usb_joystick.h
+
+Files with the same (among other related files) can be found in the `arduino-1.8.3/hardware/teensy/avr/cores/teensy3/` directory.  Delete teensy3's `usb_desc.c`, `usb_desc.h`, `usb_joystick.c`, and `usb_joystick.h` and replace the deleted files with the files in this repository's `patched-teensy3-cores`.  
 
 ## Uploading to the Teensy
 
