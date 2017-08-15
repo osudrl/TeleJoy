@@ -20,13 +20,18 @@ To get this project running, make sure the hardare is wired as shown above and t
 
 ## Teensy installation for Arduino IDE
 
-placeholder
+Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere in your home folder.  Next, download and install the Teensyduino add-on from the [PJRC download page](https://www.pjrc.com/teensy/td_download.html) and select the folder where the Arduino IDE was installed.  Install everything that Teensyduino has to offer (default).
 
 ## Patching Teensy Cores
 
 Patching teensy cores with the files in patched-teensy3-cores allows for the emulated to joystick to have additional analog outputs to accommodate all 16 channels of the TARANIS.
 
-Navigate to 
+Navigate to this repository's patched-teensy3-cores directory to see the following files:
+
+* usb_desc.c
+* usb_desc.h
+* usb_joystick.c
+* usb_joystick.h
 
 ## Uploading to the Teensy
 
