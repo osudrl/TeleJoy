@@ -26,7 +26,7 @@ The TARANIS plus controller:
 
 XSR when searching for controller to bind to:
 
-<img src="http://i.imgur.com/orpNlgs.gif?1" width="600"> 
+<img src="http://i.imgur.com/YlfNyUW.gifv" width="600"> 
 
 XSR when properly bound to a controller and recieving data:
 
