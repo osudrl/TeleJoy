@@ -22,18 +22,27 @@ To get this project running, make sure the hardare is wired as shown above and t
 
 Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere in your home folder.  Next, download and install the Teensyduino add-on from the [PJRC download page](https://www.pjrc.com/teensy/td_download.html) and select the folder where the Arduino IDE was installed.  Install everything that Teensyduino has to offer (default).
 
-## Patching Teensy Cores
+## Allow for "Extreme Joystick"
 
-Patching teensy cores with the files in patched-teensy3-cores allows for the emulated to joystick to have additional analog outputs to accommodate all 16 channels of the TARANIS.
+Navigate to the Arduino/Teensyduino installation, and open `arduino-installation/hardware/teensy/avr/cores/teensy3/usb_desc.h` in a text editor.  The line numbers below might be different with newer versions of Teensyduino released after this was written, but find the `JOYSTICK_SIZE` definition under the `USB_SERIAL_HID` test and change the size from 12 to 64.
 
-Navigate to this repository's `patched-teensy3-cores` directory to see the following files:
+```c
+#ifndef _usb_desc_h_
+#define _usb_desc_h_
 
-* usb_desc.c
-* usb_desc.h
-* usb_joystick.c
-* usb_joystick.h
+// Scroll to line 215
 
-Files with the same (among other related files) can be found in the `arduino-1.8.3/hardware/teensy/avr/cores/teensy3/` directory.  Delete teensy3's `usb_desc.c`, `usb_desc.h`, `usb_joystick.c`, and `usb_joystick.h` and replace the deleted files with the files in this repository's `patched-teensy3-cores`.  
+#elif defined(USB_SERIAL_HID)
+
+// Scroll to line 252
+
+#define JOYSTICK_ENDPOINT     6
+#define JOYSTICK_SIZE         64	//  12 = normal, 64 = extreme joystick
+#define JOYSTICK_INTERVAL     1
+
+```
+
+Once extreme joystick is set by `#define JOYSTICK_SIZE 64`, the telejoy project should be able relay enough joystick axes to the operating system.
 
 ## Uploading to the Teensy
 
@@ -49,8 +58,7 @@ When the reciever is searching for a controller to bind to, the **red LED will f
 
 While properly bound to a controller and recieving data, the reciever will keep the green LED lit:
 
-<img src="http://i.imgur.com/f1CMw7O.jpg?1" width="600"> 
-
+<img src="http://i.imgur.com/f1CMw7O.jpg?1" width="600">
 
 ## Testing the virtual joystick
 
