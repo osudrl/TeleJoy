@@ -74,13 +74,39 @@ If there are issues getting the reciever properly bound to the radio controller,
 1. Create/duplicate a new model in the TARANIS `MENU` 
 2. In that new model's `PAGE`, towards the bottom, set the `Channel Range` to `Ch1-16` 
 3. A different `Recivever No.` may be selected (currently `1` is selected) 
-4. Press `ENT` while `BIND` is highlighted.  Try binding while the reciever is on, off, being turned on, and being turned off until the green LED lights steady like in the above image 
+4. Press `ENT` while `BIND` is highlighted.  Try binding while the reciever is on, off, being turned on, and being turned off until the green LED lights and stays lit as shown in the above example image.
 
 ## Testing the virtual joystick
 
-placeholder
+### jstest
 
-# placeholder
+The easiest way to test the output of the Teensy as a joystick input device is with the application jstest-gtk, availible via aptitude.
+
+```shell
+sudo apt install jstest-gtk
+# Check that the Teensy is connected and that the TARANIS is properly bound.
+jstest-gtk
+```
+If no joysticks show up, check that the right usb type was selected when uploading to the board.
+
+If more than one joysticks show up in the jstest application, only one will work.  In my tests, js1 was the proper board.
+
+### SDL2 in C
+
+First, install SDL2.
+
+```shell
+sudo apt install libsdl2-dev
+```
+Next, compile and run sdl-example.c
+
+```shell
+gcc sdl-example.c -lSDL2
+./a.out
+```
+> Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
+
+# Other Information
 
 ## Input from the XSR reciever (sbus_data_t struct)
 
