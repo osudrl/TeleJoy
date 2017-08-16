@@ -24,7 +24,7 @@ Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere i
 
 ## Allow for "Extreme Joystick"
 
-Navigate to the Arduino/Teensyduino installation, and open `arduino-installation/hardware/teensy/avr/cores/teensy3/usb_desc.h` in a text editor.  The line numbers below might be different with newer versions of Teensyduino released after this was written, but find the `JOYSTICK_SIZE` definition under the `USB_SERIAL_HID` test and change the size from 12 to 64.
+Navigate to the Arduino/Teensyduino installation, and open `hardware/teensy/avr/cores/teensy3/usb_desc.h` in a text editor.  The line numbers below might be different with newer versions of Teensyduino, but find the `JOYSTICK_SIZE` definition under the `USB_SERIAL_HID` line and change the size from 12 to 64.
 
 ```c
 #ifndef _usb_desc_h_
@@ -42,11 +42,14 @@ Navigate to the Arduino/Teensyduino installation, and open `arduino-installation
 
 ```
 
-Once extreme joystick is set by `#define JOYSTICK_SIZE 64`, the telejoy project should be able relay enough joystick axes to the operating system.
+Once extreme joystick is set by `#define JOYSTICK_SIZE 64`, the teensy should be able relay enough joystick axes to the operating system.
 
 ## Uploading to the Teensy
 
-placeholder
+To upload the telejoy sketch (`thisrepository/teensysrc/telejoy/telejoy.ino`) to the Teensy, reference the [PJRC page on Teensyduino usage](https://www.pjrc.com/teensy/td_usage.html) to complete the following:
+
+1. Connect the Teensy board to the computer via micro-usb
+2. 
 
 ## Binding with the TARANIS plus
 
@@ -102,3 +105,6 @@ Digital | 0 and 1
 
 >\* For the A15/SH button, a value of 819 represents the "unpressed" state and -820 is the "pressed" state
 
+## Feedback
+
+Written by [Kevin Kellar](https://github.com/kkevlar) for Oregon State University's [Dynamic Robotics Laboratory](http://mime.oregonstate.edu/research/drl/).  For issues, comments, or suggestions with this guide, contact [Kevin Kellar](https://github.com/kkevlar) or open an issue.
