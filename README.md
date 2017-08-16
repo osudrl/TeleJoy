@@ -104,7 +104,7 @@ Next, compile and run sdl-example.c
 gcc sdl-example.c -lSDL2
 ./a.out
 ```
-> Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
+Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
 
 # Other Information
 
