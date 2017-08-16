@@ -49,7 +49,14 @@ Once extreme joystick is set by `#define JOYSTICK_SIZE 64`, the teensy should be
 To upload the telejoy sketch (`thisrepository/teensysrc/telejoy/telejoy.ino`) to the Teensy, reference the [PJRC page on Teensyduino usage](https://www.pjrc.com/teensy/td_usage.html) to complete the following:
 
 1. Connect the Teensy board to the computer via micro-usb
-2. 
+2. Open the telejoy.ino sketch in the Arduino IDE
+3. Select `Teensy 3.2 / 3.1` from `Tools -> Boards`
+4. Select `Serial + Keyboard + Mouse + Joystick` from `Tools -> USB Type`
+  * The sketch may need to be uploaded to the board first before this option becomes availible
+5. Upload the sketch to the Teensy as explained on the PJRC page linked above
+6. Ensure that `Serial + Keyboard + Mouse + Joystick` is still selected from `Tools -> USB Type`
+
+That's it! The telejoy code should now be loaded onto the Teensy.
 
 ## Binding with the TARANIS plus
 
@@ -62,6 +69,12 @@ When the reciever is searching for a controller to bind to, the **red LED will f
 While properly bound to a controller and recieving data, the reciever will keep the green LED lit:
 
 <img src="http://i.imgur.com/f1CMw7O.jpg?1" width="600">
+
+If there are issues getting the reciever properly bound to the radio controller, the following steps, as detailed in this [video tutorial](https://www.youtube.com/watch?v=1IYg5mQdLVI) may fix the issue: 
+1. Create/duplicate a new model in the TARANIS `MENU` 
+2. In that new model's `PAGE`, towards the bottom, set the `Channel Range` to `Ch1-16` 
+3. A different `Recivever No.` may be selected (currently `1` is selected) 
+4. Press `ENT` while `BIND` is highlighted.  Try binding while the reciever is on, off, being turned on, and being turned off until the green LED lights steady like in the above image 
 
 ## Testing the virtual joystick
 
