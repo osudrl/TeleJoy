@@ -140,21 +140,12 @@ void writeByte(unsigned char data)
 	s_paxStream->write(data);
 }
 
-void writeMultipleBytes(unsigned char *pdata, int length)
-{
-#if defined(ARDUINO_ARCH_AVR)
-	while (length--)
-		writeByte(*pdata++);
-#else
-	s_paxStream->write(pdata, length);
-#endif
-}
 void setup() 
 {
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
 	Serial.begin(9600);
-	Serial3.begin(57600,SERIAL_8N1_RXINV);//SERIAL_8N1_RXINV_TXINV);
+	Serial3.begin(57600,SERIAL_8N1_RXINV_TXINV);
 	hdInit();
 	Serial.println("init");
 }
