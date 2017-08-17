@@ -52,7 +52,7 @@ void hdInit()
     
 
     UART2_C1 |= UART_C1_LOOPS | UART_C1_RSRC;
-        CORE_PIN8_CONFIG = PORT_PCR_DSE | PORT_PCR_SRE | PORT_PCR_MUX(3) | PORT_PCR_PE | PORT_PCR_PS; // pullup on output pin;
+    //    CORE_PIN8_CONFIG = PORT_PCR_DSE | PORT_PCR_SRE | PORT_PCR_MUX(3) | PORT_PCR_PE | PORT_PCR_PS; // pullup on output pin;
     }
     setRX();
 }
@@ -121,12 +121,14 @@ void ksrp(uint16_t value_id, uint32_t data)
                                expanded_response_buffer);
 
     flushInputBuffer();
+    /*
     setTX();
 
     for (int i = 0; i < expanded_length; i++)
     	writeByte(expanded_response_buffer[i]);
 
     s_paxStream->flush();
+    */
     setRX();
 }
 
