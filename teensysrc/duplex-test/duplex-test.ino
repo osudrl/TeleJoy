@@ -180,14 +180,19 @@ void loop()
 		Serial.print("<unmatched> ");
 		Serial.println(rByte);
 		*/
-     for(int i = 0; i < sizeof(sensor_ids); i += 2)
-     {
-      if(rByte == sensor_ids[i])
-      {
-    int tempp = i%(sizeof(data_type_ids)/2);
-		sendData(data_type_ids[tempp], tempp*tempp);
-  break;
-}
+
+
+		if((rByte == 0x98 || rByte == 0xA1))
+    {
+      int num = indd%18;
+      
+      if(num == 16)
+          sendData(0x0011,(millis()/10000) %10);
+      else if(num == 17)
+          sendData(0x0014,(millis()/10000) %10);
+      else
+          sendData(num,(millis()/10000) %10);
+      indd++;
     }
 	}
 }
