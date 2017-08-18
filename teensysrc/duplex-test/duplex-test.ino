@@ -104,13 +104,15 @@ uint8_t sport_crc(const response_packet_t *packet)
 
 void ksrp(uint16_t value_id, uint32_t data)
 {
+
     // Construct response packet
     response_packet_t response_packet;
   
         response_packet.header = 0x10,
-        response_packet.value_id = value_id;//swap16(value_id),
-        response_packet.data = data;//swap32(data)
-
+        //response_packet.value_id = value_id;//swap16(value_id),
+        //response_packet.data = data;//swap32(data)
+	response_packet.value_id = 0x0600;
+    response_packet.data = 6969;
 
     // Calculate crc(?) for the response packet
     response_packet.crc = sport_crc(&response_packet);
@@ -121,14 +123,24 @@ void ksrp(uint16_t value_id, uint32_t data)
                                expanded_response_buffer);
 
     flushInputBuffer();
-    /*
+    
     setTX();
-
+    /*
     for (int i = 0; i < expanded_length; i++)
     	writeByte(expanded_response_buffer[i]);
+	*/
+	writeByte(0x10);
+  writeByte(0x06);
+	writeByte(0x00);
+	  writeByte(0x39);
+      writeByte(0x1B);
+	writeByte(0x00);
+	writeByte(0x00);
 
+
+  writeByte(response_packet.crc);
     s_paxStream->flush();
-    */
+    
     setRX();
 }
 
@@ -140,6 +152,7 @@ void writeByte(unsigned char data)
 	//if (s_paxStream == (Stream*)&Serial3) 
 	//	while ( (UCSR3A & (1 << UDRE3)) == 0);
 	s_paxStream->write(data);
+	//s_paxStream->write(0xA5);
 }
 
 void setup() 
@@ -162,6 +175,7 @@ void loop()
 			Serial.print("valid: 126  ");
 			return;
 		}
+		/*
 		for (int i = 0; i < TELEMETRY_DATA_LENGTH; ++i) 
 		{
 			if (rByte == obfuscated_sensor_ids[i])
@@ -180,5 +194,7 @@ void loop()
 		}
 		Serial.print("<unmatched> ");
 		Serial.println(rByte);
+		*/
+		ksrp(0, 0) ;
 	}
 }
