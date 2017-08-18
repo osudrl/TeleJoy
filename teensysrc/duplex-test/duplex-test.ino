@@ -4,18 +4,24 @@ Stream* s_paxStream;
 
 #define TELEMETRY_DATA_LENGTH 14
 
- const uint8_t sensor_ids[] = {0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0xC6, 0x67, 0x48, 0xE9, 0x6A, 0xCB,
-      0xAC, 0x0D, 0x8E, 0x2F, 0xD0, 0x71, 0xF2, 0x53, 0x34, 0x95, 0x16, 0xB7,
-      0x98, 0x39, 0xBA, 0x1B};
+const uint16_t data_type_ids[] = {
+  0x0000, 0x0100, 0x0110, 0x0200, 0x0210,0x0300,0x0400,0x0410,
+  0x0500,0x0600,0x0700,0x0710,0x0720,0x0800,0x0820,0x0830,0x0840,
+  0x0850,0x0900,0x0910,0x0a00,0xf101,0xf102,0xf103,0xf104,0xf105
+};
+
+const uint8_t sensor_ids[] = {0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0xC6, 0x67, 0x48, 0xE9, 0x6A, 0xCB,
+  0xAC, 0x0D, 0x8E, 0x2F, 0xD0, 0x71, 0xF2, 0x53, 0x34, 0x95, 0x16, 0xB7,
+  0x98, 0x39, 0xBA, 0x1B};
 
 // Value ID mapping
- const uint8_t value_ids[TELEMETRY_DATA_LENGTH] = {
+  const uint8_t value_ids[TELEMETRY_DATA_LENGTH] = {
     0, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15
-};
+  };
 
- const uint16_t telemetry_data_buffer[TELEMETRY_DATA_LENGTH] = {
+  const uint16_t telemetry_data_buffer[TELEMETRY_DATA_LENGTH] = {
     0, 1, 4, 9, 16, 25, 49, 64, 100, 121, 144, 169, 196, 225
-};
+  };
 
 union packet {
   //! byte[8] presentation
@@ -35,7 +41,20 @@ uint8_t CRC (uint8_t *packet) {
   }
   return ~crc;
 }
+/*
+uint8_t CRC(uint8_t *packet)
+{
+    uint16_t crc = 0;
 
+    for (size_t i = 0; i < sizeof (response_packet_t); ++i) {
+        crc += ((uint8_t*) packet)[i];
+        crc += crc >> 8;
+        crc &= 0xff;
+    }
+
+    return ~crc;
+}
+*/
 void flushInputBuffer(void)  
 {
   while (s_paxStream->available())
@@ -116,6 +135,7 @@ void sendData (uint16_t id, int32_t val)
 }
 
 int count = 0;
+int indd = 0;
 void setup() 
 {
 	pinMode(13, OUTPUT);
@@ -126,7 +146,7 @@ void setup()
 }
 void loop() 
 {
-  if(millis()/2000 > count)
+  if(millis()/500 > count)
   {
     count++;
     digitalWrite(13,LOW);
@@ -160,6 +180,14 @@ void loop()
 		Serial.print("<unmatched> ");
 		Serial.println(rByte);
 		*/
-		sendData(0x0200, 0x075BCD15);
+     for(int i = 0; i < sizeof(sensor_ids); i += 2)
+     {
+      if(rByte == sensor_ids[i])
+      {
+    int tempp = i%(sizeof(data_type_ids)/2);
+		sendData(data_type_ids[tempp], tempp*tempp);
+  break;
+}
+    }
 	}
 }
