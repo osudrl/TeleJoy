@@ -2,24 +2,20 @@ Stream* s_paxStream;
 
 
 
-#define TELEMETRY_DATA_LENGTH 14
 
-const uint16_t data_type_ids[] = {
-  0x0000, 0x0100, 0x0110, 0x0200, 0x0210,0x0300,0x0400,0x0410,
-  0x0500,0x0600,0x0700,0x0710,0x0720,0x0800,0x0820,0x0830,0x0840,
-  0x0850,0x0900,0x0910,0x0a00,0xf101,0xf102,0xf103,0xf104,0xf105
+
+
+
+const uint8_t sensor_ids[] = {
+    0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0x67,
+    0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
-
-const uint8_t sensor_ids[] = {0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0xC6, 0x67, 0x48, 0xE9, 0x6A, 0xCB,
-  0xAC, 0x0D, 0x8E, 0x2F, 0xD0, 0x71, 0xF2, 0x53, 0x34, 0x95, 0x16, 0xB7,
-  0x98, 0x39, 0xBA, 0x1B};
-
 // Value ID mapping
-  const uint8_t value_ids[TELEMETRY_DATA_LENGTH] = {
+  const uint8_t value_ids[] = {
     0, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15
   };
 
-  const uint16_t telemetry_data_buffer[TELEMETRY_DATA_LENGTH] = {
+  const uint16_t telemetry_data_buffer[] = {
     0, 1, 4, 9, 16, 25, 49, 64, 100, 121, 144, 169, 196, 225
   };
 
@@ -134,15 +130,15 @@ void sendData (uint16_t id, int32_t val)
  
 }
 
+
+int validity = 0;
 int count = 0;
-int indd = 0;
+int looper = 0;
 void setup() 
 {
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
-	Serial.begin(9600);	
 	hdInit();
-	Serial.println("init");
 }
 void loop() 
 {
@@ -156,32 +152,22 @@ void loop()
 		digitalWrite(13,HIGH);
 		unsigned char rByte = Serial3.read();
 		if(rByte == 0x7e)
-		{
-			Serial.print("valid: 126  ");
+    {
+      validity = 1;
 			return;
-		}
-		/*
-		for (int i = 0; i < TELEMETRY_DATA_LENGTH; ++i) 
-		{
-			if (rByte == obfuscated_sensor_ids[i])
-			{
-				Serial.print("<matched>   byte:");
-				Serial.print(rByte);
-				Serial.print(" valueid:");
-				Serial.print(value_ids[i]);
-				Serial.print(" td-data:");
-				Serial.println(telemetry_data_buffer[i]);
-
-            // Respond to the first matching id
-				ksrp(value_ids[i], telemetry_data_buffer[i]) ;
-				return;
-			}
-		}
-		Serial.print("<unmatched> ");
-		Serial.println(rByte);
-		*/
-
-
+    }
+    if(validity != 1)
+      return;
+    validity = 0;
+    if(rByte==0xA1 &&(millis()/1000) %4 == 0) 
+    {
+      int mod = looper % 14;
+      int inc = millis()/1000;
+      sendData(value_ids[mod],telemetry_data_buffer[mod]+inc);
+      looper++;
+    }
+       
+    /*
 		if((rByte == 0x98 || rByte == 0xA1))
     {
       int num = indd%18;
@@ -194,5 +180,6 @@ void loop()
           sendData(num,(millis()/10000) %10);
       indd++;
     }
+    */
 	}
 }
