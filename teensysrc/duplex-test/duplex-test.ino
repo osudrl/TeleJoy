@@ -1,30 +1,40 @@
 Stream* s_paxStream;
 
-uint8_t expanded_response_buffer[16];
+
 
 #define TELEMETRY_DATA_LENGTH 14
 
-// Sensor ID mapping
-static const uint8_t obfuscated_sensor_ids[TELEMETRY_DATA_LENGTH] = {
-    0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0x67,
-    0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
-};
+ const uint8_t sensor_ids[] = {0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0xC6, 0x67, 0x48, 0xE9, 0x6A, 0xCB,
+      0xAC, 0x0D, 0x8E, 0x2F, 0xD0, 0x71, 0xF2, 0x53, 0x34, 0x95, 0x16, 0xB7,
+      0x98, 0x39, 0xBA, 0x1B};
 
 // Value ID mapping
-static const uint8_t value_ids[TELEMETRY_DATA_LENGTH] = {
+ const uint8_t value_ids[TELEMETRY_DATA_LENGTH] = {
     0, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15
 };
 
-static const uint16_t telemetry_data_buffer[TELEMETRY_DATA_LENGTH] = {
+ const uint16_t telemetry_data_buffer[TELEMETRY_DATA_LENGTH] = {
     0, 1, 4, 9, 16, 25, 49, 64, 100, 121, 144, 169, 196, 225
 };
 
-typedef struct __attribute__((__packed__)) {
-    uint8_t  header;
-    uint16_t value_id;
-    uint32_t data;
-    uint8_t  crc;
-} response_packet_t;
+union packet {
+  //! byte[8] presentation
+  uint8_t byte[8];
+  //! uint64 presentation
+  uint64_t uint64;
+};
+
+uint8_t CRC (uint8_t *packet) {
+  short crc = 0;
+  for (int i = 0; i < 8; i++) {
+    crc += packet[i]; //0-1FF
+    crc += crc >> 8;  //0-100
+    crc &= 0x00ff;
+    crc += crc >> 8;  //0-0FF
+    crc &= 0x00ff;
+  }
+  return ~crc;
+}
 
 void flushInputBuffer(void)  
 {
@@ -46,14 +56,12 @@ void setRX()
 
 void hdInit()
 {
+  Serial3.begin(57600,SERIAL_8N1_RXINV_TXINV);
   s_paxStream = &Serial3;
-  if (s_paxStream == &Serial3)
-  {
-    
-
+  
     UART2_C1 |= UART_C1_LOOPS | UART_C1_RSRC;
     //    CORE_PIN8_CONFIG = PORT_PCR_DSE | PORT_PCR_SRE | PORT_PCR_MUX(3) | PORT_PCR_PE | PORT_PCR_PS; // pullup on output pin;
-    }
+    
     setRX();
 }
 
@@ -67,105 +75,62 @@ void setTX()
          // UCSR3B =  /*(1 << UDRIE3) |*/ (1 << TXEN3);
   }
 }
-int expand_response_packet(const response_packet_t *packet, uint8_t *expanded)
+
+void writeByte(uint8_t data)
 {
-    int expanded_length;
-
-    for (int i = 0; i < sizeof (response_packet_t); ++i) {
-        switch (((uint8_t *) packet)[i]) {
-        case 0x7d:
-            expanded[expanded_length++] = 0x7d;
-            expanded[expanded_length++] = 0x5d;
-            break;
-        case 0x7e:
-            expanded[expanded_length++] = 0x7e;
-            expanded[expanded_length++] = 0x5e;
-            break;
-        default:
-            expanded[expanded_length++] = ((uint8_t*) packet)[i];
-        }
-    }
-
-    return expanded_length;
+  //if (s_paxStream == (Stream*)&Serial3) 
+  //  while ( (UCSR3A & (1 << UDRE3)) == 0);
+  s_paxStream->write(data);
+  //s_paxStream->write(0xA5);
 }
 
-uint8_t sport_crc(const response_packet_t *packet)
-{
-    uint16_t crc = 0;
 
-    for (int i = 0; i < sizeof (response_packet_t); ++i) {
-        crc += ((uint8_t*) packet)[i];
-        crc += crc >> 8;
-        crc &= 0xff;
-    }
+void sendData (uint8_t type, uint16_t id, int32_t val) {
+  flushInputBuffer();
+  setTX();
+  union packet packet;
 
-    return ~crc;
-}
-
-void ksrp(uint16_t value_id, uint32_t data)
-{
-
-    // Construct response packet
-    response_packet_t response_packet;
+  packet.uint64  = (uint64_t) type | (uint64_t) id << 8 | (int64_t) val << 24;
+  packet.byte[7] = CRC(packet.byte);
   
-        response_packet.header = 0x10,
-        //response_packet.value_id = value_id;//swap16(value_id),
-        //response_packet.data = data;//swap32(data)
-	response_packet.value_id = 0x0600;
-    response_packet.data = 6969;
-
-    // Calculate crc(?) for the response packet
-    response_packet.crc = sport_crc(&response_packet);
-
-    // Escape special bytes in the packet
-    int expanded_length =
-        expand_response_packet(&response_packet,
-                               expanded_response_buffer);
-
-    flushInputBuffer();
-    
-    setTX();
-    /*
-    for (int i = 0; i < expanded_length; i++)
-    	writeByte(expanded_response_buffer[i]);
-	*/
-	writeByte(0x10);
-  writeByte(0x06);
-	writeByte(0x00);
-	  writeByte(0x39);
-      writeByte(0x1B);
-	writeByte(0x00);
-	writeByte(0x00);
-
-
-  writeByte(response_packet.crc);
-    s_paxStream->flush();
-    
-    setRX();
+  for (int i=0; i<8; i++) {
+    if (packet.byte[i] == 0x7D) {
+      writeByte(0x7D);
+      writeByte(0x7D);
+    } else if (packet.byte[i] == 0x7E) {
+      writeByte(0x7D);
+      writeByte(0x20);
+    } else {
+      writeByte(packet.byte[i]);
+    }
+  }
+  s_paxStream->flush();
+   setRX();
 }
 
-
-
-
-void writeByte(unsigned char data)
+void sendData (uint16_t id, int32_t val)
 {
-	//if (s_paxStream == (Stream*)&Serial3) 
-	//	while ( (UCSR3A & (1 << UDRE3)) == 0);
-	s_paxStream->write(data);
-	//s_paxStream->write(0xA5);
+  
+  sendData (0x10, id, (uint32_t) val);
+ 
 }
 
+int count = 0;
 void setup() 
 {
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
-	Serial.begin(9600);
-	Serial3.begin(57600,SERIAL_8N1_RXINV_TXINV);
+	Serial.begin(9600);	
 	hdInit();
 	Serial.println("init");
 }
 void loop() 
 {
+  if(millis()/2000 > count)
+  {
+    count++;
+    digitalWrite(13,LOW);
+  }
 	if(Serial3.available())
 	{
 		digitalWrite(13,HIGH);
@@ -195,6 +160,6 @@ void loop()
 		Serial.print("<unmatched> ");
 		Serial.println(rByte);
 		*/
-		ksrp(0, 0) ;
+		sendData(0x0200, 0x075BCD15);
 	}
 }
