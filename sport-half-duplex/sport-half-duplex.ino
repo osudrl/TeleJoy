@@ -1,22 +1,16 @@
 Stream* s_paxStream;
-
-
-
-
-
-
-
+/*
 const uint8_t sensor_ids[] = {
     0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0x67,
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
-// Value ID mapping
-  const uint8_t value_ids[] = {
-    0, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15
+*/
+   uint8_t value_ids[] = {
+    0, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16
   };
 
-  const uint16_t telemetry_data_buffer[] = {
-    0, 1, 4, 9, 16, 25, 49, 64, 100, 121, 144, 169, 196, 225
+   uint16_t telemetry_data_buffer[] = {
+    15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
   };
 
 union packet {
@@ -133,20 +127,26 @@ void sendData (uint16_t id, int32_t val)
 
 int validity = 0;
 int count = 0;
-int looper = 0;
+int mod = 0;
 void setup() 
 {
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
 	hdInit();
+  //Serial.begin(9600);
 }
 void loop() 
 {
+  
+  if(millis() > 20000)
+    telemetry_data_buffer[8] = millis();
+  
   if(millis()/500 > count)
   {
     count++;
     digitalWrite(13,LOW);
   }
+  
 	if(Serial3.available())
 	{
 		digitalWrite(13,HIGH);
@@ -159,12 +159,12 @@ void loop()
     if(validity != 1)
       return;
     validity = 0;
-    if(rByte==0xA1 &&(millis()/1000) %4 == 0) 
+    
+    if(rByte==0xA1 && (millis()/100) %3>0 )
     {
-      int mod = looper % 14;
-      int inc = millis()/1000;
-      sendData(value_ids[mod],telemetry_data_buffer[mod]+inc);
-      looper++;
+      //value_ids[mod] = 0;
+      sendData(mod,telemetry_data_buffer[mod]);
+      mod = ++mod % 16;
     }
        
     /*
