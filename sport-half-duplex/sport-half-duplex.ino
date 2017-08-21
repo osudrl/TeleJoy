@@ -114,6 +114,7 @@ void sendData (uint16_t id, int32_t val)
 int validity = 0;
 int count = 0;
 int mod = 0;
+bool shouldLoopChanged = false;
 void setup() 
 {
 	pinMode(13, OUTPUT);
@@ -131,6 +132,7 @@ void loop()
     int ia = a - '0';
     telemetry_data_buffer[7] = ia;
     changed[7] = 1;
+    shouldLoopChanged = true;
   }
   
   if(millis()/500 > count)
@@ -154,14 +156,18 @@ void loop()
     
     if(rByte==0xA1)
     {
-      for(int i = 0; i < 18; i++)
+      bool found = false;
+      for(int i = 0; shouldLoopChanged && i < 18; i++)
       {
         if(changed[i])
         {
           mod = i;
+          found = true;
           break;
         }
       }
+      shouldLoopChanged = found;
+
 
       if((millis()/100) %3>0 || changed[mod])
       {
