@@ -5,12 +5,12 @@ const uint8_t sensor_ids[] = {
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 */
-   uint8_t value_ids[] = {
-    0, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16
+   int changed[] = {
+  1, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16,17,18,17,18
   };
 
    uint16_t telemetry_data_buffer[] = {
-    15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0
+    18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1
   };
 
 union packet {
@@ -103,7 +103,7 @@ void sendData (uint8_t type, uint16_t id, int32_t val) {
   packet.uint64  = (uint64_t) type | (uint64_t) id << 8 | (int64_t) val << 24;
   packet.byte[7] = CRC(packet.byte);
   
-  int outIndex;
+  int outIndex = 0;
   
   for (int i=0; i<8; i++) {
     if (packet.byte[i] == 0x7D) {
@@ -176,19 +176,5 @@ void loop()
       mod = ++mod % 16;
     }
        
-    /*
-		if((rByte == 0x98 || rByte == 0xA1))
-    {
-      int num = indd%18;
-      
-      if(num == 16)
-          sendData(0x0011,(millis()/10000) %10);
-      else if(num == 17)
-          sendData(0x0014,(millis()/10000) %10);
-      else
-          sendData(num,(millis()/10000) %10);
-      indd++;
-    }
-    */
 	}
 }
