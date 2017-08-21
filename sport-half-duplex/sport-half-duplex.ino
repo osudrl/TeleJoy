@@ -127,7 +127,10 @@ void loop()
   
   while(Serial.available())
   {
-    Serial.read();
+    char a = Serial.read();
+    int ia = a - '0';
+    telemetry_data_buffer[7] = ia;
+    changed[7] = 1;
   }
   
   if(millis()/500 > count)
@@ -149,11 +152,24 @@ void loop()
       return;
     validity = 0;
     
-    if(rByte==0xA1 && ((millis()/100) %3>0 || changed[mod]))
+    if(rByte==0xA1)
     {
+      for(int i = 0; i < 18; i++)
+      {
+        if(changed[i])
+        {
+          mod = i;
+          break;
+        }
+      }
+
+      if((millis()/100) %3>0 || changed[mod])
+      {
       changed[mod] = 0;
       sendData(mod,telemetry_data_buffer[mod]);
       mod = ++mod % 16;
+        
+      }
     }
        
 	}
