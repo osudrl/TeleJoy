@@ -94,6 +94,7 @@ void writeByte(uint8_t data)
 }
 
 
+uint8_t outBuf[32];
 void sendData (uint8_t type, uint16_t id, int32_t val) {
   flushInputBuffer();
   setTX();
@@ -102,17 +103,25 @@ void sendData (uint8_t type, uint16_t id, int32_t val) {
   packet.uint64  = (uint64_t) type | (uint64_t) id << 8 | (int64_t) val << 24;
   packet.byte[7] = CRC(packet.byte);
   
+  int outIndex;
+  
   for (int i=0; i<8; i++) {
     if (packet.byte[i] == 0x7D) {
-      writeByte(0x7D);
-      writeByte(0x7D);
+      outBuf[outIndex] = (0x7D);
+      outIndex++;
+      outBuf[outIndex] = (0x7D);
+      outIndex++;
     } else if (packet.byte[i] == 0x7E) {
-      writeByte(0x7D);
-      writeByte(0x20);
+      outBuf[outIndex] = (0x7D);
+      outIndex++;
+      outBuf[outIndex] = (0x20);
+      outIndex++;
     } else {
-      writeByte(packet.byte[i]);
+      outBuf[outIndex] = packet.byte[i];
+      outIndex++;
     }
   }
+  s_paxStream->write(outBuf,outIndex);
   s_paxStream->flush();
    setRX();
 }
