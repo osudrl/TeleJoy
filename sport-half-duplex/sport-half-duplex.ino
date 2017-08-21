@@ -119,13 +119,15 @@ void setup()
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
 	hdInit();
-  //Serial.begin(9600);
+  Serial.begin(9600);
 }
 void loop() 
 {
   
-  if(millis() > 20000)
-    telemetry_data_buffer[8] = millis();
+  while(Serial.available())
+  {
+    Serial.read();
+  }
   
   if(millis()/500 > count)
   {
