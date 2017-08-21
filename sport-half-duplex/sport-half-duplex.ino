@@ -31,20 +31,7 @@ uint8_t CRC (uint8_t *packet) {
   }
   return ~crc;
 }
-/*
-uint8_t CRC(uint8_t *packet)
-{
-    uint16_t crc = 0;
 
-    for (size_t i = 0; i < sizeof (response_packet_t); ++i) {
-        crc += ((uint8_t*) packet)[i];
-        crc += crc >> 8;
-        crc &= 0xff;
-    }
-
-    return ~crc;
-}
-*/
 void flushInputBuffer(void)  
 {
   while (s_paxStream->available())
@@ -74,8 +61,6 @@ void hdInit()
     setRX();
 }
 
-
-
 void setTX()
 {
   if (s_paxStream == (Stream*)&Serial3)
@@ -83,14 +68,6 @@ void setTX()
     UART2_C3 |= UART_C3_TXDIR;
          // UCSR3B =  /*(1 << UDRIE3) |*/ (1 << TXEN3);
   }
-}
-
-void writeByte(uint8_t data)
-{
-  //if (s_paxStream == (Stream*)&Serial3) 
-  //  while ( (UCSR3A & (1 << UDRE3)) == 0);
-  s_paxStream->write(data);
-  //s_paxStream->write(0xA5);
 }
 
 
@@ -169,9 +146,9 @@ void loop()
       return;
     validity = 0;
     
-    if(rByte==0xA1 && (millis()/100) %3>0 )
+    if(rByte==0xA1 && ((millis()/100) %3>0 || changed[mod]))
     {
-      //value_ids[mod] = 0;
+      changed[mod] = 0;
       sendData(mod,telemetry_data_buffer[mod]);
       mod = ++mod % 16;
     }
