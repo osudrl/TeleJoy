@@ -120,6 +120,7 @@ void setup()
 	digitalWrite(13,LOW);
 	hdInit();
   Serial.begin(9600);
+  Serial.println("INIT");
 }
 void loop() 
 {
