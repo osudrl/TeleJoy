@@ -5,11 +5,13 @@ const uint8_t sensor_ids[] = {
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 */
-   int changed[] = {
+const int DATA_COUNT = 18;
+
+   int changed[DATA_COUNT] = {
   1, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16,17,18,17,18
   };
 
-   uint16_t telemetry_data_buffer[] = {
+   uint16_t telemetry_data_buffer[DATA_COUNT] = {
     18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1
   };
 
@@ -110,22 +112,9 @@ void sendData (uint16_t id, int32_t val)
  
 }
 
-
-int validity = 0;
-int count = 0;
-int mod = 0;
 bool shouldLoopChanged = false;
-void setup() 
+void tryUsbInput()
 {
-	pinMode(13, OUTPUT);
-	digitalWrite(13,LOW);
-	hdInit();
-  Serial.begin(9600);
-  Serial.println("INIT");
-}
-void loop() 
-{
-  
   while(Serial.available())
   {
     char a = Serial.read();
@@ -134,21 +123,20 @@ void loop()
     changed[7] = 1;
     shouldLoopChanged = true;
   }
-  
-  if(millis()/500 > count)
-  {
-    count++;
-    digitalWrite(13,LOW);
-  }
-  
-	if(Serial3.available())
-	{
-		digitalWrite(13,HIGH);
-		unsigned char rByte = Serial3.read();
-		if(rByte == 0x7e)
+}
+
+int validity = 0;
+int count = 0;
+int mod = 0;
+
+void telemetry()
+{
+  digitalWrite(13,HIGH);
+    unsigned char rByte = Serial3.read();
+    if(rByte == 0x7e)
     {
       validity = 1;
-			return;
+      return;
     }
     if(validity != 1)
       return;
@@ -157,7 +145,7 @@ void loop()
     if(rByte==0xA1)
     {
       bool found = false;
-      for(int i = 0; shouldLoopChanged && i < 18; i++)
+      for(int i = 0; shouldLoopChanged && i < DATA_COUNT; i++)
       {
         if(changed[i])
         {
@@ -173,10 +161,34 @@ void loop()
       {
       changed[mod] = 0;
       sendData(mod,telemetry_data_buffer[mod]);
-      mod = ++mod % 16;
+      mod = ++mod % DATA_COUNT;
         
       }
     }
        
+}
+
+void setup() 
+{
+	pinMode(13, OUTPUT);
+	digitalWrite(13,LOW);
+	hdInit();
+  Serial.begin(9600);
+  Serial.println("INIT");
+}
+void loop() 
+{
+  
+  tryUsbInput();
+  
+  if(millis()/500 > count)
+  {
+    count++;
+    digitalWrite(13,LOW);
+  }
+  
+	if(Serial3.available())
+	{
+    telemetry();
 	}
 }
