@@ -106,7 +106,7 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
     <tr>
       <td>4</td>
       <td>Serial (HEX)</td>
-      <td>PC Serial Port --> Teensy MicroUSB</td>
+      <td>PC USB --> Teensy MicroUSB</td>
       <td>
       	<p>Default Serial:</p>
         <ul>
@@ -130,6 +130,27 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
           <li>tryUsbInput()</li>
         </ul>
       </td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Joystick Axes</td>
+      <td>Teensy MicroUSB --> PC USB</td>
+      <td>SDL Joystick Input</td>
+      <td>Sends Teensy Joystick data based on values in controllerState struct</td>
+      <td>
+      	<p>telejoy.ino</p>
+        <ul>
+          <li>sendJoyOutput()</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Serial (ASCII)</td>
+      <td>Teensy MicroUSB --> PC USB</td>
+      <td>Bytes are ASCII Codes</td>
+      <td>Debug information from the Teensy is sent as ASCII test via USB Serial</td>
+      <td>TODO: WIP</td>
     </tr>
   </tbody>
 </table>
