@@ -86,24 +86,26 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
       </td>
     </tr>
     <tr>
-      <td>col 3 is  4</td>
-      <td>col 3 is 5</td>
-      <td>col 3 is 6</td>
-    </tr>
-    <tr>
-      <td>col 3 is 7</td>
-      <td>col 3 is 8</td>
-      <td>col 3 is 9</td>
-    </tr>
-    <tr>
+      <td>3</td>
+      <td>S. PORT (OUT)</td>
+      <td>Same as above</td>
+      <td>Same as above</td>
       <td>
+        <p>Reply Packet: </p>
         <ul>
-          <li>item1 a</li>
-          <li>item2 b</li>
+          <li>One Header Byte (0x10)</li>
+          <li>Two Value Id Bytes</li>
+          <li>Four T. Data Bytes</li>
+          <li>0x7D and 0x7E must be escaped</li>
         </ul>
       </td>
-      <td>col 3 is c </td>
-      <td>col 3 is d</td>
+      <td>
+      	<p>sport-half-duplex.ino</p>
+        <ul>
+          <li>telemetry()</li>
+          <li>send_data()</li>
+        </ul>
+      </td>
     </tr>
   </tbody>
 </table>
