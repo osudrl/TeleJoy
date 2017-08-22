@@ -24,13 +24,36 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
       <th>#</th>
       <th>Name</th>
       <th>Connections</th>
-      <th>Rules/Flow</th>
+      <th>Rules</th>
+      <th>Flow</th>
       <th>Code Usage</th>
     </tr>
     <tr>
-      <td>col 3 is 1</td>
-      <td>col 3 is 2</td>
-      <td>col 3 is 3 </td>
+      <td>1</td>
+      <td><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS</a></td>
+      <td>XSR White --> Teensy Pin0 (Serial1)</td>
+      <td>
+      	<p>Serial:</p>
+        <ul>
+          <li>Two Stop Bits</li>
+          <li>Even Parity</li>
+          <li>Inverted</li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>Fill a buffer of 25 bytes from Serial1</li>
+          <li>Give the buffer and data struct pointer to sbus_decode_packet</li>
+          <li>XSR Delays 7 or 14 ms between "packets" of 25 bytes</li>
+        </ul>
+      </td>
+      <td>
+      	<p>telejoy.ino:</p>
+        <ul>
+          <li>loop()</li>
+          <li>sbus_decode_packet()</li>
+        </ul>
+      </td>
     </tr>
     <tr>
       <td>col 3 is  4</td>
