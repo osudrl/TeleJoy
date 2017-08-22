@@ -17,211 +17,189 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
 The Friendly Table:
 
 <table>
-  <tbody>
-    <tr>
-      <th>#</th>
-      <th>Name</th>
-      <th>Usage</th>
-      <th>Links</th>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>SBUS</td>
-      <td>Controller data from reciever to teensy</td>
-      <td>
-        <ul>
-          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>2/3</td>
-      <td>S.PORT</td>
-      <td>Request/send numbers to display on the TARANIS</td>
-      <td>
-        <ul>
-          <li><a href="https://github.com/jcheger/arduino-frskysp">Frsky Sp Repo</a></li>
-          <li><a href="https://www.ordinoscope.net/static/frsky-arduino/FrskySP/doc/html/index.html">^ Documentation</a></li>
-          <li><a href="https://trello-attachments.s3.amazonaws.com/5629385076f33320a6f253ab/56707387a82127aa89feb540/b4e91984cfa6e15dbc5a349d540387be/sport-protocol.htm">very bottom - polled sensor ids</a></li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>HEX</td>
-      <td>Set those numbers that will be sent to the screen</td>
-      <td>
-        <ul>
-          <li>TODO</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>Joystick</td>
-      <td>Controller data from the teensy to USB</td>
-      <td>
-        <ul>
-          <li><a href="https://www.pjrc.com/teensy/td_joystick.html">Teensy as Joystick</a></li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>ASCII</td>
-      <td>Debug infromation from the teensy to USB</td>
-      <td>N/A</td>
-    </tr>
-  </tbody>
+	<tbody>
+		<tr>
+			<th>#</th>
+			<th>Name</th>
+			<th>Usage</th>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#sbus-1">SBUS</a></td>
+			<td>Controller data from reciever to teensy</td>
+		</tr>
+		<tr>
+			<td>2/3</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#sport-23">S.PORT</a></td>     
+			<td>Request/send numbers to display on the TARANIS</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4">HEX</a></td>    
+			<td>Set those numbers that will be sent to the screen</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#teensy-as-joystick-5">Joystick</a></td>   
+			<td>Controller data from the teensy to USB</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#serial-debug-information-6">ASCII</a></td>     
+			<td>Debug infromation from the teensy to USB</td>
+		</tr>
+	</tbody>
 </table>
 
 The Technical Table:
 
 <table>
-  <tbody>
-    <tr>
-      <th>#</th>
-      <th>Name</th>
-      <th>Connections</th>
-      <th>Rules</th>
-      <th>Flow</th>
-      <th>Code Usage</th>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>SBUS</td>
-      <td>XSR White --> Teensy Pin0 (Serial1)</td>
-      <td>
-      	<p>Serial:</p>
-        <ul>
-          <li>Two Stop Bits</li>
-          <li>Even Parity</li>
-          <li>Inverted</li>
-          <li>100K Baud</li>
-          <li><a href="https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60">Declaration</a></li>
-        </ul>
-      </td>
-      <td>
-        <ul>
-          <li>Fill a buffer of 25 bytes from Serial1</li>
-          <li>Give the buffer and data struct pointer to sbus_decode_packet</li>
-          <li>XSR Delays 7 or 14 ms between "packets" of 25 bytes</li>
-        </ul>
-      </td>
-      <td>
-      	<p>telejoy.ino:</p>
-        <ul>
-          <li>loop()</li>
-          <li>sbus_decode_packet()</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>S.PORT (IN)</td>
-      <td>XSR Yellow --> Teensy Pin8 (Serial3 TX)</td>
-      <td>
-      	<p>Serial (Half Duplexed):</p>
-        <ul>
-          <li>One Stop Bit</li>
-          <li>No Parity</li>
-          <li>Inverted</li>
-          <li>57600 Baud</li>
-          <li><a href="https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/sport-half-duplex/sport-half-duplex.ino#L57">Declaration</a></li>
-        </ul>
-      </td>
-      <td>
-        <p>Request Packet: </p>
-        <ul>
-          <li>One Header Byte (0x7E)</li>
-          <li>One "Sensor" Byte</li>
-        </ul>
-      </td>
-      <td>
-      	<p>sport-half-duplex.ino</p>
-        <ul>
-          <li>telemetry()</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>S.PORT (OUT)</td>
-      <td>Same as above</td>
-      <td>Same as above</td>
-      <td>
-        <p>Reply Packet: </p>
-        <ul>
-          <li>One Header Byte (0x10)</li>
-          <li>Two* Value Id Bytes</li>
-          <li>Four* T. Data Bytes</li>
-          <li>One Checksum Byte</li>
-          <li>*0x7D and 0x7E must be escaped</li>
-        </ul>
-      </td>
-      <td>
-      	<p>sport-half-duplex.ino</p>
-        <ul>
-          <li>telemetry()</li>
-          <li>send_data()</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>Serial (HEX)</td>
-      <td>PC USB --> Teensy MicroUSB</td>
-      <td>
-      	<p>Default Serial:</p>
-        <ul>
-          <li>One Stop Bit</li>
-          <li>No Parity</li>
-          <li>Not Inverted</li>
-          <li>12M Baud</li>
-        </ul>
-      </td>
-      <td>
-        <p>Packet: </p>
-        <ul>
-          <li>Header Byte (0xFB)</li>
-          <li>Value ID Byte (DEC 0-18)</li>
-          <li>Value Byte (DEC 0-255) </li>
-        </ul>
-      </td>
-      <td>
-      	<p>sport-half-duplex.ino</p>
-        <ul>
-          <li>tryUsbInput()</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>Joystick Axes</td>
-      <td>Teensy MicroUSB --> PC USB</td>
-      <td>SDL Joystick Input</td>
-      <td>Sends Teensy Joystick data based on values in sbus_data_t struct</td>
-      <td>
-      	<p>telejoy.ino</p>
-        <ul>
-          <li>sendJoyOutput()</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>Serial (ASCII)</td>
-      <td>Teensy MicroUSB --> PC USB</td>
-      <td>Bytes are ASCII Codes</td>
-      <td>Debug information from the Teensy is sent as ASCII test via USB Serial</td>
-      <td>TODO: WIP</td>
-    </tr>
-  </tbody>
+	<tbody>
+		<tr>
+			<th>#</th>
+			<th>Name</th>
+			<th>Connections</th>
+			<th>Rules</th>
+			<th>Flow</th>
+			<th>Code Usage</th>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#sbus-1">SBUS</a></td>
+			<td>XSR White --> Teensy Pin0 (Serial1)</td>
+			<td>
+				<p>Serial:</p>
+				<ul>
+					<li>Two Stop Bits</li>
+					<li>Even Parity</li>
+					<li>Inverted</li>
+					<li>100K Baud</li>
+					<li><a href="https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60">Declaration</a></li>
+				</ul>
+			</td>
+			<td>
+				<ul>
+					<li>Fill a buffer of 25 bytes from Serial1</li>
+					<li>Give the buffer and data struct pointer to sbus_decode_packet</li>
+					<li>XSR Delays 7 or 14 ms between "packets" of 25 bytes</li>
+				</ul>
+			</td>
+			<td>
+				<p>telejoy.ino:</p>
+				<ul>
+					<li>loop()</li>
+					<li>sbus_decode_packet()</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#sport-23">S.PORT</a></td>   
+			<td>XSR Yellow --> Teensy Pin8 (Serial3 TX)</td>
+			<td>
+				<p>Serial (Half Duplexed):</p>
+				<ul>
+					<li>One Stop Bit</li>
+					<li>No Parity</li>
+					<li>Inverted</li>
+					<li>57600 Baud</li>
+					<li><a href="https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/sport-half-duplex/sport-half-duplex.ino#L57">Declaration</a></li>
+				</ul>
+			</td>
+			<td>
+				<p>Request Packet: </p>
+				<ul>
+					<li>One Header Byte (0x7E)</li>
+					<li>One "Sensor" Byte</li>
+				</ul>
+			</td>
+			<td>
+				<p>sport-half-duplex.ino</p>
+				<ul>
+					<li>telemetry()</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#sport-23">S.PORT</a></td>   
+			<td>Same as above</td>
+			<td>Same as above</td>
+			<td>
+				<p>Reply Packet: </p>
+				<ul>
+					<li>One Header Byte (0x10)</li>
+					<li>Two* Value Id Bytes</li>
+					<li>Four* T. Data Bytes</li>
+					<li>One Checksum Byte</li>
+					<li>*0x7D and 0x7E must be escaped</li>
+				</ul>
+			</td>
+			<td>
+				<p>sport-half-duplex.ino</p>
+				<ul>
+					<li>telemetry()</li>
+					<li>send_data()</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4">Serial HEX</a></td>   
+			<td>PC USB --> Teensy MicroUSB</td>
+			<td>
+				<p>Default Serial:</p>
+				<ul>
+					<li>One Stop Bit</li>
+					<li>No Parity</li>
+					<li>Not Inverted</li>
+					<li>12M Baud</li>
+				</ul>
+			</td>
+			<td>
+				<p>Packet: </p>
+				<ul>
+					<li>Header Byte (0xFB)</li>
+					<li>Value ID Byte (DEC 0-18)</li>
+					<li>Value Byte (DEC 0-255) </li>
+				</ul>
+			</td>
+			<td>
+				<p>sport-half-duplex.ino</p>
+				<ul>
+					<li>tryUsbInput()</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#teensy-as-joystick-5">Joystick Axes</a></td>   
+			<td>Teensy MicroUSB --> PC USB</td>
+			<td>SDL Joystick Input</td>
+			<td>Sends Teensy Joystick data based on values in sbus_data_t struct</td>
+			<td>
+				<p>telejoy.ino</p>
+				<ul>
+					<li>sendJoyOutput()</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><a href="https://github.com/osudrl/TeleJoy#serial-debug-information-6">Serial (ASCII)</a></td>
+			<td>Teensy MicroUSB --> PC USB</td>
+			<td>Bytes are ASCII Codes</td>
+			<td>Debug information from the Teensy is sent as ASCII test via USB Serial</td>
+			<td>TODO: WIP</td>
+		</tr>
+	</tbody>
 </table>
 
 ### SBUS (1)
 
-Once the 25 byte buffer is decoded by sbus_decode_packet according to [this protocol](https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/), the result is a populated sbus_data_t struct. 
+Be sure to see the above table (under "Rules") for the serial standard that SBUS uses.
+
+Once the 25 byte buffer is decoded by sbus_decode_packet() according to [this protocol](https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/), the result is a populated sbus_data_t struct. 
 
 Although the output channels can be configured within the TARANIS menu, at the time of this writing, the 16 analog channels corrospond to the following features on the controller.
 
@@ -246,7 +224,7 @@ A15 | analog[15] | SH | Right Back **Button** | 2\*
 D0 | digital[0] | N/A | Unused | Digital
 D1 | digital[1] | N/A | Unused | Digital
 FL | frame_lost | N/A | `1` when controller off, otherwise `0` | Digital
-FA | failsafe_active | N/A | `1` few seconds after controller off, otherwise `0` | Digital
+FA | failsafe_active | N/A | Unknown | Digital
 
 States Type | Numerical Outputs
 -- | ---
@@ -370,45 +348,8 @@ Next, compile and run sdl-example.c
 gcc sdl-example.c -lSDL2
 ./a.out
 ```
+
 Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
-
-# Other Miscellaneous Information
-
-## Input from the XSR reciever (sbus_data_t struct)
-
-Although the output channels can be configured within the TARANIS menu, at the time of this writing, the 16 analog channels corrospond to the following features on the controller.
-
-Input | Struct Call | Label | Description | States
---- | --- | --- | --- | ---
-A0 | analog[0] | None | Lstick up/down | Analog
-A1 | analog[1] | None | Lstick left/right | Analog
-A2 | analog[2] | None | Rstick up/down | Analog
-A3 | analog[3] | None | Rstick left/right | Analog
-A4 | analog[4] | S1 | Left Top Knob | Analog
-A5 | analog[5] | S2 | Right Top Knob  | Analog
-A6 | analog[6] | None | Left Side Knob | Analog
-A7 | analog[7] | None | Right Side Knob | Analog
-A8 | analog[8] | SA | Far Left Switch | 3
-A9 | analog[9] | SB | Round Left Switch | 3
-A10 | analog[10] | SC | Round Right Switch | 3
-A11 | analog[11] | SD | Far Right Switch | 3
-A12 | analog[12] | SE | Left Front Switch | 3
-A13 | analog[13] | SF | Left Back Switch | 2
-A14 | analog[14] | SG | Right Front Switch | 3
-A15 | analog[15] | SH | Right Back **Button** | 2\*
-D0 | digital[0] | N/A | Unused | Digital
-D1 | digital[1] | N/A | Unused | Digital
-FL | frame_lost | N/A | `1` when controller off, otherwise `0` | Digital
-FA | failsafe_active | N/A | `1` few seconds after controller off, otherwise `0` | Digital
-
-States Type | Numerical Outputs
--- | ---
-Analog | -820 to 819
-3 | -820, 0, and 819
-2 | -820 and 819
-Digital | 0 and 1
-
->\* For the A15/SH button, a value of 819 represents the "unpressed" state and -820 is the "pressed" state
 
 # Feedback
 
