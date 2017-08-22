@@ -18,6 +18,44 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
 --- | --- | --- | --- | ---
 1 | SBUS | XSR White Wire --> Teensy Pin0 (Serial1) | * there are many rules | telejoy.ino ( loop(), sbus_decode_packet() )
 
+<table>
+  <tbody>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Connections</th>
+      <th>Rules/Flow</th>
+      <th>Code Usage</th>
+    </tr>
+    <tr>
+      <td>col 3 is 1</td>
+      <td>col 3 is 2</td>
+      <td>col 3 is 3 </td>
+    </tr>
+    <tr>
+      <td>col 3 is  4</td>
+      <td>col 3 is 5</td>
+      <td>col 3 is 6</td>
+    </tr>
+    <tr>
+      <td>col 3 is 7</td>
+      <td>col 3 is 8</td>
+      <td>col 3 is 9</td>
+    </tr>
+    <tr>
+      <td>
+        <ul>
+          <li>item1 a</li>
+          <li>item2 b</li>
+        </ul>
+      </td>
+      <td>col 3 is c </td>
+      <td>col 3 is d</td>
+    </tr>
+  </tbody>
+</table>
+
+
 # Setup Guide
 
 To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
