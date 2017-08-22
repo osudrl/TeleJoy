@@ -219,7 +219,7 @@ The Technical Table:
   </tbody>
 </table>
 
-## SBUS (1)
+### SBUS (1)
 
 Once the 25 byte buffer is decoded by sbus_decode_packet according to [this protocol](https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/), the result is a populated sbus_data_t struct. 
 
@@ -257,21 +257,21 @@ Digital | 0 and 1
 
 >\* For the A15/SH button, a value of 819 represents the "unpressed" state and -820 is the "pressed" state
 
-## S.PORT (2/3)
+### S.PORT (2/3)
 
-### Other S.PORT Resources 
+#### Other S.PORT Resources 
 
 * [Frsky Sp Repo](https://github.com/jcheger/arduino-frskysp)
 * [Documentation for above repo](https://www.ordinoscope.net/static/frsky-arduino/FrskySP/doc/html/index.html)
 * [Scroll to the very bottom, lists polled sensor ids in request packet](https://trello-attachments.s3.amazonaws.com/5629385076f33320a6f253ab/56707387a82127aa89feb540/b4e91984cfa6e15dbc5a349d540387be/sport-protocol.htm)
 
-## Setting the Telemetry Data (4)
+### Setting the Telemetry Data (4)
 
-## Teensy as Joystick (5)
+### Teensy as Joystick (5)
 
 [PJRC Joystick info page](https://www.pjrc.com/teensy/td_joystick.html)
 
-## Serial Debug Information (6)
+### Serial Debug Information (6)
 
 
 # Setup Guide
