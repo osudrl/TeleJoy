@@ -28,6 +28,7 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
       <th>Flow</th>
       <th>Code Usage</th>
     </tr>
+
     <tr>
       <td>1</td>
       <td><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS</a></td>
@@ -38,6 +39,8 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
           <li>Two Stop Bits</li>
           <li>Even Parity</li>
           <li>Inverted</li>
+          <li>100K Baud</li>
+          <li> <a href="https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60">"SERIAL_8E1_RXINV"</a> </li>
         </ul>
       </td>
       <td>
@@ -55,6 +58,37 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
         </ul>
       </td>
     </tr>
+
+    <tr>
+      <td>2</td>
+      <td>S. PORT (IN)</td>
+      <td>XSR Yellow --> Teensy Pin8 (Serial3 TX)</td>
+      <td>
+      	<p>Serial (Half Duplexed):</p>
+        <ul>
+          <li>One Stop Bits</li>
+          <li>No Parity</li>
+          <li>Inverted</li>
+          <li>57600 Baud</li>
+          <li> <a href="https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/sport-half-duplex/sport-half-duplex.ino#L57">"SERIAL_8N1_RXINV_TXINV"</a> </li>
+        </ul>
+      </td>
+      <td>
+        <p>Request Packet: </p>
+        <ul>
+          <li>One Header Byte (0x7E)</li>
+          <li>One "Sensor" Byte</li>
+        </ul>
+      </td>
+      <td>
+      	<p>sport-half-duplex.ino</p>
+        <ul>
+          <li>telemetry()</li>
+        </ul>
+      </td>
+    </tr>
+
+
     <tr>
       <td>col 3 is  4</td>
       <td>col 3 is 5</td>
