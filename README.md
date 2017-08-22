@@ -8,7 +8,7 @@ The Teensy 3.2 (left) connected to the XSR reciever (right):
 
 This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
-# The Six Protocols
+# Six Protocols
 
 As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six different infromation exchange protocols used across the four devices in the project.
 
@@ -200,7 +200,7 @@ The Technical Table:
       <td>Joystick Axes</td>
       <td>Teensy MicroUSB --> PC USB</td>
       <td>SDL Joystick Input</td>
-      <td>Sends Teensy Joystick data based on values in controllerState struct</td>
+      <td>Sends Teensy Joystick data based on values in sbus_data_t struct</td>
       <td>
       	<p>telejoy.ino</p>
         <ul>
@@ -218,6 +218,60 @@ The Technical Table:
     </tr>
   </tbody>
 </table>
+
+## SBUS (1)
+
+Once the 25 byte buffer is decoded by sbus_decode_packet according to [this protocol](https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/), the result is a populated sbus_data_t struct. 
+
+Although the output channels can be configured within the TARANIS menu, at the time of this writing, the 16 analog channels corrospond to the following features on the controller.
+
+Input | Struct Call | Label | Description | States
+--- | --- | --- | --- | ---
+A0 | analog[0] | None | Lstick up/down | Analog
+A1 | analog[1] | None | Lstick left/right | Analog
+A2 | analog[2] | None | Rstick up/down | Analog
+A3 | analog[3] | None | Rstick left/right | Analog
+A4 | analog[4] | S1 | Left Top Knob | Analog
+A5 | analog[5] | S2 | Right Top Knob  | Analog
+A6 | analog[6] | None | Left Side Knob | Analog
+A7 | analog[7] | None | Right Side Knob | Analog
+A8 | analog[8] | SA | Far Left Switch | 3
+A9 | analog[9] | SB | Round Left Switch | 3
+A10 | analog[10] | SC | Round Right Switch | 3
+A11 | analog[11] | SD | Far Right Switch | 3
+A12 | analog[12] | SE | Left Front Switch | 3
+A13 | analog[13] | SF | Left Back Switch | 2
+A14 | analog[14] | SG | Right Front Switch | 3
+A15 | analog[15] | SH | Right Back **Button** | 2\*
+D0 | digital[0] | N/A | Unused | Digital
+D1 | digital[1] | N/A | Unused | Digital
+FL | frame_lost | N/A | `1` when controller off, otherwise `0` | Digital
+FA | failsafe_active | N/A | `1` few seconds after controller off, otherwise `0` | Digital
+
+States Type | Numerical Outputs
+-- | ---
+Analog | -820 to 819
+3 | -820, 0, and 819
+2 | -820 and 819
+Digital | 0 and 1
+
+>\* For the A15/SH button, a value of 819 represents the "unpressed" state and -820 is the "pressed" state
+
+## S.PORT (2/3)
+
+### Other S.PORT Resources 
+
+* [Frsky Sp Repo](https://github.com/jcheger/arduino-frskysp)
+* [Documentation for above repo](https://www.ordinoscope.net/static/frsky-arduino/FrskySP/doc/html/index.html)
+* [Scroll to the very bottom, lists polled sensor ids in request packet](https://trello-attachments.s3.amazonaws.com/5629385076f33320a6f253ab/56707387a82127aa89feb540/b4e91984cfa6e15dbc5a349d540387be/sport-protocol.htm)
+
+## Setting the Telemetry Data (4)
+
+## Teensy as Joystick (5)
+
+[PJRC Joystick info page](https://www.pjrc.com/teensy/td_joystick.html)
+
+## Serial Debug Information (6)
 
 
 # Setup Guide
@@ -318,7 +372,7 @@ gcc sdl-example.c -lSDL2
 ```
 Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
 
-# Other Information
+# Other Miscellaneous Information
 
 ## Input from the XSR reciever (sbus_data_t struct)
 
@@ -342,8 +396,8 @@ A12 | analog[12] | SE | Left Front Switch | 3
 A13 | analog[13] | SF | Left Back Switch | 2
 A14 | analog[14] | SG | Right Front Switch | 3
 A15 | analog[15] | SH | Right Back **Button** | 2\*
-D0 | digital[0] | ? | Haven't seen these digital outputs change from `0` | Digital
-D1 | digital[1] | ? | See above | Digital
+D0 | digital[0] | N/A | Unused | Digital
+D1 | digital[1] | N/A | Unused | Digital
 FL | frame_lost | N/A | `1` when controller off, otherwise `0` | Digital
 FA | failsafe_active | N/A | `1` few seconds after controller off, otherwise `0` | Digital
 
@@ -356,6 +410,6 @@ Digital | 0 and 1
 
 >\* For the A15/SH button, a value of 819 represents the "unpressed" state and -820 is the "pressed" state
 
-## Feedback
+# Feedback
 
 Written by [Kevin Kellar](https://github.com/kkevlar) for Oregon State University's [Dynamic Robotics Laboratory](http://mime.oregonstate.edu/research/drl/).  For issues, comments, or suggestions with this guide, contact the developer or open an issue.
