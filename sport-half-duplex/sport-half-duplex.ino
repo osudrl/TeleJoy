@@ -7,13 +7,13 @@ const uint8_t sensor_ids[] = {
 */
 const int DATA_COUNT = 18;
 
-   int changed[DATA_COUNT] = {
+int changed[DATA_COUNT] = {
   1, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16,17,18,17,18
-  };
+};
 
-   uint16_t telemetry_data_buffer[DATA_COUNT] = {
-    18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1
-  };
+uint16_t telemetry_data_buffer[DATA_COUNT] = {
+  18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1
+};
 
 union packet {
   //! byte[8] presentation
@@ -57,10 +57,10 @@ void hdInit()
   Serial3.begin(57600,SERIAL_8N1_RXINV_TXINV);
   s_paxStream = &Serial3;
   
-    UART2_C1 |= UART_C1_LOOPS | UART_C1_RSRC;
+  UART2_C1 |= UART_C1_LOOPS | UART_C1_RSRC;
     //    CORE_PIN8_CONFIG = PORT_PCR_DSE | PORT_PCR_SRE | PORT_PCR_MUX(3) | PORT_PCR_PE | PORT_PCR_PS; // pullup on output pin;
-    
-    setRX();
+
+  setRX();
 }
 
 void setTX()
@@ -102,26 +102,42 @@ void sendData (uint8_t type, uint16_t id, int32_t val) {
   }
   s_paxStream->write(outBuf,outIndex);
   s_paxStream->flush();
-   setRX();
+  setRX();
 }
 
 void sendData (uint16_t id, int32_t val)
 {
-  
+
   sendData (0x10, id, (uint32_t) val);
- 
+
 }
 
-bool shouldLoopChanged = false;
+bool validHeader = false;
+uint8_t indexEditing = -1;
+bool testChangeArray = false;
 void tryUsbInput()
 {
   while(Serial.available())
   {
-    char a = Serial.read();
-    int ia = a - '0';
-    telemetry_data_buffer[7] = ia;
-    changed[7] = 1;
-    shouldLoopChanged = true;
+    uint8_t usbIn = Serial.read();
+    if(usbIn = '\n')
+      continue;
+    if(!validHeader && usbIn == 0xfa)
+    {
+      validHeader = true;
+      indexEditing = -1;
+    }
+    if(validHeader && indexEditing >= 0)
+    {
+      validHeader = false;
+      indexEditing = -1;
+      testChangeArray = true;
+      telemetry_data_buffer[indexEditing] = usbIn;
+    }
+    else if (validHeader)
+    {
+      indexEditing = usbIn;
+    }
   }
 }
 
@@ -132,40 +148,39 @@ int mod = 0;
 void telemetry()
 {
   digitalWrite(13,HIGH);
-    unsigned char rByte = Serial3.read();
-    if(rByte == 0x7e)
+  unsigned char rByte = Serial3.read();
+  if(rByte == 0x7e)
+  {
+    validity = 1;
+    return;
+  }
+  if(validity != 1)
+    return;
+  validity = 0;
+
+  if(rByte==0xA1)
+  {
+    bool found = false;
+    for(int i = 0; testChangeArray && i < DATA_COUNT; i++)
     {
-      validity = 1;
-      return;
-    }
-    if(validity != 1)
-      return;
-    validity = 0;
-    
-    if(rByte==0xA1)
-    {
-      bool found = false;
-      for(int i = 0; shouldLoopChanged && i < DATA_COUNT; i++)
+      if(changed[i])
       {
-        if(changed[i])
-        {
-          mod = i;
-          found = true;
-          break;
-        }
+        mod = i;
+        found = true;
+        break;
       }
-      shouldLoopChanged = found;
+    }
+    testChangeArray = found;
 
 
-      if((millis()/100) %3>0 || changed[mod])
-      {
+    if((millis()/100) %3>0 || changed[mod])
+    {
       changed[mod] = 0;
       sendData(mod,telemetry_data_buffer[mod]);
       mod = ++mod % DATA_COUNT;
-        
-      }
+
     }
-       
+  }
 }
 
 void setup() 
@@ -178,7 +193,7 @@ void setup()
 }
 void loop() 
 {
-  
+
   tryUsbInput();
   
   if(millis()/500 > count)
@@ -187,8 +202,8 @@ void loop()
     digitalWrite(13,LOW);
   }
   
-	if(Serial3.available())
-	{
+  if(Serial3.available())
+  {
     telemetry();
-	}
+  }
 }
