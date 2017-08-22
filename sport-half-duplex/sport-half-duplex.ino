@@ -5,14 +5,14 @@ const uint8_t sensor_ids[] = {
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 */
-const int DATA_COUNT = 16;
+const int DATA_COUNT = 18;
 
 int changed[DATA_COUNT] = {
-   2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16,17,18,17,18
+   0,1,2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16,17,18,17,18
 };
 
 uint16_t telemetry_data_buffer[DATA_COUNT] = {
-  18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3
+  20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3
 };
 
 union packet {
@@ -121,7 +121,7 @@ void tryUsbInput()
   {
     uint8_t usbIn = Serial.read();
 
-    if(1 || millis() < 5000)
+    if(millis() < 5000)
     {
     Serial.println(usbIn,HEX);
     continue;
