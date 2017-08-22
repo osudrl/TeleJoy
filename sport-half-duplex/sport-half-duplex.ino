@@ -113,38 +113,52 @@ void sendData (uint16_t id, int32_t val)
 }
 
 bool validHeader = false;
-uint8_t indexEditing = -1;
+int indexEditing = -1;
 bool testChangeArray = false;
 void tryUsbInput()
 {
   while(Serial.available())
   {
+    //Serial.print("READ ");
     uint8_t usbIn = Serial.read();
+    //Serial.println(usbIn,HEX);
 
-    if(millis() < 5000)
+    
+    if(millis() < 7500)
     {
+      Serial.print("TOO EARLY ");
     Serial.println(usbIn,HEX);
     continue;
     }
-    
-    if(usbIn = '\n')
-      continue;
-    if(!validHeader && usbIn == 0xfa)
+       
+    if(!validHeader && usbIn == 251)
     {
       validHeader = true;
       indexEditing = -1;
+      Serial.println("HEADER SET");
     }
-    if(validHeader && indexEditing >= 0)
+    else if(validHeader && !(indexEditing < 0 || indexEditing > DATA_COUNT))
     {
-      validHeader = false;
-      indexEditing = -1;
+      validHeader = false;      
       testChangeArray = true;
       telemetry_data_buffer[indexEditing] = usbIn;
+      indexEditing = -1;
+      Serial.print("TDATA ");
+      Serial.print(indexEditing);
+      Serial.print(" SET TO ");
+      Serial.println(telemetry_data_buffer[indexEditing]);
     }
     else if (validHeader)
     {
       indexEditing = usbIn;
+      Serial.print("INDEX SET ");
+      Serial.println(indexEditing);
     }
+    else
+    {
+      Serial.println("NO MATCH");
+    }
+    Serial.flush();
   }
 }
 
@@ -195,13 +209,13 @@ void setup()
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
 	hdInit();
-  //Serial.begin(9600);
- // Serial.println("INIT");
+  Serial.begin(9600);
+  Serial.println("INIT");
 }
 void loop() 
 {
 
-  //tryUsbInput();
+  tryUsbInput();
   
   if(millis()/10000 > count)
   {
