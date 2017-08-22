@@ -28,7 +28,6 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
       <th>Flow</th>
       <th>Code Usage</th>
     </tr>
-
     <tr>
       <td>1</td>
       <td><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS</a></td>
@@ -58,7 +57,6 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
         </ul>
       </td>
     </tr>
-
     <tr>
       <td>2</td>
       <td>S. PORT (IN)</td>
@@ -87,7 +85,6 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
         </ul>
       </td>
     </tr>
-
 
     <tr>
       <td>col 3 is  4</td>
