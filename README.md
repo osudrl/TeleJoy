@@ -14,6 +14,71 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
 
 ![the image below](http://i.imgur.com/MqNwuJ3.png)
 
+The Friendly Table:
+
+<table>
+  <tbody>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Usage</th>
+      <th>Links</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>SBUS</td>
+      <td>Controller data from reciever to teensy</td>
+      <td>
+        <ul>
+          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>2 and 3</td>
+      <td>S.PORT</td>
+      <td>Request/send telemetry values from the teensy to the TARANIS screen</td>
+      <td>
+        <ul>
+          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>HEX</td>
+      <td>Set the telemetry data that the teensy will send to the TARANIS screen</td>
+      <td>
+        <ul>
+          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Joystick</td>
+      <td>Controller data from the teensy to USB</td>
+      <td>
+        <ul>
+          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>ASCII</td>
+      <td>Debug infromation from the teensy to USB</td>
+      <td>
+        <ul>
+          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+The Technical Table:
+
 <table>
   <tbody>
     <tr>
@@ -26,7 +91,7 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
     </tr>
     <tr>
       <td>1</td>
-      <td><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS</a></td>
+      <td>SBUS</td>
       <td>XSR White --> Teensy Pin0 (Serial1)</td>
       <td>
       	<p>Serial:</p>
@@ -55,7 +120,7 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
     </tr>
     <tr>
       <td>2</td>
-      <td>S. PORT (IN)</td>
+      <td>S.PORT (IN)</td>
       <td>XSR Yellow --> Teensy Pin8 (Serial3 TX)</td>
       <td>
       	<p>Serial (Half Duplexed):</p>
@@ -83,7 +148,7 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
     </tr>
     <tr>
       <td>3</td>
-      <td>S. PORT (OUT)</td>
+      <td>S.PORT (OUT)</td>
       <td>Same as above</td>
       <td>Same as above</td>
       <td>
