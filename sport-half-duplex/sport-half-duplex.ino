@@ -141,12 +141,12 @@ void tryUsbInput()
     {
       validHeader = false;      
       testChangeArray = true;
-      telemetry_data_buffer[indexEditing] = usbIn;
-      indexEditing = -1;
+      telemetry_data_buffer[indexEditing] = usbIn;      
       Serial.print("TDATA ");
       Serial.print(indexEditing);
       Serial.print(" SET TO ");
       Serial.println(telemetry_data_buffer[indexEditing]);
+      indexEditing = -1;
     }
     else if (validHeader)
     {
