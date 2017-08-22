@@ -14,10 +14,6 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
 
 ![the image below](http://i.imgur.com/MqNwuJ3.png)
 
-#|Name|Connections|Rules/Flow|Status
---- | --- | --- | --- | ---
-1 | SBUS | XSR White Wire --> Teensy Pin0 (Serial1) | * there are many rules | telejoy.ino ( loop(), sbus_decode_packet() )
-
 <table>
   <tbody>
     <tr>
@@ -64,7 +60,7 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
       <td>
       	<p>Serial (Half Duplexed):</p>
         <ul>
-          <li>One Stop Bits</li>
+          <li>One Stop Bit</li>
           <li>No Parity</li>
           <li>Inverted</li>
           <li>57600 Baud</li>
@@ -104,6 +100,34 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
         <ul>
           <li>telemetry()</li>
           <li>send_data()</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Serial (HEX)</td>
+      <td>PC Serial Port --> Teensy MicroUSB</td>
+      <td>
+      	<p>Default Serial:</p>
+        <ul>
+          <li>One Stop Bit</li>
+          <li>No Parity</li>
+          <li>Not Inverted</li>
+          <li>12M Baud</li>
+        </ul>
+      </td>
+      <td>
+        <p>Packet: </p>
+        <ul>
+          <li>Header Byte (0xFB)</li>
+          <li>Value ID Byte (DEC 0-18)</li>
+          <li>Value Byte (DEC 0-255) </li>
+        </ul>
+      </td>
+      <td>
+      	<p>sport-half-duplex.ino</p>
+        <ul>
+          <li>tryUsbInput()</li>
         </ul>
       </td>
     </tr>
