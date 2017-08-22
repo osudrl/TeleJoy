@@ -35,22 +35,24 @@ The Friendly Table:
       </td>
     </tr>
     <tr>
-      <td>2 and 3</td>
+      <td>2/3</td>
       <td>S.PORT</td>
-      <td>Request/send telemetry values from the teensy to the TARANIS screen</td>
+      <td>Request/send numbers to display on the TARANIS</td>
       <td>
         <ul>
-          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
+          <li><a href="https://github.com/jcheger/arduino-frskysp">Frsky Sp Repo</a></li>
+          <li><a href="https://www.ordinoscope.net/static/frsky-arduino/FrskySP/doc/html/index.html">^ Documentation</a></li>
+          <li><a href="https://trello-attachments.s3.amazonaws.com/5629385076f33320a6f253ab/56707387a82127aa89feb540/b4e91984cfa6e15dbc5a349d540387be/sport-protocol.htm">very bottom - polled sensor ids</a></li>
         </ul>
       </td>
     </tr>
     <tr>
       <td>4</td>
       <td>HEX</td>
-      <td>Set the telemetry data that the teensy will send to the TARANIS screen</td>
+      <td>Set those numbers that will be sent to the screen</td>
       <td>
         <ul>
-          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
+          <li>TODO</li>
         </ul>
       </td>
     </tr>
@@ -60,7 +62,7 @@ The Friendly Table:
       <td>Controller data from the teensy to USB</td>
       <td>
         <ul>
-          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
+          <li><a href="https://www.pjrc.com/teensy/td_joystick.html">Teensy as Joystick</a></li>
         </ul>
       </td>
     </tr>
@@ -68,11 +70,7 @@ The Friendly Table:
       <td>6</td>
       <td>ASCII</td>
       <td>Debug infromation from the teensy to USB</td>
-      <td>
-        <ul>
-          <li><a href="https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/">SBUS Protocol</a></li>
-        </ul>
-      </td>
+      <td>N/A</td>
     </tr>
   </tbody>
 </table>
@@ -155,9 +153,10 @@ The Technical Table:
         <p>Reply Packet: </p>
         <ul>
           <li>One Header Byte (0x10)</li>
-          <li>Two Value Id Bytes</li>
-          <li>Four T. Data Bytes</li>
-          <li>0x7D and 0x7E must be escaped</li>
+          <li>Two* Value Id Bytes</li>
+          <li>Four* T. Data Bytes</li>
+          <li>One Checksum Byte</li>
+          <li>*0x7D and 0x7E must be escaped</li>
         </ul>
       </td>
       <td>
