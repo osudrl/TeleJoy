@@ -8,6 +8,16 @@ The Teensy 3.2 (left) connected to the XSR reciever (right):
 
 This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
+# The Six Protocols
+
+As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six different infromation exchange protocols used across the four devices in the project.
+
+![the image below](http://i.imgur.com/MqNwuJ3.png)
+
+#|Name|Connections|Rules/Flow|Status
+--- | --- | --- | --- | ---
+1 | SBUS | XSR White Wire --> Teensy Pin0 (Serial1) | * there are many rules | telejoy.ino ( loop(), sbus_decode_packet() )
+
 # Setup Guide
 
 To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
