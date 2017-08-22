@@ -5,14 +5,14 @@ const uint8_t sensor_ids[] = {
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 */
-const int DATA_COUNT = 18;
+const int DATA_COUNT = 16;
 
 int changed[DATA_COUNT] = {
-  1, 1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16,17,18,17,18
+   2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16,17,18,17,18
 };
 
 uint16_t telemetry_data_buffer[DATA_COUNT] = {
-  18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1
+  18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3
 };
 
 union packet {
@@ -120,6 +120,13 @@ void tryUsbInput()
   while(Serial.available())
   {
     uint8_t usbIn = Serial.read();
+
+    if(1 || millis() < 5000)
+    {
+    Serial.println(usbIn,HEX);
+    continue;
+    }
+    
     if(usbIn = '\n')
       continue;
     if(!validHeader && usbIn == 0xfa)
@@ -158,7 +165,7 @@ void telemetry()
     return;
   validity = 0;
 
-  if(rByte==0xA1)
+  if(rByte==0x83)
   {
     bool found = false;
     for(int i = 0; testChangeArray && i < DATA_COUNT; i++)
@@ -171,7 +178,7 @@ void telemetry()
       }
     }
     testChangeArray = found;
-
+    
 
     if((millis()/100) %3>0 || changed[mod])
     {
@@ -188,15 +195,15 @@ void setup()
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
 	hdInit();
-  Serial.begin(9600);
-  Serial.println("INIT");
+  //Serial.begin(9600);
+ // Serial.println("INIT");
 }
 void loop() 
 {
 
-  tryUsbInput();
+  //tryUsbInput();
   
-  if(millis()/500 > count)
+  if(millis()/10000 > count)
   {
     count++;
     digitalWrite(13,LOW);
