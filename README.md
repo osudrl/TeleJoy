@@ -39,7 +39,7 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
           <li>Even Parity</li>
           <li>Inverted</li>
           <li>100K Baud</li>
-          <li>SERIAL_8E1_RXINV</li>
+          <li><a href="https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60">Declaration</a></li>
         </ul>
       </td>
       <td>
@@ -68,7 +68,7 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
           <li>No Parity</li>
           <li>Inverted</li>
           <li>57600 Baud</li>
-          <li>SERIAL_8N1_RXINV_TXINV</li>
+          <li><a href="https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/sport-half-duplex/sport-half-duplex.ino#L57">Declaration</a></li>
         </ul>
       </td>
       <td>
@@ -85,7 +85,6 @@ As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six 
         </ul>
       </td>
     </tr>
-
     <tr>
       <td>col 3 is  4</td>
       <td>col 3 is 5</td>
