@@ -289,9 +289,9 @@ The first two bytes were sent by the XSR Reciver, and following 8 bytes were sen
 
 ![test3](http://i.imgur.com/ORMPBTY.png)
 
-As shown above, the XSR polled sensor 0x83 with a properly formed request packet, but through testing with the XSR Reciever, it is best to only send a reply packet if a value has changed recently and needs to be updated or it has been awhile since a value has been updated (>10 seconds).
+As shown above, the XSR polled sensor 0x83 with a properly formed request packet, but through testing with the XSR Reciever, it is **best to only send a reply packet** if a **value has changed** recently and needs to be updated **or it has been awhile** since a value has been updated (>10 seconds).
 
-If every value is constantly updated, the XSR firmware assumes that the value is outdated and it starts flashing on the TARANIS screen.
+If an id is "updated" with the same data repetedly, the XSR firmware assumes that the value is outdated and it starts flashing on the TARANIS screen.
 
 #### Teensy responding again 
 
