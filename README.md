@@ -10,11 +10,11 @@ Note that in the above image, the S.PORT line isn't connected to the Teensy, but
 
 This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
-> When [links to code snippets](https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60) from this project's source are included in this documentation, they link to outdated snapshots of the source code.  Do not copy/paste source code from these linked files or try to use the code that is not highlited in yellow by the snippet link.  The highlighted code provides an example or context for some feature that is explained in the documentation.  For the most up-to-date version of the code to work with, see [the master branch](https://github.com/osudrl/TeleJoy/tree/master/).
-
 This readme file includes a [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) down below.
 
 # Six Protocols
+
+> When [links to code snippets](https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60) from this project's source are included in this secion, they link to **outdated snapshots of the source code**.  Do not copy/paste source code from these linked files or try to use the code that is not highlited in yellow by the snippet link.  The **highlighted code provides an example or context** for some feature that is explained in the documentation.  For the most up-to-date version of the code to work with, see [the master branch](https://github.com/osudrl/TeleJoy/tree/master/).
 
 In case you aren't familiar with serial communication, see [SparkFun's Guide](https://learn.sparkfun.com/tutorials/serial-communication);
 
