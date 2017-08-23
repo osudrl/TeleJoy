@@ -163,12 +163,7 @@ The Technical Table:
 			<td>Teensy MicroUSB --> PC USB</td>
 			<td>SDL Joystick Input</td>
 			<td>Sends Teensy Joystick data based on values in sbus_data_t struct</td>
-			<td>
-				<p>telejoy.ino</p>
-				<ul>
-					<li>sendJoyOutput()</li>
-				</ul>
-			</td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>6</td>
