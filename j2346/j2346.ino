@@ -1,28 +1,40 @@
-Stream* s_paxStream;
 /*
 const uint8_t sensor_ids[] = {
     0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0x67,
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 */
-const int DATA_COUNT = 18;
+const int tele_DATA_COUNT = 9;
 
-int changed[DATA_COUNT] = {
-   0,1,2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 15, 16,17,18,17,18
+int tele_changed[tele_DATA_COUNT] = 
+{
+   1,1,1,
+   1,1,1,
+   1,1,1
 };
 
-uint16_t telemetry_data_buffer[DATA_COUNT] = {
-  20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3
+uint16_t tele_ids[tele_DATA_COUNT] = 
+{
+  5,7,8,
+  10,11,12,
+  13,14,15
 };
 
-union packet {
+uint16_t tele_data[tele_DATA_COUNT] =
+{
+  1,4,9,
+  16,25,36,
+  49,64,81
+};
+
+union sport_reply_packet {
   //! byte[8] presentation
   uint8_t byte[8];
   //! uint64 presentation
   uint64_t uint64;
 };
 
-uint8_t CRC (uint8_t *packet) {
+uint8_t sport_CRC (uint8_t *packet) {
   short crc = 0;
   for (int i = 0; i < 8; i++) {
     crc += packet[i]; //0-1FF
@@ -34,53 +46,41 @@ uint8_t CRC (uint8_t *packet) {
   return ~crc;
 }
 
-void flushInputBuffer(void)  
+void sport_flushInputBuffer(void)  
 {
-  while (s_paxStream->available())
-    s_paxStream->read();
+  while (Serial3.available())
+    Serial3.read();
 }
 
-void setRX()
+void sport_setRX()
 {
-  s_paxStream->flush();
-  flushInputBuffer(); 
-
-  if (s_paxStream == (Stream*)&Serial3) 
-  {
-    UART2_C3 &= ~UART_C3_TXDIR;
-    //UCSR3B = ((1 << RXCIE3) | (1 << RXEN3));
-  }
+  Serial3.flush();
+  sport_flushInputBuffer(); 
+  UART2_C3 &= ~UART_C3_TXDIR;
 }
 
-void hdInit()
+void sport_hdInit()
 {
   Serial3.begin(57600,SERIAL_8N1_RXINV_TXINV);
-  s_paxStream = &Serial3;
-  
   UART2_C1 |= UART_C1_LOOPS | UART_C1_RSRC;
-    //    CORE_PIN8_CONFIG = PORT_PCR_DSE | PORT_PCR_SRE | PORT_PCR_MUX(3) | PORT_PCR_PE | PORT_PCR_PS; // pullup on output pin;
-
-  setRX();
+  sport_setRX();
 }
 
-void setTX()
+void sport_setTX()
 {
-  if (s_paxStream == (Stream*)&Serial3)
-  {
-    UART2_C3 |= UART_C3_TXDIR;
-         // UCSR3B =  /*(1 << UDRIE3) |*/ (1 << TXEN3);
-  }
+  UART2_C3 |= UART_C3_TXDIR;
 }
 
 
 uint8_t outBuf[32];
-void sendData (uint8_t type, uint16_t id, int32_t val) {
-  flushInputBuffer();
-  setTX();
-  union packet packet;
 
-  packet.uint64  = (uint64_t) type | (uint64_t) id << 8 | (int64_t) val << 24;
-  packet.byte[7] = CRC(packet.byte);
+void sport_sendData (uint16_t id, int32_t val) {
+  sport_flushInputBuffer();
+  sport_setTX();
+  union sport_reply_packet packet;
+
+  packet.uint64  = (uint64_t) 0x10 | (uint64_t) id << 8 | (int64_t) val << 24;
+  packet.byte[7] = sport_CRC(packet.byte);
   
   int outIndex = 0;
   
@@ -100,22 +100,16 @@ void sendData (uint8_t type, uint16_t id, int32_t val) {
       outIndex++;
     }
   }
-  s_paxStream->write(outBuf,outIndex);
-  s_paxStream->flush();
-  setRX();
+  Serial3.write(outBuf,outIndex);
+  Serial3.flush();
+  sport_setRX();
 }
 
-void sendData (uint16_t id, int32_t val)
-{
+bool usb_validHeader = false;
+int usb_indexEditing = -1;
+bool tele_testChangeArray = false;
 
-  sendData (0x10, id, (uint32_t) val);
-
-}
-
-bool validHeader = false;
-int indexEditing = -1;
-bool testChangeArray = false;
-void tryUsbInput()
+void sport_tryUsbInput()
 {
   while(Serial.available())
   {
@@ -131,28 +125,28 @@ void tryUsbInput()
     continue;
     }
        
-    if(!validHeader && usbIn == 251)
+    if(!usb_validHeader && usbIn == 251)
     {
-      validHeader = true;
-      indexEditing = -1;
+      usb_validHeader = true;
+      usb_indexEditing = -1;
       Serial.println("HEADER SET");
     }
-    else if(validHeader && !(indexEditing < 0 || indexEditing > DATA_COUNT))
+    else if(usb_validHeader && !(usb_indexEditing < 0 || usb_indexEditing > tele_DATA_COUNT))
     {
-      validHeader = false;      
-      testChangeArray = true;
-      telemetry_data_buffer[indexEditing] = usbIn;      
+      usb_validHeader = false;      
+      tele_testChangeArray = true;
+      tele_data[usb_indexEditing] = usbIn;      
       Serial.print("TDATA ");
-      Serial.print(indexEditing);
+      Serial.print(usb_indexEditing);
       Serial.print(" SET TO ");
-      Serial.println(telemetry_data_buffer[indexEditing]);
-      indexEditing = -1;
+      Serial.println(tele_data[usb_indexEditing]);
+      usb_indexEditing = -1;
     }
-    else if (validHeader)
+    else if (usb_validHeader)
     {
-      indexEditing = usbIn;
+      usb_indexEditing = usbIn;
       Serial.print("INDEX SET ");
-      Serial.println(indexEditing);
+      Serial.println(usb_indexEditing);
     }
     else
     {
@@ -162,43 +156,43 @@ void tryUsbInput()
   }
 }
 
-int validity = 0;
-int count = 0;
-int mod = 0;
+int tele_validity = 0;
+int tele_count = 0;
+int tele_mod = 0;
 
-void telemetry()
+void sport_telemetry()
 {
   digitalWrite(13,HIGH);
   unsigned char rByte = Serial3.read();
   if(rByte == 0x7e)
   {
-    validity = 1;
+    tele_validity = 1;
     return;
   }
-  if(validity != 1)
+  if(tele_validity != 1)
     return;
-  validity = 0;
+  tele_validity = 0;
 
   if(rByte==0x83)
   {
     bool found = false;
-    for(int i = 0; testChangeArray && i < DATA_COUNT; i++)
+    for(int i = 0; tele_testChangeArray && i < tele_DATA_COUNT; i++)
     {
-      if(changed[i])
+      if(tele_changed[i])
       {
-        mod = i;
+        tele_mod = i;
         found = true;
         break;
       }
     }
-    testChangeArray = found;
+    tele_testChangeArray = found;
     
 
-    if((millis()/100) %3>0 || changed[mod])
+    if((millis()/100) %3>0 || tele_changed[tele_mod])
     {
-      changed[mod] = 0;
-      sendData(mod,telemetry_data_buffer[mod]);
-      mod = ++mod % DATA_COUNT;
+      tele_changed[tele_mod] = 0;
+      sport_sendData(tele_ids[tele_mod],tele_data[tele_mod]);
+      tele_mod = ++tele_mod % tele_DATA_COUNT;
 
     }
   }
@@ -208,23 +202,23 @@ void setup()
 {
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
-	hdInit();
+	sport_hdInit();
   Serial.begin(9600);
   Serial.println("INIT");
 }
 void loop() 
 {
 
-  tryUsbInput();
+  sport_tryUsbInput();
   
-  if(millis()/10000 > count)
+  if(millis()/10000 > tele_count)
   {
-    count++;
+    tele_count++;
     digitalWrite(13,LOW);
   }
   
   if(Serial3.available())
   {
-    telemetry();
+    sport_telemetry();
   }
 }
