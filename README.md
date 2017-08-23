@@ -266,8 +266,9 @@ The following images are snippets from a logic analyser reading the voltage on t
 A request packet where the XSR reciever requests data from sensor 0x22 by first sending a valid header (0x7E) and then the sensor id in question (0x22).  The current code is programmed to [only respond to sensor (0x83)](https://github.com/osudrl/TeleJoy/blob/61096cde4488af96ef5abe7e2536eb1a9d7395c9/sport-half-duplex/sport-half-duplex.ino#L182) with data.
 ![0x22 ignored](http://i.imgur.com/uUY5qGx.png)
 
-
+The XSR's request packet requests data from sensor 0x83.  The Teensy is programmed to respond to this sensor, and sends the reply packet on the same line.  In the following image, the first two bytes were sent by the XSR Reciver, and following 8 bytes were sent on the same line by the Teensy.  The reply consists of a header byte (0x10), two value id bytes sent from least to most significant.  The resulting HEX (0x000C) converts to 12 in decimal.  The following four data bytes set the current value to be displayed on the controller screen for the value id (12).  0x00000008 converts to 8 in decimal.  The last bit is a checksum bit that is calculated given the previous seven bytes.  And as shown in the [telemetry data buffer declaration](https://github.com/osudrl/TeleJoy/blob/master/sport-half-duplex/sport-half-duplex.ino#L14-L16) in the test program from where this data was captured, `telemetry_data_buffer[12] = 8`.
 ![0x83 response 1](http://i.imgur.com/ArDqLf8.png)
+
 ![test3](http://i.imgur.com/ORMPBTY.png)
 ![test4](http://i.imgur.com/fCrMjeW.png)
 ![test5](http://i.imgur.com/8WBMcs3.png)
