@@ -23,7 +23,7 @@ uint16_t tele_ids[tele_DATA_COUNT] =
 uint16_t tele_data[tele_DATA_COUNT] =
 {
   1,4,9,
-  16,25,36,
+  16,88,36,
   49,64,81
 };
 
@@ -206,6 +206,7 @@ void sport_setup()
   Serial.begin(9600);
   Serial.println("INIT");
 }
+
 void sport_loop() 
 {
 
@@ -224,21 +225,31 @@ void sport_loop()
 }
 
 
-
-
-typedef struct {
+struct _sbus_data_t
+{
     int16_t analog[16];       /**< Analog channels 1-16 */
     bool    digital[2];       /**< Digital channels 17 and 18 */
     bool    frame_lost;       /**< Radio signal lost? */
     bool    failsafe_active;  /**< Channels set to failsafe values? */
     bool    signal_good;      /**< Receiving valid S-BUS packets? */
-} sbus_data_t;
+};
+typedef struct _sbus_data_t sbus_data_t;
 
 sbus_data_t controllerState;
 uint8_t buffer[25];
 int bytesRead = 0;
+long time = micros();
+int count = 0;
+int joy_min = 3950;
+int joy_max = 62000;
+int in_min = -820;
+int in_max = 819;
+int mitigate_deadzone = 3800; // 0 for very sticky deadzone, 3800 is normally pretty good
+int avg = ((joy_max+joy_min)/2);
 
-void sbus_decode_packet(const uint8_t *packet, sbus_data_t *sbus_data)
+
+
+void sbus_decode_packet(const uint8_t *packet, struct _sbus_data_t* sbus_data)
 {
     // Check data packet validity before proceeding
     if (packet[0] != 0x0f || packet[24] != 0x00) {
@@ -282,46 +293,6 @@ void sbus_decode_packet(const uint8_t *packet, sbus_data_t *sbus_data)
     sbus_data->signal_good     = true;
 }
 
-void sbus_setup() {
-  Serial1.begin(100000, SERIAL_8E1_RXINV);
-  Serial.begin(9600);
-  Serial.println("THIS SHOULD SHOW UP");
-  Joystick.useManualSend(true);
-}
-
-long time = micros();
-int count = 0;
-int joy_min = 3950;
-int joy_max = 62000;
-int in_min = -820;
-int in_max = 819;
-int mitigate_deadzone = 3800; // 0 for very sticky deadzone, 3800 is normally pretty good
-int avg = ((joy_max+joy_min)/2);
-
-void sbus_loop() 
-{
-    
-    if(!Serial1.available())
-     return;
-    int nByte = Serial1.read();
-    if (nByte < 0)
-        return;
-    if(micros() - time > 3000)
-        bytesRead = 0;
-    time = micros();
-    buffer[bytesRead] = nByte;
-
-    if(bytesRead == 24)
-    {
-        sbus_decode_packet(buffer, &controllerState);
-        bytesRead = 0;
-
-        sendJoyOutput();
-    }
-    else
-        bytesRead += 1;   
-}
-
 void sendJoyOutput()
 {
     sbus_data_t* c = &controllerState;
@@ -357,10 +328,41 @@ int mapAnalog(int analog)
         return avg;
 }
 
+void sbus_loop() 
+{
+    
+    if(!Serial1.available())
+     return;
+    int nByte = Serial1.read();
+    if (nByte < 0)
+        return;
+    if(micros() - time > 3000)
+        bytesRead = 0;
+    time = micros();
+    buffer[bytesRead] = nByte;
+
+    if(bytesRead == 24)
+    {
+        sbus_decode_packet(buffer, &controllerState);
+        bytesRead = 0;
+
+        sendJoyOutput();
+    }
+    else
+        bytesRead += 1;   
+}
+
+void sbus_setup() {
+  Serial1.begin(100000, SERIAL_8E1_RXINV);
+  //Serial.begin(9600);
+  //Serial.println("THIS SHOULD SHOW UP");
+  Joystick.useManualSend(true);
+}
+
 void setup()
 {
   sbus_setup();
-  sport_setup();
+ sport_setup();
 }
 
 void loop()
