@@ -263,10 +263,13 @@ Notes:
 
 The following images are snippets from a logic analyser reading the voltage on the SPORT line during normal program execution.  Note that **voltage is pulled low** when both lines are listening or for the stop bits as per the inverted serial protocol.
 
+#### 0x22 ignored
 
 ![0x22 ignored](http://i.imgur.com/uUY5qGx.png)
 
 A request packet where the XSR reciever requests data from sensor 0x22 by first sending a valid header (0x7E) and then the sensor id in question (0x22).  The current code is programmed to [only respond to sensor (0x83)](https://github.com/osudrl/TeleJoy/blob/61096cde4488af96ef5abe7e2536eb1a9d7395c9/sport-half-duplex/sport-half-duplex.ino#L182) with data.
+
+#### Teensy decides to repsond
 
 ![0x83 response 1](http://i.imgur.com/ArDqLf8.png)
 
@@ -282,8 +285,16 @@ The first two bytes were sent by the XSR Reciver, and following 8 bytes were sen
   * The last bit is a checksum bit that is calculated given the previous seven bytes.  
 4. As shown in the [telemetry data buffer declaration](https://github.com/osudrl/TeleJoy/blob/master/sport-half-duplex/sport-half-duplex.ino#L14-L16) in the test program from where this data was captured, `telemetry_data_buffer[12] = 8`.
 
+#### Teensy ignoring an 0x83 poll
+
 ![test3](http://i.imgur.com/ORMPBTY.png)
+
+#### Teensy responding again 
+
 ![test4](http://i.imgur.com/fCrMjeW.png)
+
+#### 0xE4 ignored 
+
 ![test5](http://i.imgur.com/8WBMcs3.png)
 
 #### More on the SPORT Protocol
