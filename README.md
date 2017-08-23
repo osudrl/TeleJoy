@@ -10,6 +10,8 @@ This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
 # Six Protocols
 
+In case you aren't familiar with serial communication, see [SparkFun's Guide](https://learn.sparkfun.com/tutorials/serial-communication);
+
 As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six different infromation exchange protocols used across the four devices in the project.
 
 ![the image below](http://i.imgur.com/MqNwuJ3.png)
@@ -237,8 +239,30 @@ Digital | 0 and 1
 
 ### S.PORT (2/3)
 
-#### Other S.PORT Resources 
+The SPORT protocol uses a single line which is half duplexed, meaning that both devices use the line to both recieve and transmit.  
+Both devices default to "listening" so that when a message does come in, it can be properly recieved.
 
+To achive this, the Teensy's Serial3 UART is set up to work with this half-duplexed communication.  
+The single communication line is soldered to the Teensy's pin8, which is the TX pin of the Serial3 UART.  
+There is some register bit-shifting that allows the Teensy to default to "listening" on the pin, switch into TX mode to write data, and switch back to RX mode.  
+See the hdInit() setRX() and setTX() that are (as of now) in the sport-half-duplex.ino sketch.
+The half-duplex bit-shifting code came from [KurtE's post on PJRC forums](https://forum.pjrc.com/threads/29619-Teensy-3-1-Serial-Half-Duplex) where he links his [BioloidSerial repository](https://github.com/KurtE/BioloidSerial) that houses code to set up a half duplexed line in the ax12Serial module.
+
+The flow for the communication on the SPORT line between the reciever and the Teensy is:
+
+1. The reciever sends a 2-byte request packet
+2. The teensy checks that the request packet has a valid header
+3. If valid, the Teensy determines if the sensor (as supplied in the second byte) is availible
+4. The teensy forms and sends a response packet that updates one of the telemetry values with a new value
+
+Notes:
+* It is best to only send a response packet if the value has changed or it has been awhile
+* It is best to ignore most of the request packets from the reciever
+* It may be best to decide to reply to only one sensor id, and reply with all the values for that sensor
+
+TODO make that above section make more sense, include a screenshot of the logic analyser.
+
+#### More on the SPORT Protocol
 * [Frsky Sp Repo](https://github.com/jcheger/arduino-frskysp)
 * [Documentation for above repo](https://www.ordinoscope.net/static/frsky-arduino/FrskySP/doc/html/index.html)
 * [Scroll to the very bottom, lists polled sensor ids in request packet](https://trello-attachments.s3.amazonaws.com/5629385076f33320a6f253ab/56707387a82127aa89feb540/b4e91984cfa6e15dbc5a349d540387be/sport-protocol.htm)
