@@ -261,7 +261,7 @@ Notes:
 * It is best to ignore most of the request packets from the reciever
 * It may be best to decide to reply to only one sensor id, and reply with all the values for that sensor
 
-The following images are snippets from a logic analyser reading the voltage on the SPORT line during normal program execution.  Note that **voltage is pulled low** when both lines are listening or for the stop bits as per the inverted serial protocol.
+The following images are snippets from a logic analyser reading the voltage on the SPORT line during normal program execution.  Note that **voltage is pulled low** when both lines are listening or for the stop bits as per the inverted serial protocol.  Note that they aren't necessesarily in any order.
 
 #### 0x22 ignored
 
@@ -279,23 +279,31 @@ A request packet where the XSR reciever requests data from sensor 0x22 by first 
 The first two bytes were sent by the XSR Reciver, and following 8 bytes were sent on the same line by the Teensy.  
 
 3. The Teensy forms/send the reply packet consisting of:
-  * The reply consists of a header byte (0x10)
+  * One header byte (0x10)
   * Two value id bytes sent from least to most significant.  The resulting HEX (0x000C) converts to 12 in decimal.  
   * The following four data bytes set the current value to be displayed on the controller screen for the value id (12).  0x00000008 converts to 8 in decimal. 
   * The last bit is a checksum bit that is calculated given the previous seven bytes.  
-4. As shown in the [telemetry data buffer declaration](https://github.com/osudrl/TeleJoy/blob/master/sport-half-duplex/sport-half-duplex.ino#L14-L16) in the test program from where this data was captured, `telemetry_data_buffer[12] = 8`.
+4. As shown in the [telemetry data buffer declaration](https://github.com/osudrl/TeleJoy/blob/master/sport-half-duplex/sport-half-duplex.ino#L14-L16) in the test program from where this data was captured, `telemetry_data_buffer[12] = 8`, so the exchange is working as expected.
 
 #### Teensy ignoring an 0x83 poll
 
 ![test3](http://i.imgur.com/ORMPBTY.png)
 
+As shown above, the XSR polled sensor 0x83 with a properly formed request packet, but through testing with the XSR Reciever, it is best to only send a reply packet if a value has changed recently and needs to be updated or it has been awhile since a value has been updated (>10 seconds).
+
+If every value is constantly updated, the XSR firmware assumes that the value is outdated and it starts flashing on the TARANIS screen.
+
 #### Teensy responding again 
 
 ![test4](http://i.imgur.com/fCrMjeW.png)
 
+This time, the Teensy replies to the sensor id 0x83 with the id of `0x000D=13` and value of `0x00000007=7`.  As shown in the test program's [telemetry data buffer declaration](https://github.com/osudrl/TeleJoy/blob/master/sport-half-duplex/sport-half-duplex.ino#L14-L16), `telemetry_data_buffer[13] = 7`, so the exchange continues to work as expected.
+
 #### 0xE4 ignored 
 
 ![test5](http://i.imgur.com/8WBMcs3.png)
+
+For this test program, all sensor ids are ignored except for id 0x83.
 
 #### More on the SPORT Protocol
 * [Frsky Sp Repo](https://github.com/jcheger/arduino-frskysp)
