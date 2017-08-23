@@ -75,7 +75,8 @@ int avg = ((joy_max+joy_min)/2);
 void loop() 
 {
     
-    while (!Serial1.available()){};
+    if(!Serial1.available())
+     return;
     int nByte = Serial1.read();
     if (nByte < 0)
         return;
