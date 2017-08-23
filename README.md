@@ -324,14 +324,21 @@ For this test program, all sensor ids are ignored except for id 0x83.
 
 ## Setting the Telemetry Data (4)
 
+TODO
+
 ## Teensy as Joystick (5)
+
+TODO
 
 [PJRC Joystick info page](https://www.pjrc.com/teensy/td_joystick.html)
 
 ## Serial Debug Information (6)
 
+TODO
 
 # Setup Guide
+
+> **NOTE:** this section was written for an old version of telejoy.ino, and does not implement all of the features described in the previous sections.  TODO: update this section
 
 To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
 
