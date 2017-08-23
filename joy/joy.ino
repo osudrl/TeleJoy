@@ -129,6 +129,8 @@ void sport_sendData (uint16_t id, int32_t val) {
 bool usb_validHeader = false;
 int usb_indexEditing = -1;
 bool tele_testChangeArray = false;
+uint8_t usb_leastSigByte = 0;
+bool usb_lsbSet = false;
 
 void sport_tryUsbInput()
 {
@@ -149,19 +151,35 @@ void sport_tryUsbInput()
     if(!usb_validHeader && usbIn == 251)
     {
       usb_validHeader = true;
+      usb_lsbSet = false;
       usb_indexEditing = -1;
       Serial.println("HEADER SET");
     }
     else if(usb_validHeader && !(usb_indexEditing < 0 || usb_indexEditing > tele_DATA_COUNT))
     {
-      usb_validHeader = false;      
-      tele_testChangeArray = true;
-      tele_data[usb_indexEditing] = usbIn;      
-      Serial.print("TDATA ");
-      Serial.print(usb_indexEditing);
-      Serial.print(" SET TO ");
-      Serial.println(tele_data[usb_indexEditing]);
-      usb_indexEditing = -1;
+      if(usb_lsbSet)
+      {
+        uint16_t bigLsb = (((uint16_t) usb_leastSigByte) & 0x00ff);
+        uint16_t bigMsb = (((( uint16_t) usbIn) << 8) & 0xff00);
+        tele_data[usb_indexEditing] = (bigLsb | bigMsb);
+
+        Serial.print("TDATA ");
+        Serial.print(usb_indexEditing);
+        Serial.print(" SET TO ");
+        Serial.println(tele_data[usb_indexEditing]);
+
+        usb_indexEditing = -1;
+        usb_lsbSet = false;
+        usb_validHeader = false;      
+        tele_testChangeArray = true;
+      }
+      else
+      {
+        usb_lsbSet = true;
+        usb_leastSigByte = usbIn;
+        Serial.print("LSB SET TO ");
+        Serial.print(usbIn);
+      }
     }
     else if (usb_validHeader)
     {
@@ -187,6 +205,7 @@ void sport_tryUsbInput()
         Serial.print(" BECOMES GLOBAL INDEX ");
         Serial.println(usb_indexEditing);
       }
+      usb_lsbSet = false;
     }
     else
     {

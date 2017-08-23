@@ -127,7 +127,7 @@ The Technical Table:
 				<ul>
 					<li>One Header Byte (0x10)</li>
 					<li>Two* Value Id Bytes</li>
-					<li><strike>Four*</strike> Two* Data Bytes</li>
+					<li><strike>Four*</strike> <a href="https://github.com/osudrl/TeleJoy#sport-data-format">Two*HEX</a> Data Bytes</li>
 					<li>One Checksum Byte</li>
 					<li>*0x7D and 0x7E must be escaped</li>
 				</ul>
@@ -270,7 +270,9 @@ The first two bytes were sent by the XSR Reciver, and following 8 bytes were sen
   * The last bit is a checksum bit that is calculated given the previous seven bytes.  
 4. As shown in the [telemetry data buffer declaration](https://github.com/osudrl/TeleJoy/blob/master/sport-half-duplex/sport-half-duplex.ino#L14-L16) in the test program from where this data was captured, `telemetry_data_buffer[12] = 8`, so the exchange is working as expected.
 
->Although, as shown above, four data bytes are transmitted, it seems that the controller only displays the two least significant bytes of the four byte number, so it makes the most sense that the two trailing bytes should be 0x00 and 0x00.
+##### SPORT data format
+
+>Although, as shown above, four data bytes are transmitted, it seems that the controller only displays the two least significant bytes as a signed 16 bit integer.  The two trailing bytes should be 0x00 and 0x00.
 
 #### Teensy ignoring an 0x83 poll
 

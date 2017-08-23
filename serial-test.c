@@ -20,13 +20,20 @@ int main()
     }
   }
 
-  for(int i = 0; i <= 8; i++)
-  {
+
     fprintf(output,"%c",251);
-    fprintf(output,"%c",i+1);
-    fprintf(output,"%c",50+i);
+    fprintf(output,"%c",5);
+    fprintf(output,"%c",0xff);
+    fprintf(output,"%c",0xff);
     fflush(output); 
-  }
+
+  // for(int i = 0; i <= 8; i++)
+  // {
+  //   fprintf(output,"%c",251);
+  //   fprintf(output,"%c",i+1);
+  //   fprintf(output,"%c",50+i);
+  //   fflush(output); 
+  // }
     
   fclose(output);
 
