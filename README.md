@@ -263,13 +263,11 @@ Notes:
 
 ### Logic Analyzer Screenshots
 
-<img src="http://i.imgur.com/q0sjXb4.jpg" width="400"> 
-![logic setup](http://i.imgur.com/q0sjXb4.jpg)
+<img src="http://i.imgur.com/q0sjXb4.jpg" width="600"> 
 
 The analyzer probe is clipped to the yellow S.PORT wire.
 
-<img src="http://i.imgur.com/fx9B7tU.jpg" width="400"> 
-![wire clip](http://i.imgur.com/fx9B7tU.jpg) 
+<img src="http://i.imgur.com/fx9B7tU.jpg" width="600"> 
 
 The following screenshots are snippets from the above logic analyzer setup reading the voltage on the SPORT line during normal program execution.  Note that **voltage is pulled low** when both lines are listening or for the stop bits as per the inverted serial protocol.  Note that they aren't necessesarily in any order.
 
