@@ -1,0 +1,1 @@
+Run this sketch to test that the extreme joystick has been properly setup.  Should see >16 analog channels floating sort of randomly because it is reading the analog input pins on the Teensy which aren't connected to anything.

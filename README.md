@@ -92,13 +92,7 @@ The Technical Table:
 					<li>XSR Delays 7 or 14 ms between "packets" of 25 bytes</li>
 				</ul>
 			</td>
-			<td>
-				<p>telejoy.ino:</p>
-				<ul>
-					<li>loop()</li>
-					<li>sbus_decode_packet()</li>
-				</ul>
-			</td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>2</td>
@@ -121,12 +115,7 @@ The Technical Table:
 					<li>One "Sensor" Byte</li>
 				</ul>
 			</td>
-			<td>
-				<p>sport-half-duplex.ino</p>
-				<ul>
-					<li>telemetry()</li>
-				</ul>
-			</td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>3</td>
@@ -143,13 +132,7 @@ The Technical Table:
 					<li>*0x7D and 0x7E must be escaped</li>
 				</ul>
 			</td>
-			<td>
-				<p>sport-half-duplex.ino</p>
-				<ul>
-					<li>telemetry()</li>
-					<li>send_data()</li>
-				</ul>
-			</td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>4</td>
@@ -172,12 +155,7 @@ The Technical Table:
 					<li>Value Byte (DEC 0-255) </li>
 				</ul>
 			</td>
-			<td>
-				<p>sport-half-duplex.ino</p>
-				<ul>
-					<li>tryUsbInput()</li>
-				</ul>
-			</td>
+			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>5</td>
@@ -198,7 +176,7 @@ The Technical Table:
 			<td>Teensy MicroUSB --> PC USB</td>
 			<td>Bytes are ASCII Codes</td>
 			<td>Debug information from the Teensy is sent as ASCII test via USB Serial</td>
-			<td>TODO: WIP</td>
+			<td>TODO</td>
 		</tr>
 	</tbody>
 </table>
