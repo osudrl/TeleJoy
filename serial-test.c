@@ -2,29 +2,33 @@
 
 int main()
 {
-    // FILE *input,
-    FILE* output;
+  // FILE *input,
+  FILE* output;
+  //char text[10000];
 
-   //char text[10000];
-   
-    //input = fopen("/dev/ttyACM0", "r");      //open the terminal keyboard
-    output = fopen("/dev/ttyACM0", "w");     //open the terminal screen
-     
-    
-   //  fprintf(output, "%c",0xfa );
-   //  fprintf(output, "%c",'\n' );  // works only with end of line
-   // fprintf(output,"%c",0x09 );
-   //  fprintf(output,"%c",'\n' ); 
-   //  fprintf(output,"%c",0x88 );
-   //  fprintf(output,"%c",'\n' ); 
-   //  fflush(output);
-    printf(output,"Hello\n");
+  //input = fopen("/dev/ttyACM0", "r");      //open the terminal keyboard
 
-  //  fscanf(input, "&#37;s",text); // worked with fputc(i), + putc('\n')
- 
+  output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
+  if ( output == NULL )
+  {
+    printf("ACM1 is NULL, trying ACM0.\n");
+    output = fopen("/dev/ttyACM0", "w");
+    if (output == NULL)
+    {
+      printf("ACM0 is also NULL. Exiting.\n");
+      return 1;
+    }
+  }
+
+  for(int i = 0; i <= 8; i++)
+  {
+    fprintf(output,"%c",251);
+    fprintf(output,"%c",i+1);
+    fprintf(output,"%c",50+i);
+    fflush(output); 
+  }
     
-    fclose(output);
-   // fclose(input);
-     
- return 0;
+  fclose(output);
+
+  return 0;
 }

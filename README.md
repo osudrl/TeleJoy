@@ -127,7 +127,7 @@ The Technical Table:
 				<ul>
 					<li>One Header Byte (0x10)</li>
 					<li>Two* Value Id Bytes</li>
-					<li>Four* T. Data Bytes</li>
+					<li>~Four*~ Two* Data Bytes</li>
 					<li>One Checksum Byte</li>
 					<li>*0x7D and 0x7E must be escaped</li>
 				</ul>
@@ -270,6 +270,8 @@ The first two bytes were sent by the XSR Reciver, and following 8 bytes were sen
   * The last bit is a checksum bit that is calculated given the previous seven bytes.  
 4. As shown in the [telemetry data buffer declaration](https://github.com/osudrl/TeleJoy/blob/master/sport-half-duplex/sport-half-duplex.ino#L14-L16) in the test program from where this data was captured, `telemetry_data_buffer[12] = 8`, so the exchange is working as expected.
 
+>Although, as shown above, four data bytes are transmitted, it seems that the controller only displays the two least significant bytes of the four byte number, so it makes the most sense that the two trailing bytes should be 0x00 and 0x00.
+
 #### Teensy ignoring an 0x83 poll
 
 ![test3](http://i.imgur.com/ORMPBTY.png)
@@ -324,6 +326,8 @@ To get this project running, make sure the hardare is wired as shown above and t
 ## Teensy installation for Arduino IDE
 
 Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere in your home folder.  Next, download and install the Teensyduino add-on from the [PJRC download page](https://www.pjrc.com/teensy/td_download.html) and select the folder where the Arduino IDE was installed.  Install everything that Teensyduino has to offer (default).
+
+TODO- udev rules for teensy setup.
 
 ## Allow for "Extreme Joystick"
 

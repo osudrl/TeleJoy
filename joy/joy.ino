@@ -4,27 +4,48 @@ const uint8_t sensor_ids[] = {
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 */
-const int tele_DATA_COUNT = 9;
+const int tele_DATA_COUNT = 16;
 
 int tele_changed[tele_DATA_COUNT] = 
 {
+  1,1,1,1,1,
+
    1,1,1,
    1,1,1,
-   1,1,1
+   1,1,1,
+   1
+};
+
+int tele_ezmatch[tele_DATA_COUNT] = 
+{
+  0,0,0,0,0,
+
+   1,2,3,
+   4,5,6,
+   7,8,9,
+   0
 };
 
 uint16_t tele_ids[tele_DATA_COUNT] = 
 {
+  0,1,2,3,4,
+
   5,7,8,
   10,11,12,
-  13,14,15
+  13,14,15,
+
+  16
 };
 
 uint16_t tele_data[tele_DATA_COUNT] =
 {
+  9,9,9,9,9,
+
   1,4,9,
-  16,88,36,
-  49,64,81
+  16,25,36,
+  49,64,81,
+
+  9
 };
 
 union sport_reply_packet {
@@ -144,9 +165,28 @@ void sport_tryUsbInput()
     }
     else if (usb_validHeader)
     {
-      usb_indexEditing = usbIn;
-      Serial.print("INDEX SET ");
-      Serial.println(usb_indexEditing);
+      int temp = usbIn;
+      for (int i = 0; i < tele_DATA_COUNT; i++)
+      {
+        if(usbIn == tele_ezmatch[i])
+        {
+          usb_indexEditing = i;
+          break;
+        }
+      }
+      if(usb_indexEditing < 0)
+      {
+        usb_indexEditing = -1;
+        usb_validHeader = false;
+        Serial.println("INVALID EZINDEX");
+      }
+      else
+      {
+        Serial.print("EZ INDEX ");
+        Serial.print(usbIn);
+        Serial.print(" BECOMES GLOBAL INDEX ");
+        Serial.println(usb_indexEditing);
+      }
     }
     else
     {
