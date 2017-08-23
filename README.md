@@ -6,7 +6,11 @@ The Teensy 3.2 (left) connected to the XSR reciever (right):
 
 <img src="http://i.imgur.com/vlCQ2Rf.jpg?1" width="600"> 
 
+Note that in the above image, the S.PORT line isn't connected to the Teensy, but the S.PORT (yellow) wire is connected to Pin8 of the Teensy with the current project setup.
+
 This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
+
+This readme file includes a [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) down below.
 
 # Six Protocols
 
@@ -239,16 +243,11 @@ Digital | 0 and 1
 
 ### S.PORT (2/3)
 
-The SPORT protocol uses a single line which is half duplexed, meaning that both devices use the line to both recieve and transmit.  
-Both devices default to "listening" so that when a message does come in, it can be properly recieved.
+The SPORT protocol uses a single line which is half duplexed, meaning that both devices use the line to both recieve and transmit.  Both devices default to "listening" so that when a message does come in, it can be properly recieved.
 
-To achive this, the Teensy's Serial3 UART is set up to work with this half-duplexed communication.  
-The single communication line is soldered to the Teensy's pin8, which is the TX pin of the Serial3 UART.  
-There is some register bit-shifting that allows the Teensy to default to "listening" on the pin, switch into TX mode to write data, and switch back to RX mode.  
-See the hdInit() setRX() and setTX() that are (as of now) in the sport-half-duplex.ino sketch.
-The half-duplex bit-shifting code came from [KurtE's post on PJRC forums](https://forum.pjrc.com/threads/29619-Teensy-3-1-Serial-Half-Duplex) where he links his [BioloidSerial repository](https://github.com/KurtE/BioloidSerial) that houses code to set up a half duplexed line in the ax12Serial module.
+To achive this, the Teensy's Serial3 UART is set up to work with this half-duplexed communication.  The single communication line is soldered to the Teensy's pin8, which is the TX pin of the Serial3 UART.  There is some register bit-shifting that allows the Teensy to default to "listening" on the pin, switch into TX mode to write data, and switch back to RX mode.  See the hdInit() setRX() and setTX() that are (as of now) in the sport-half-duplex.ino sketch.  The half-duplex bit-shifting code came from [KurtE's post on PJRC forums](https://forum.pjrc.com/threads/29619-Teensy-3-1-Serial-Half-Duplex) where he links his [BioloidSerial repository](https://github.com/KurtE/BioloidSerial) that houses code to set up a half duplexed line in the ax12Serial module.
 
-The flow for the communication on the SPORT line between the reciever and the Teensy is:
+The flow for the communication on the SPORT line between the reciever and the Teensy:
 
 1. The reciever sends a 2-byte request packet
 2. The teensy checks that the request packet has a valid header
@@ -261,6 +260,12 @@ Notes:
 * It may be best to decide to reply to only one sensor id, and reply with all the values for that sensor
 
 TODO make that above section make more sense, include a screenshot of the logic analyser.
+
+![test1](http://i.imgur.com/uUY5qGx.png)
+![test2](http://i.imgur.com/ArDqLf8.png)
+![test3](http://i.imgur.com/ORMPBTY.png)
+![test4](http://i.imgur.com/fCrMjeW.png)
+![test5](http://i.imgur.com/8WBMcs3.png)
 
 #### More on the SPORT Protocol
 * [Frsky Sp Repo](https://github.com/jcheger/arduino-frskysp)
