@@ -317,10 +317,10 @@ This time, the Teensy replies to the sensor id 0x83 with the id of `0x000D=13` a
 
 For this test program, all sensor ids are ignored except for id 0x83.
 
-#### More on the SPORT Protocol
+### Helpful links on the SPORT Protocol
 * [Frsky Sp Repo](https://github.com/jcheger/arduino-frskysp)
 * [Documentation for above repo](https://www.ordinoscope.net/static/frsky-arduino/FrskySP/doc/html/index.html)
-* [Scroll to the very bottom, lists polled sensor ids in request packet](https://trello-attachments.s3.amazonaws.com/5629385076f33320a6f253ab/56707387a82127aa89feb540/b4e91984cfa6e15dbc5a349d540387be/sport-protocol.htm)
+* [Scroll to the **very bottom**, lists polled sensor ids in request packet](https://trello-attachments.s3.amazonaws.com/5629385076f33320a6f253ab/56707387a82127aa89feb540/b4e91984cfa6e15dbc5a349d540387be/sport-protocol.htm)
 
 ## Setting the Telemetry Data (4)
 
