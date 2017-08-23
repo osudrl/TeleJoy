@@ -127,7 +127,7 @@ The Technical Table:
 				<ul>
 					<li>One Header Byte (0x10)</li>
 					<li>Two* Value Id Bytes</li>
-					<li>~Four*~ Two* Data Bytes</li>
+					<li><strike>Four*</strike> Two* Data Bytes</li>
 					<li>One Checksum Byte</li>
 					<li>*0x7D and 0x7E must be escaped</li>
 				</ul>
