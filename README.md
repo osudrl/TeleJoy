@@ -10,6 +10,8 @@ Note that in the above image, the S.PORT line isn't connected to the Teensy, but
 
 This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
+> When [links to code snippets](https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60) from this project's source are included in this documentation, they link to outdated snapshots of the source code.  Do not copy/paste source code from these linked files or try to use the code that is not highlited in yellow by the snippet link.  The highlighted code provides an example or context for some feature that is explained in the documentation.  For the most up-to-date version of the code to work with, see [the master branch](https://github.com/osudrl/TeleJoy/tree/master/).
+
 This readme file includes a [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) down below.
 
 # Six Protocols
@@ -259,10 +261,13 @@ Notes:
 * It is best to ignore most of the request packets from the reciever
 * It may be best to decide to reply to only one sensor id, and reply with all the values for that sensor
 
-TODO make that above section make more sense, include a screenshot of the logic analyser.
+The following images are snippets from a logic analyser reading the voltage on the SPORT line during normal program execution.  Note that **voltage is pulled low** when both lines are listening or for the stop bits as per the inverted serial protocol.
 
-![test1](http://i.imgur.com/uUY5qGx.png)
-![test2](http://i.imgur.com/ArDqLf8.png)
+A request packet where the XSR reciever requests data from sensor 0x22 by first sending a valid header (0x7E) and then the sensor id in question (0x22).  The current code is programmed to [only respond to sensor (0x83)](https://github.com/osudrl/TeleJoy/blob/61096cde4488af96ef5abe7e2536eb1a9d7395c9/sport-half-duplex/sport-half-duplex.ino#L182) with data.
+![0x22 ignored](http://i.imgur.com/uUY5qGx.png)
+
+
+![0x83 response 1](http://i.imgur.com/ArDqLf8.png)
 ![test3](http://i.imgur.com/ORMPBTY.png)
 ![test4](http://i.imgur.com/fCrMjeW.png)
 ![test5](http://i.imgur.com/8WBMcs3.png)
