@@ -69,7 +69,6 @@ The Technical Table:
 			<th>Connections</th>
 			<th>Rules</th>
 			<th>Flow</th>
-			<th>Code Usage</th>
 		</tr>
 		<tr>
 			<td>1</td>
@@ -92,7 +91,6 @@ The Technical Table:
 					<li>XSR Delays 7 or 14 ms between "packets" of 25 bytes</li>
 				</ul>
 			</td>
-			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>2</td>
@@ -115,7 +113,6 @@ The Technical Table:
 					<li>One "Sensor" Byte</li>
 				</ul>
 			</td>
-			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>3</td>
@@ -132,7 +129,6 @@ The Technical Table:
 					<li>*0x7D and 0x7E must be escaped</li>
 				</ul>
 			</td>
-			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>4</td>
@@ -155,7 +151,6 @@ The Technical Table:
 					<li>Two Value Bytes</li>
 				</ul>
 			</td>
-			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>5</td>
@@ -163,7 +158,6 @@ The Technical Table:
 			<td>Teensy MicroUSB --> PC USB</td>
 			<td>SDL Joystick Input</td>
 			<td>Sends Teensy Joystick data based on values in sbus_data_t struct</td>
-			<td>TODO</td>
 		</tr>
 		<tr>
 			<td>6</td>
@@ -171,7 +165,6 @@ The Technical Table:
 			<td>Teensy MicroUSB --> PC USB</td>
 			<td>Bytes are ASCII Codes</td>
 			<td>Debug information from the Teensy is sent as ASCII test via USB Serial</td>
-			<td>TODO</td>
 		</tr>
 	</tbody>
 </table>
@@ -180,7 +173,9 @@ The Technical Table:
 
 Be sure to see the above table (under "Rules") for the serial standard that SBUS uses.
 
-Once the 25 byte buffer is decoded by sbus_decode_packet() according to [this protocol](https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/), the result is a populated sbus_data_t struct. 
+First a [25 byte buffer is filled](https://github.com/osudrl/TeleJoy/blob/85d4b24102093b3bf0f52b54fe9007617539fbff/joy/joy.ino#L389-L411) is read from Pin0.
+
+Once the 25 byte buffer is decoded by [sbus_decode_packet()](https://github.com/osudrl/TeleJoy/blob/85d4b24102093b3bf0f52b54fe9007617539fbff/joy/joy.ino#L310-L352) according to [this protocol](https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/), the result is a populated [sbus_data_t struct](https://github.com/osudrl/TeleJoy/blob/85d4b24102093b3bf0f52b54fe9007617539fbff/joy/joy.ino#L294-L302). 
 
 Although the output channels can be configured within the TARANIS menu, at the time of this writing, the 16 analog channels corrospond to the following features on the controller.
 
@@ -301,17 +296,25 @@ For this test program, all sensor ids are ignored except for id 0x83.
 
 ## Setting the Telemetry Data (4)
 
-TODO
+As shown in serial-test.c, it takes four bytes to change the displayed value for a given telemetry id.
+
+* One header byte `0xFB` or `DEC 251`
+* One id byte
+* Two value bytes
+
+At this point in the program, the id byte is matched with elements of the `tele_ezmatch` so that the resulting index that is set corrosponds to the displayed channels on the controller.  With this current setup, passing an id of 2 will edit the value that displays as `UCH2` on the controller, despite `UCH2`'s actual id being 7.
+
+The two value bytes need to transferred from least to most significant, and will being interpreted by the controller as a **signed** 16 bit number.
 
 ## Teensy as Joystick (5)
 
-TODO
+If the proper USB HID is selected in the Usb Type menu in the Teensyduino software when the code is being written onto the Teensy, then the Teensy will show up as a Joystick device.  See the sdl-example.c code for an example on how to interface with the emulated Joystick device using SDL.
 
 [PJRC Joystick info page](https://www.pjrc.com/teensy/td_joystick.html)
 
 ## Serial Debug Information (6)
 
-TODO
+Although the Teensy reads individual bytes of hex from USB serial as input to change the data that is send to the telemetry menu, the debug output over USB serial is in ASCII.  Each byte that is sent should be read as an ASCII character and can be displayed to stdout or ignored based on the needs of the client program.
 
 # Setup Guide
 
