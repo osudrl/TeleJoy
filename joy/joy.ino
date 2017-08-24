@@ -248,29 +248,9 @@ void sport_telemetry()
     return;
   tele_validity = 0;
 
-  int foundIndex = -1;
-  for(int i = 0; tele_testChangeArray && i < tele_DATA_COUNT; i++)
+   if(rByte==SPORT_ONLY_SENSOR_ID)
   {
-      if(tele_changed[i])
-      {
-        foundIndex = i;
-        break;
-      }
-  }
-  tele_testChangeArray = foundIndex >= 0;
-
-  for (int i = 0; foundIndex < 0 && i < tele_DATA_COUNT; i++)
-  {
-    if(rByte==tele_sensorids[i])
-    {
-      foundIndex = i;
-      break;
-    }
-  }
-
-  if(foundIndex >= 0 && rByte==tele_sensorids[foundIndex])
-  {
-    /*
+    
     bool found = false;
     for(int i = 0; tele_testChangeArray && i < tele_DATA_COUNT; i++)
     {
@@ -283,11 +263,11 @@ void sport_telemetry()
     }
     tele_testChangeArray = found;
     
-    */
-    if( (millis()/100) %10>0 || tele_changed[foundIndex])
+    
+    if( (millis()/100) %10>0 || tele_changed[tele_mod])
     {
-      tele_changed[foundIndex] = 0;
-      sport_sendData(tele_ids[foundIndex],tele_data[foundIndex]);
+      tele_changed[tele_mod] = 0;
+      sport_sendData(tele_ids[tele_mod],tele_data[tele_mod]);
     }
   }
 }
