@@ -6,7 +6,7 @@ The Teensy 3.2 (left) connected to the XSR reciever (right):
 
 <img src="http://i.imgur.com/vlCQ2Rf.jpg?1" width="600"> 
 
-Note that in the above image, the S.PORT line isn't connected to the Teensy, but the S.PORT (yellow) wire is connected to Pin8 of the Teensy with the current project setup.
+Note that in the above image, the S.PORT line isn't connected to the Teensy.
 
 This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
@@ -16,7 +16,7 @@ See the proper [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) towa
 
 > When [links to code snippets](https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60) from this project's source are included in this secion, they link to **outdated snapshots of the source code**.  Do not copy/paste source code from these linked files or try to use the code that is not highlited in yellow by the snippet link.  The **highlighted code provides an example or context** for some feature that is explained in the documentation.  For the most up-to-date version of the code to work with, see [the master branch](https://github.com/osudrl/TeleJoy/tree/master/).
 
-In case you aren't familiar with serial communication, see [SparkFun's Guide](https://learn.sparkfun.com/tutorials/serial-communication);
+In case you aren't familiar with serial communication, see [SparkFun's Guide](https://learn.sparkfun.com/tutorials/serial-communication).
 
 As [the image below](http://i.imgur.com/MqNwuJ3.png) illustrates, there are six different infromation exchange protocols used across the four devices in the project.
 
@@ -217,7 +217,7 @@ Digital | 0 and 1
 
 The SPORT protocol uses a single line which is half duplexed, meaning that both devices use the line to both recieve and transmit.  Both devices default to "listening" so that when a message does come in, it can be properly recieved.
 
-To achive this, the Teensy's Serial3 UART is set up to work with this half-duplexed communication.  The single communication line is soldered to the Teensy's pin8, which is the TX pin of the Serial3 UART.  There is some register bit-shifting that allows the Teensy to default to "listening" on the pin, switch into TX mode to write data, and switch back to RX mode.  See the hdInit() setRX() and setTX() that are (as of now) in the sport-half-duplex.ino sketch.  The half-duplex bit-shifting code came from [KurtE's post on PJRC forums](https://forum.pjrc.com/threads/29619-Teensy-3-1-Serial-Half-Duplex) where he links his [BioloidSerial repository](https://github.com/KurtE/BioloidSerial) that houses code to set up a half duplexed line in the ax12Serial module.
+To achive this, the Teensy's Serial3 [UART](https://learn.sparkfun.com/tutorials/serial-communication) is set up to work with this half-duplexed communication.  The single communication line is soldered to the Teensy's pin8, which is the TX pin of the Serial3 UART.  There is some register bit-shifting that allows the Teensy to default to "listening" on the pin, switch into TX mode to write data, and switch back to RX mode.  See the [hdInit()](https://github.com/osudrl/TeleJoy/blob/0a33e0476821aa8a80c84cd690e4cee085026572/joy/joy.ino#L90-L95) [setRX()](https://github.com/osudrl/TeleJoy/blob/0a33e0476821aa8a80c84cd690e4cee085026572/joy/joy.ino#L83-L88) and [setTX()](https://github.com/osudrl/TeleJoy/blob/0a33e0476821aa8a80c84cd690e4cee085026572/joy/joy.ino#L97-L100) from the joy.ino sketch.  The half-duplex bit-shifting code came from [KurtE's post on PJRC forums](https://forum.pjrc.com/threads/29619-Teensy-3-1-Serial-Half-Duplex) where he links his [BioloidSerial repository](https://github.com/KurtE/BioloidSerial) that houses code to set up a half duplexed wire in the [ax12Serial](https://github.com/KurtE/BioloidSerial/blob/ebd235d3ee11d6df56a04cd9f8c8448df6b0c597/ax12Serial.cpp#L33-L231) module.
 
 ### S.PORT protocol flow
 
@@ -229,9 +229,10 @@ The flow for the communication on the SPORT line between the reciever and the Te
 4. The teensy forms and sends a response packet that updates one of the telemetry values with a new value
 
 Notes:
+* The code that implements the above flow is in the sport_telemetry() function im the [joy.ino sketch](https://github.com/osudrl/TeleJoy/blob/master/joy/joy.ino).
 * It is best to only send a response packet if the value has changed or it has been awhile
 * It is best to ignore most of the request packets from the reciever
-* It may be best to decide to reply to only one sensor id, and reply with all the values for that sensor
+* It may be best to decide to reply to only one sensor id, and reply with all of the telemetry values
 
 To illustrate the flow described above, a logic analyzer has been set up as shown below to generate screenshots of what is happening on the S.PORT line as the two devices communicate.
 
@@ -296,7 +297,7 @@ For this test program, all sensor ids are ignored except for id 0x83.
 
 ## Setting the Telemetry Data (4)
 
-As shown in serial-test.c, it takes four bytes to change the displayed value for a given telemetry id.
+As shown in [serial-test.c](https://github.com/osudrl/TeleJoy/blob/0a33e0476821aa8a80c84cd690e4cee085026572/serial-test.c#L24-L27), it takes four bytes to change the displayed value for a given telemetry id.
 
 * One header byte `0xFB` or `DEC 251`
 * One id byte
@@ -318,8 +319,6 @@ Although the Teensy reads individual bytes of hex from USB serial as input to ch
 
 # Setup Guide
 
-> **NOTE:** this section was written for an old version of telejoy.ino, and does not implement all of the features described in the previous sections.  TODO: update this section
-
 To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
 
 1. Teensyduino setup (Teensy for the Arduino IDE)
@@ -332,7 +331,11 @@ To get this project running, make sure the hardare is wired as shown above and t
 
 Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere in your home folder.  Next, download and install the Teensyduino add-on from the [PJRC download page](https://www.pjrc.com/teensy/td_download.html) and select the folder where the Arduino IDE was installed.  Install everything that Teensyduino has to offer (default).
 
-TODO- udev rules for teensy setup.
+### Udev Rules
+
+On Linux, follow the instructions in Step2 on the [download page](https://www.pjrc.com/teensy/td_download.html) to setup proper udev rules for the Teensy.
+
+Alternatively, run `bash rulesetup.sh` in the repository directory to have a shell script do the process described in the PJRC page's "Step2" for you.
 
 ## Allow for "Extreme Joystick"
 
