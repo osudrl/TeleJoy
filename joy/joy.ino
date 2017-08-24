@@ -261,7 +261,7 @@ void sport_telemetry()
     tele_testChangeArray = found;
     
 
-    if( (millis()/100) %10>0 || tele_changed[tele_mod])
+    if( (millis()/100) %2==0 || tele_changed[tele_mod])
     {
       tele_changed[tele_mod] = 0;
       sport_sendData(tele_ids[tele_mod],tele_data[tele_mod]);

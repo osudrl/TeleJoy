@@ -22,7 +22,7 @@ int main()
 
 
     fprintf(output,"%c",251);
-    fprintf(output,"%c",6);
+    fprintf(output,"%c",4);
     fprintf(output,"%c",77);
     fprintf(output,"%c",0x00);
     fflush(output); 
