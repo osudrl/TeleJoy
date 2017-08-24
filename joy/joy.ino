@@ -54,13 +54,13 @@ uint16_t tele_data[tele_DATA_COUNT] =
 {
   9,9,9,9,9,
 
-  9,
+  //9,
 
   1,4,9,
   16,25,36,
   49,64,81,
 
-  //9
+  9
 };
 
 union sport_reply_packet {
@@ -284,7 +284,7 @@ void sport_telemetry()
     tele_testChangeArray = found;
     
     */
-    if( true || tele_changed[foundIndex])
+    if( (millis()/100) %10>0 || tele_changed[foundIndex])
     {
       tele_changed[foundIndex] = 0;
       sport_sendData(tele_ids[foundIndex],tele_data[foundIndex]);
