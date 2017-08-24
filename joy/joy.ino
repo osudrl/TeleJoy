@@ -5,6 +5,13 @@ const uint8_t sensor_ids[] = {
 };
 */
 const int tele_DATA_COUNT = 16;
+const uint8_t SPORT_REQUEST_HEADER = 0x7e;
+const uint8_t SPORT_ONLY_SENSOR_ID = 0x83;
+const int JOY_MIN = 3950;
+const int JOY_MAX = 62000;
+const int IN_MIN = -820;
+const int IN_MAX = 819;
+const int DEADZONE_MITIGATION_CONSTANT = 3800; // 0 for very sticky deadzone, 3800 is normally pretty good
 
 int tele_changed[tele_DATA_COUNT] = 
 {
@@ -223,7 +230,7 @@ void sport_telemetry()
 {
   digitalWrite(13,HIGH);
   unsigned char rByte = Serial3.read();
-  if(rByte == 0x7e)
+  if(rByte == SPORT_REQUEST_HEADER)
   {
     tele_validity = 1;
     return;
@@ -232,7 +239,7 @@ void sport_telemetry()
     return;
   tele_validity = 0;
 
-  if(rByte==0x83)
+  if(rByte==SPORT_ONLY_SENSOR_ID)
   {
     bool found = false;
     for(int i = 0; tele_testChangeArray && i < tele_DATA_COUNT; i++)
@@ -247,7 +254,7 @@ void sport_telemetry()
     tele_testChangeArray = found;
     
 
-    if((millis()/100) %3>0 || tele_changed[tele_mod])
+    if( (millis()/100) %10>0 || tele_changed[tele_mod])
     {
       tele_changed[tele_mod] = 0;
       sport_sendData(tele_ids[tele_mod],tele_data[tele_mod]);
@@ -295,18 +302,10 @@ struct _sbus_data_t
 typedef struct _sbus_data_t sbus_data_t;
 
 sbus_data_t controllerState;
-uint8_t buffer[25];
-int bytesRead = 0;
-long time = micros();
-int count = 0;
-int joy_min = 3950;
-int joy_max = 62000;
-int in_min = -820;
-int in_max = 819;
-int mitigate_deadzone = 3800; // 0 for very sticky deadzone, 3800 is normally pretty good
-int avg = ((joy_max+joy_min)/2);
-
-
+uint8_t sbus_buffer[25];
+int sbus_bytes_read = 0;
+long sbus_micros = micros();
+int joy_avg = ((JOY_MAX+JOY_MIN)/2);
 
 void sbus_decode_packet(const uint8_t *packet, struct _sbus_data_t* sbus_data)
 {
@@ -380,11 +379,11 @@ void sendJoyOutput()
 int mapAnalog(int analog)
 {    
     if(analog < 0)
-        return (int) map(analog,in_min,0,joy_min,avg-mitigate_deadzone);
+        return (int) map(analog,IN_MIN,0,JOY_MIN,joy_avg-DEADZONE_MITIGATION_CONSTANT);
     else if(analog > 0)
-        return (int) map(analog,0,in_max,avg+mitigate_deadzone,joy_max);
+        return (int) map(analog,0,IN_MAX,joy_avg+DEADZONE_MITIGATION_CONSTANT,JOY_MAX);
     else
-        return avg;
+        return joy_avg;
 }
 
 void sbus_loop() 
@@ -395,20 +394,20 @@ void sbus_loop()
     int nByte = Serial1.read();
     if (nByte < 0)
         return;
-    if(micros() - time > 3000)
-        bytesRead = 0;
-    time = micros();
-    buffer[bytesRead] = nByte;
+    if(micros() - sbus_micros > 3000)
+        sbus_bytes_read = 0;
+    sbus_micros = micros();
+    sbus_buffer[sbus_bytes_read] = nByte;
 
-    if(bytesRead == 24)
+    if(sbus_bytes_read == 24)
     {
-        sbus_decode_packet(buffer, &controllerState);
-        bytesRead = 0;
+        sbus_decode_packet(sbus_buffer, &controllerState);
+        sbus_bytes_read = 0;
 
         sendJoyOutput();
     }
     else
-        bytesRead += 1;   
+        sbus_bytes_read += 1;   
 }
 
 void sbus_setup() {
@@ -421,7 +420,7 @@ void sbus_setup() {
 void setup()
 {
   sbus_setup();
- sport_setup();
+  sport_setup();
 }
 
 void loop()

@@ -127,7 +127,7 @@ The Technical Table:
 				<ul>
 					<li>One Header Byte (0x10)</li>
 					<li>Two* Value Id Bytes</li>
-					<li><strike>Four*</strike> <a href="https://github.com/osudrl/TeleJoy#sport-data-format">Two*HEX</a> Data Bytes</li>
+					<li><strike>Four*</strike> <a href="https://github.com/osudrl/TeleJoy#sport-data-format">Two*</a> Data Bytes</li>
 					<li>One Checksum Byte</li>
 					<li>*0x7D and 0x7E must be escaped</li>
 				</ul>
@@ -151,8 +151,8 @@ The Technical Table:
 				<p>Packet: </p>
 				<ul>
 					<li>Header Byte (0xFB)</li>
-					<li>Value ID Byte (DEC 0-18)</li>
-					<li>Value Byte (DEC 0-255) </li>
+					<li>Id Byte</li>
+					<li>Two Value Bytes</li>
 				</ul>
 			</td>
 			<td>TODO</td>
