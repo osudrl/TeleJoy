@@ -10,7 +10,7 @@ Note that in the above image, the S.PORT line isn't connected to the Teensy, but
 
 This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
-This readme file includes a [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) down below.
+See the proper [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) towards the bottom of this readme for information about how to get the program working as intended.
 
 # Six Protocols
 
