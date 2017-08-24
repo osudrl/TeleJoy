@@ -22,9 +22,9 @@ int main()
 
 
     fprintf(output,"%c",251);
-    fprintf(output,"%c",2);
-    fprintf(output,"%c",0xab);
-    fprintf(output,"%c",0x55);
+    fprintf(output,"%c",6);
+    fprintf(output,"%c",77);
+    fprintf(output,"%c",0x00);
     fflush(output); 
 
   // for(int i = 0; i <= 8; i++)

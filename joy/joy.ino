@@ -13,6 +13,12 @@ const int IN_MIN = -820;
 const int IN_MAX = 819;
 const int DEADZONE_MITIGATION_CONSTANT = 3800; // 0 for very sticky deadzone, 3800 is normally pretty good
 
+const uint8_t tele_sensorids[tele_DATA_COUNT] = {
+    0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0x67,
+    0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F,
+    0xD0, 0x71
+};
+
 int tele_changed[tele_DATA_COUNT] = 
 {
   1,1,1,1,1,
