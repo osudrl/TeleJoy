@@ -13,6 +13,12 @@ const int IN_MIN = -820;
 const int IN_MAX = 819;
 const int DEADZONE_MITIGATION_CONSTANT = 3800; // 0 for very sticky deadzone, 3800 is normally pretty good
 
+const uint8_t tele_sensorids[tele_DATA_COUNT] = {
+    0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0x67,
+    0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F,
+    0xD0, 0x71
+};
+
 int tele_changed[tele_DATA_COUNT] = 
 {
   1,1,1,1,1,
@@ -48,11 +54,13 @@ uint16_t tele_data[tele_DATA_COUNT] =
 {
   9,9,9,9,9,
 
+  9,
+
   1,4,9,
   16,25,36,
   49,64,81,
 
-  9
+  //9
 };
 
 union sport_reply_packet {
@@ -169,6 +177,7 @@ void sport_tryUsbInput()
         uint16_t bigLsb = (((uint16_t) usb_leastSigByte) & 0x00ff);
         uint16_t bigMsb = (((( uint16_t) usbIn) << 8) & 0xff00);
         tele_data[usb_indexEditing] = (bigLsb | bigMsb);
+        tele_changed[usb_indexEditing] = 1;
 
         Serial.print("TDATA ");
         Serial.print(usb_indexEditing);
@@ -239,8 +248,29 @@ void sport_telemetry()
     return;
   tele_validity = 0;
 
-  if(rByte==SPORT_ONLY_SENSOR_ID)
+  int foundIndex = -1;
+  for(int i = 0; tele_testChangeArray && i < tele_DATA_COUNT; i++)
   {
+      if(tele_changed[i])
+      {
+        foundIndex = i;
+        break;
+      }
+  }
+  tele_testChangeArray = foundIndex >= 0;
+
+  for (int i = 0; foundIndex < 0 && i < tele_DATA_COUNT; i++)
+  {
+    if(rByte==tele_sensorids[i])
+    {
+      foundIndex = i;
+      break;
+    }
+  }
+
+  if(foundIndex >= 0 && rByte==tele_sensorids[foundIndex])
+  {
+    /*
     bool found = false;
     for(int i = 0; tele_testChangeArray && i < tele_DATA_COUNT; i++)
     {
@@ -253,13 +283,11 @@ void sport_telemetry()
     }
     tele_testChangeArray = found;
     
-
-    if( (millis()/100) %10>0 || tele_changed[tele_mod])
+    */
+    if( true || tele_changed[foundIndex])
     {
-      tele_changed[tele_mod] = 0;
-      sport_sendData(tele_ids[tele_mod],tele_data[tele_mod]);
-      tele_mod = ++tele_mod % tele_DATA_COUNT;
-
+      tele_changed[foundIndex] = 0;
+      sport_sendData(tele_ids[foundIndex],tele_data[foundIndex]);
     }
   }
 }
