@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include "cpTime.h"
 int main()
 {
   // FILE *input,
@@ -21,11 +21,23 @@ int main()
   }
 
 
-    fprintf(output,"%c",251);
-    fprintf(output,"%c",4);
-    fprintf(output,"%c",77);
-    fprintf(output,"%c",0x00);
-    fflush(output); 
+
+  fprintf(output,"%c",0xFE);
+  fprintf(output,"%c",0x88);
+
+  int n = 0;
+  for(int i = 0; i < 20; i++)
+  {
+    n = i*i;
+    fprintf(output,"%c",n);
+    fprintf(output,"%c",0);
+  }
+  
+  fflush(output); 
+
+ 
+
+  
 
   // for(int i = 0; i <= 8; i++)
   // {

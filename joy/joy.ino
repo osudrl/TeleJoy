@@ -4,7 +4,7 @@ const uint8_t sensor_ids[] = {
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 */
-const int tele_DATA_COUNT = 16;
+const int tele_DATA_COUNT = 14;
 const uint8_t SPORT_REQUEST_HEADER = 0x7e;
 const uint8_t SPORT_ONLY_SENSOR_ID = 0x83;
 const int JOY_MIN = 3950;
@@ -15,8 +15,7 @@ const int DEADZONE_MITIGATION_CONSTANT = 3800; // 0 for very sticky deadzone, 38
 
 const uint8_t tele_sensorids[tele_DATA_COUNT] = {
     0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0x67,
-    0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F,
-    0xD0, 0x71
+    0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 
 int tele_changed[tele_DATA_COUNT] = 
@@ -25,40 +24,25 @@ int tele_changed[tele_DATA_COUNT] =
 
    1,1,1,
    1,1,1,
-   1,1,1,
-   1
+   1,1,
 };
 
-int tele_ezmatch[tele_DATA_COUNT] = 
-{
-  0,0,0,0,0,
+uint8_t tele_ids[tele_DATA_COUNT] = {
+    0, 1,  2, 3, 4,
 
-   1,2,3,
-   4,5,6,
-   7,8,9,
-   0
-};
-
-uint16_t tele_ids[tele_DATA_COUNT] = 
-{
-  0,1,2,3,4,
-
-  5,7,8,
-  10,11,12,
-  13,14,15,
-
-  16
+    5, 7, 8,
+    10, 11,12,
+    13, 14,15
 };
 
 uint16_t tele_data[tele_DATA_COUNT] =
 {
-  9,9,9,9,9,
+  77,77,77,77,77,
 
   1,4,9,
   16,25,36,
-  49,64,81,
+  49,64,81
 
-  9
 };
 
 union sport_reply_packet {
@@ -139,95 +123,74 @@ void sport_sendData (uint16_t id, int32_t val) {
   sport_setRX();
 }
 
-bool usb_validHeader = false;
-int usb_indexEditing = -1;
-bool tele_testChangeArray = false;
-uint8_t usb_leastSigByte = 0;
+
+const uint8_t USB_ESCAPE_BYTE = 0xFE;
+const uint8_t USB_HEADER_BYTE = 0x88;
+bool usb_wasEscaped = false;
+int usb_currIndex = -1; 
 bool usb_lsbSet = false;
+uint8_t usb_lsb = 0;
+
+void usb_addSafeByte(uint8_t safe)
+{
+  if(usb_currIndex < 0 || !(usb_currIndex<tele_DATA_COUNT))
+    return;
+
+  if(usb_lsbSet)
+  {
+    uint16_t bigLsb = (((uint16_t) usb_lsb) & 0x00ff);
+    uint16_t bigMsb = (((( uint16_t) safe) << 8) & 0xff00);
+    tele_data[usb_currIndex] = (bigLsb | bigMsb);
+    usb_currIndex++;
+    usb_lsbSet = false;
+  }
+  else
+  {
+    usb_lsb = safe;
+    usb_lsbSet = true;
+  }
+}
 
 void sport_tryUsbInput()
 {
-  while(Serial.available())
+  if(Serial.available())
   {
-    //Serial.print("READ ");
     uint8_t usbIn = Serial.read();
-    //Serial.println(usbIn,HEX);
 
-    
-    if(millis() < 7500)
+    if(millis() < 4000)
     {
       Serial.print("TOO EARLY ");
-    Serial.println(usbIn,HEX);
-    continue;
+      Serial.println(usbIn,HEX);
+      return;
     }
-       
-    if(!usb_validHeader && usbIn == 251)
+
+    if(!usb_wasEscaped && usbIn == USB_ESCAPE_BYTE)
     {
-      usb_validHeader = true;
-      usb_lsbSet = false;
-      usb_indexEditing = -1;
-      Serial.println("HEADER SET");
+      usb_wasEscaped = true;
+      return;
     }
-    else if(usb_validHeader && !(usb_indexEditing < 0 || usb_indexEditing > tele_DATA_COUNT))
+
+    if(usb_wasEscaped)
     {
-      if(usb_lsbSet)
+      usb_wasEscaped = false;
+      if(usbIn == USB_HEADER_BYTE)
       {
-        uint16_t bigLsb = (((uint16_t) usb_leastSigByte) & 0x00ff);
-        uint16_t bigMsb = (((( uint16_t) usbIn) << 8) & 0xff00);
-        tele_data[usb_indexEditing] = (bigLsb | bigMsb);
-        tele_changed[usb_indexEditing] = 1;
-
-        Serial.print("TDATA ");
-        Serial.print(usb_indexEditing);
-        Serial.print(" SET TO ");
-        Serial.println(tele_data[usb_indexEditing]);
-
-        usb_indexEditing = -1;
+        usb_currIndex = 0;
         usb_lsbSet = false;
-        usb_validHeader = false;      
-        tele_testChangeArray = true;
+        return;
       }
-      else
+      if(usbIn == USB_ESCAPE_BYTE)
       {
-        usb_lsbSet = true;
-        usb_leastSigByte = usbIn;
-        Serial.print("LSB SET TO ");
-        Serial.print(usbIn);
+        usb_addSafeByte(usbIn);
+        return;
       }
+      return;
     }
-    else if (usb_validHeader)
-    {
-      int temp = usbIn;
-      for (int i = 0; i < tele_DATA_COUNT; i++)
-      {
-        if(usbIn == tele_ezmatch[i])
-        {
-          usb_indexEditing = i;
-          break;
-        }
-      }
-      if(usb_indexEditing < 0)
-      {
-        usb_indexEditing = -1;
-        usb_validHeader = false;
-        Serial.println("INVALID EZINDEX");
-      }
-      else
-      {
-        Serial.print("EZ INDEX ");
-        Serial.print(usbIn);
-        Serial.print(" BECOMES GLOBAL INDEX ");
-        Serial.println(usb_indexEditing);
-      }
-      usb_lsbSet = false;
-    }
-    else
-    {
-      Serial.println("NO MATCH");
-    }
-    Serial.flush();
+    usb_addSafeByte(usbIn);
   }
 }
+
+
 
 int tele_validity = 0;
 int tele_count = 0;
@@ -249,7 +212,7 @@ void sport_telemetry()
   if(rByte==SPORT_ONLY_SENSOR_ID)
   {
     bool found = false;
-    for(int i = 0; tele_testChangeArray && i < tele_DATA_COUNT; i++)
+    for(int i = 0; false && i < tele_DATA_COUNT; i++)
     {
       if(tele_changed[i])
       {
@@ -258,15 +221,14 @@ void sport_telemetry()
         break;
       }
     }
-    tele_testChangeArray = found;
+   // tele_testChangeArray = found;
     
 
     if( (millis()/100) %2==0 || tele_changed[tele_mod])
     {
       tele_changed[tele_mod] = 0;
       sport_sendData(tele_ids[tele_mod],tele_data[tele_mod]);
-      tele_mod = ++tele_mod % tele_DATA_COUNT;
-
+      tele_mod = (++tele_mod) % tele_DATA_COUNT;
     }
   }
 }
