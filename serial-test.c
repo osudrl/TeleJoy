@@ -1,12 +1,15 @@
 #include <stdio.h>
+#include <stdbool.h>
+#include "cpTime.h"
 
 int main()
 {
-  // FILE *input,
+  FILE* input;
   FILE* output;
-  //char text[10000];
+  char text[10000];
 
-  //input = fopen("/dev/ttyACM0", "r");      //open the terminal keyboard
+
+  input = fopen("/dev/ttyACM1", "r");      //open the terminal keyboard
 
   output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
   if ( output == NULL )
@@ -21,21 +24,54 @@ int main()
   }
 
 
-    fprintf(output,"%c",251);
-    fprintf(output,"%c",4);
+    
+    int count = 0;
+
+  fprintf(output,"%c",251);
+    fprintf(output,"%c",1);
     fprintf(output,"%c",77);
     fprintf(output,"%c",0x00);
     fflush(output); 
 
-  // for(int i = 0; i <= 8; i++)
-  // {
-  //   fprintf(output,"%c",251);
-  //   fprintf(output,"%c",i+1);
-  //   fprintf(output,"%c",50+i);
-  //   fflush(output); 
-  // }
-    
-  fclose(output);
+  //fscanf(input, "&#37;s",text);
+  // fscanf(input, "%s",  text);
+  // fscanf(input, "%s",  text);
+  // fscanf(input, "%s",  text);
+  // fscanf(input, "%s",  text);
+  // fscanf(input, "%s",  text);
+  // fscanf(input, text);
+  // fscanf(input, text);
+  int index = 0;
+  
+  while(true)
+  {
+    char ch = getc (input);
 
+    if(count < (cpMillis())/5000)
+    {
+    fprintf(output,"%c",251);
+    fprintf(output,"%c",count);
+    fprintf(output,"%c",77);
+    fprintf(output,"%c",0x00);
+    fflush(output); 
+    count++;
+    }
+
+    if( ch == EOF)
+      continue;
+    if ( ch != '\n')
+       text[index++] = ch;
+    else 
+    {
+            text[index] = '\0';
+            index = 0;
+
+            printf ( "%s\n", text );
+    }
+  }
+
+
+fclose(output);
+fclose(input);
   return 0;
 }

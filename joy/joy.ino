@@ -192,7 +192,7 @@ void sport_tryUsbInput()
         usb_lsbSet = true;
         usb_leastSigByte = usbIn;
         Serial.print("LSB SET TO ");
-        Serial.print(usbIn);
+        Serial.println(usbIn);
       }
     }
     else if (usb_validHeader)
@@ -223,7 +223,8 @@ void sport_tryUsbInput()
     }
     else
     {
-      Serial.println("NO MATCH");
+      Serial.print("NO MATCH ");
+      Serial.println(usbIn);
     }
     Serial.flush();
   }
