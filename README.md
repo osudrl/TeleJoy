@@ -43,7 +43,7 @@ The Friendly Table:
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><a href="https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4">HEX</a></td>    
+			<td><a href="https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4">TELE-BUS (HEX)</a></td>    
 			<td>Set those numbers that will be sent to the screen</td>
 		</tr>
 		<tr>
@@ -132,23 +132,14 @@ The Technical Table:
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><a href="https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4">Serial HEX</a></td>   
+			<td><a href="https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4">TELE-BUS (HEX)</a></td>   
 			<td>PC USB --> Teensy MicroUSB</td>
-			<td>
-				<p>Default Serial:</p>
-				<ul>
-					<li>One Stop Bit</li>
-					<li>No Parity</li>
-					<li>Not Inverted</li>
-					<li>12M Baud</li>
-				</ul>
-			</td>
+			<td>USB Serial</td>
 			<td>
 				<p>Packet: </p>
 				<ul>
-					<li>Header Byte (0xFB)</li>
-					<li>Id Byte</li>
-					<li>Two Value Bytes</li>
+					<li>Header Bytes (0xFE88)</li>
+					<li>14 int16s conerted to ~28 escaped bytes</li>
 				</ul>
 			</td>
 		</tr>
@@ -297,6 +288,7 @@ For this test program, all sensor ids are ignored except for id 0x83.
 
 ## Setting the Telemetry Data (4)
 
+<strike>
 As shown in [serial-test.c](https://github.com/osudrl/TeleJoy/blob/0a33e0476821aa8a80c84cd690e4cee085026572/serial-test.c#L24-L27), it takes four bytes to change the displayed value for a given telemetry id.
 
 * One header byte `0xFB` or `DEC 251`
@@ -306,6 +298,7 @@ As shown in [serial-test.c](https://github.com/osudrl/TeleJoy/blob/0a33e0476821a
 At this point in the program, the id byte is matched with elements of the `tele_ezmatch` so that the resulting index that is set corrosponds to the displayed channels on the controller.  With this current setup, passing an id of 2 will edit the value that displays as `UCH2` on the controller, despite `UCH2`'s actual id being 7.
 
 The two value bytes need to transferred from least to most significant, and will being interpreted by the controller as a **signed** 16 bit number.
+</strike>
 
 ## Teensy as Joystick (5)
 
