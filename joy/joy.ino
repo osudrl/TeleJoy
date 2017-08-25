@@ -14,20 +14,14 @@ const int JOY_MAX = 62000;
 const int IN_MIN = -820;
 const int IN_MAX = 819;
 const int DEADZONE_MITIGATION_CONSTANT = 3800; // 0 for very sticky deadzone, 3800 is normally pretty good
+const int TELE_ALLOWED_IDLE_TIME = 5000;
 
 const uint8_t tele_sensorids[tele_DATA_COUNT] = {
     0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0x67,
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 
-int tele_changed[tele_DATA_COUNT] = 
-{
-  1,1,1,1,1,
 
-   1,1,1,
-   1,1,1,
-   1,1,
-};
 
 uint8_t tele_ids[tele_DATA_COUNT] = {
     0, 1,  2, 3, 4,
@@ -49,13 +43,21 @@ uint16_t tele_data[tele_DATA_COUNT] =
 
 long long tele_msUpdated[tele_DATA_COUNT] =
 {
-  77,77,77,77,77,
-
-  1,4,9,
-  16,25,36,
-  49,64,81
-
-};
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME,
+  -TELE_ALLOWED_IDLE_TIME
+ };
 
 union sport_reply_packet {
   //! byte[8] presentation
@@ -143,8 +145,8 @@ int usb_currIndex = -1;
 bool usb_lsbSet = false;
 uint8_t usb_lsb = 0;
 uint8_t updateIndiciesBuffer[10000];
-int updateStoreIndex = 0;
-int updateSentIndex = 0;
+uint64_t updateStoreIndex = 0;
+uint64_t updateSentIndex = 0;
 
 void usb_addSafeByte(uint8_t safe)
 {
@@ -166,7 +168,7 @@ void usb_addSafeByte(uint8_t safe)
     if( past != newval)
     {
       tele_data[usb_currIndex] = newval;
-      updateIndiciesBuffer[updateStoreIndex++] = usb_currIndex;
+      updateIndiciesBuffer[(updateStoreIndex++)%10000] = usb_currIndex;
     }
     #ifdef JOY_SEND_DEBUG_ASCII
       Serial.print("INDEX");
@@ -276,33 +278,32 @@ void sport_telemetry()
     }
 */   // tele_testChangeArray = found;
     bool decide = false;
-    /*
+    
     long long currMs = millis();
     for(int i = 0; i < tele_DATA_COUNT; i++)
     {
-      if(currMs - tele_msUpdated[i] > 5000)
+      if(currMs - tele_msUpdated[i] > TELE_ALLOWED_IDLE_TIME)
       {
         tele_mod = i;
         decide = true;
         break;
       }
     }
-    */
     if (!decide && updateStoreIndex > updateSentIndex)
     {
-      tele_mod = updateIndiciesBuffer[updateSentIndex++];
-      Serial.print("Gotten Behind by ");
-      Serial.print(updateStoreIndex- updateSentIndex);
-      Serial.print(" and curr index is ");
-      Serial.println(tele_mod);
+      //Serial.print("Gotten Behind by ");
+      //Serial.print(((uint16_t) updateStoreIndex- updateSentIndex));
+      //Serial.print(" and curr index is ");
+      tele_mod = updateIndiciesBuffer[(updateSentIndex++)%10000];
+      
+      //Serial.println(tele_mod);
       decide = true;
     }
-    if(decide || (millis()/100) %2==0 )
+    if(decide)
     {
-      tele_changed[tele_mod] = 0;
       sport_sendData(tele_ids[tele_mod],tele_data[tele_mod]);
       tele_msUpdated[tele_mod] = millis();
-      tele_mod = (++tele_mod) % tele_DATA_COUNT;
+      //tele_mod = (++tele_mod) % tele_DATA_COUNT;
     }
   }
 }

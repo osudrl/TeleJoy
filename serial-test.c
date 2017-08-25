@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include "cpTime.h"
 #include <pthread.h>
 
@@ -28,9 +29,47 @@ void* serial_read()
   }
 }
 
+int16_t sourceInts[14];
+uint8_t printBuffer[58];
+FILE* output;
+int build_escaped_buffer(int16_t* source, uint8_t* result)
+{
+  int buildIndex = 0;
+  result[buildIndex++] = 0xfe;
+  result[buildIndex++] = 0x88;
+  for(int i = 0; i < 14; i++)
+  {
+    uint8_t lsb = (uint8_t) (source[i] & 0x00ff);
+    uint8_t msb = (uint8_t) ((source[i] & 0xff00) >> 8);
+    if(lsb == 0xfe)
+    {
+      result[buildIndex++] = 0xfe;
+      result[buildIndex++] = 0xfe;
+    }
+    else
+      result[buildIndex++] = lsb;
+
+    if(msb == 0xfe)
+    {
+      result[buildIndex++] = 0xfe;
+      result[buildIndex++] = 0xfe;
+    }
+    else
+      result[buildIndex++] = msb;
+  }
+  return buildIndex;
+}
+
+void sendBuffer(uint8_t* buf, int filled)
+{
+  for(int i = 0; i < filled; i++)
+    fprintf(output,"%c",buf[i]);
+  fflush(output);
+}
+
 void* serial_write()
 {
-  FILE* output;
+  
   output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
   if ( output == NULL )
   {
@@ -43,28 +82,22 @@ void* serial_write()
     }
   }
   cpSleep(2000);
-/*  cpSleep(2000);
-  fprintf(output,"%c",0xfe);
-  fprintf(output,"%c",0x88);
-  fflush(output); 
-*/  
-  while(true  || cpMillis()<60000)
+  while(true)
   {
-    for(int i = 0; i < 20; i++)
+    for(int i = 0; i < 14; i+=1 )
     {
-      if(i == 0)
-      {
-        fprintf(output,"%c",0xfe);
-        fprintf(output,"%c",0x88);
-      }
+      if (i == 7)
+        sourceInts[i] = 1010;
+      else if (i == 9)
+        sourceInts[i] = (cpMillis()+1500)/3000;
+     else if (i == 11)
+        sourceInts[i] = cpMillis()/10000;
       else
-      {
-        fprintf(output,"%c",1+((cpMillis()+(i*1000))/10000));
-        fprintf(output,"%c",0);
-      }
+      sourceInts[i] = ((cpMillis()+(i*100)) / 1000);
     }
-    fflush(output);
-    cpSleep(5);
+    int howMany = build_escaped_buffer(sourceInts,printBuffer);
+    sendBuffer(printBuffer, howMany);
+    cpSleep(15);
   }
   fclose(output);
 }
