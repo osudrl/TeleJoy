@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include "cpTime.h"
 #include <pthread.h>
+#include "joy/jt-constants.h"
 
 void* serial_read()
 {
@@ -29,30 +30,30 @@ void* serial_read()
   }
 }
 
-int16_t sourceInts[14];
-uint8_t printBuffer[58];
+int16_t sourceInts[tele_DATA_COUNT];
+uint8_t printBuffer[tele_MAX_BUF];
 FILE* output;
 int build_escaped_buffer(int16_t* source, uint8_t* result)
 {
   int buildIndex = 0;
-  result[buildIndex++] = 0xfe;
-  result[buildIndex++] = 0x88;
-  for(int i = 0; i < 14; i++)
+  result[buildIndex++] = USB_ESCAPE_BYTE;
+  result[buildIndex++] = USB_HEADER_BYTE;
+  for(int i = 0; i < tele_DATA_COUNT; i++)
   {
     uint8_t lsb = (uint8_t) (source[i] & 0x00ff);
     uint8_t msb = (uint8_t) ((source[i] & 0xff00) >> 8);
-    if(lsb == 0xfe)
+    if(lsb == USB_ESCAPE_BYTE)
     {
-      result[buildIndex++] = 0xfe;
-      result[buildIndex++] = 0xfe;
+      result[buildIndex++] = USB_ESCAPE_BYTE;
+      result[buildIndex++] = USB_ESCAPE_BYTE;
     }
     else
       result[buildIndex++] = lsb;
 
-    if(msb == 0xfe)
+    if(msb == USB_ESCAPE_BYTE)
     {
-      result[buildIndex++] = 0xfe;
-      result[buildIndex++] = 0xfe;
+      result[buildIndex++] = USB_ESCAPE_BYTE;
+      result[buildIndex++] = USB_ESCAPE_BYTE;
     }
     else
       result[buildIndex++] = msb;
@@ -84,7 +85,7 @@ void* serial_write()
   cpSleep(2000);
   while(true)
   {
-    for(int i = 0; i < 14; i+=1 )
+    for(int i = 0; i < tele_DATA_COUNT; i+=1 )
     {
       if (i == 7)
         sourceInts[i] = 1010;

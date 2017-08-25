@@ -6,9 +6,10 @@ const uint8_t sensor_ids[] = {
 */
 //#define JOY_SEND_DEBUG_ASCII
 
-const int tele_DATA_COUNT = 14;
+#include "jt-constants.h"
+
 const uint8_t SPORT_REQUEST_HEADER = 0x7e;
-const uint8_t SPORT_ONLY_SENSOR_ID = 0x83;
+const uint8_t SPORT_ONLY_SENSOR_ID = 0x22;
 const int JOY_MIN = 3950;
 const int JOY_MAX = 62000;
 const int IN_MIN = -820;
@@ -138,8 +139,7 @@ void sport_sendData (uint16_t id, int32_t val) {
 }
 
 
-const uint8_t USB_ESCAPE_BYTE = 0xFE;
-const uint8_t USB_HEADER_BYTE = 0x88;
+
 bool usb_wasEscaped = false;
 int usb_currIndex = -1; 
 bool usb_lsbSet = false;
