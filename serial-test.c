@@ -1,16 +1,37 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "cpTime.h"
+#include <pthread.h>
 
-int main()
+void* serial_read()
 {
   FILE* input;
-  FILE* output;
   char text[10000];
+  input = fopen("/dev/ttyACM1", "r"); 
+  int index = 0;
 
+  while(cpMillis() < 60000)
+  {
+    char ch = getc (input);
 
-  input = fopen("/dev/ttyACM1", "r");      //open the terminal keyboard
+    if( ch == EOF)
+      continue;
+    if ( ch != '\n')
+     text[index++] = ch;
+      else 
+    {
+    text[index] = '\0';
+    index = 0;
 
+   printf ( "%s\n", text );
+    }
+  }
+}
+
+void* serial_write()
+{
+  printf("ahi");
+  FILE* output;
   output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
   if ( output == NULL )
   {
@@ -21,64 +42,34 @@ int main()
       printf("ACM0 is also NULL. Exiting.\n");
       return 1;
     }
-  }    
-
- int count = 0;
-  int index = 0;
-  int n = 0;
-  int plus = 0;
-  long offset = 0;
-  while(true)
-  {
-    char ch = getc (input);
-
-    if(count < (cpMillis()-offset)/400)
-    {
-      if(count == 0)
-        fprintf(output,"%c",0xfe);
-      else if(count == 1)
-        fprintf(output,"%c",0x88);
-      else if (count == 20)
-      {
-        fprintf(output,"%c",0xfe);
-        fprintf(output,"%c",0xfe);
-      }
-      else if(count % 2 == 0)
-      {
-        n = ((count-6)/2) -1;
-        fprintf(output,"%c",n*n+plus);
-        //printf("TESTTT %d\n",n*n);
-      }
-      else
-      {
-        fprintf(output,"%c",0);
-      }
-      fflush(output); 
-      count++;
-      if(count > 60)
-      {
-        offset = cpMillis();
-        count = 0;
-        plus = (cpMillis()/10000);
-        //cpSleep(4000);
-      }
-    }
-
-    if( ch == EOF)
-      continue;
-    if ( ch != '\n')
-       text[index++] = ch;
-    else 
-    {
-            text[index] = '\0';
-            index = 0;
-
-            printf ( "%s\n", text );
-    }
   }
 
+  cpSleep(2000);
+  fprintf(output,"%c",0xfe);
+  fprintf(output,"%c",0x88);
+  fflush(output); 
+  while(cpMillis()<60000)
+  {
+    ;
+  }
+  fclose(output);
+}
 
-fclose(output);
-fclose(input);
-  return 0;
+int main()
+{
+  pthread_t sreader;
+  pthread_t swriter;
+  void*result;
+
+  if (pthread_create(&sreader, NULL, serial_read, NULL) == -1)
+    printf("Can't create thread t0");
+  if (pthread_create(&swriter, NULL, serial_write, NULL) == -1)
+    printf("Can't create thread t1");
+  if (pthread_join(sreader, &result) == -1)
+    printf("Can't join thread t0");
+  if (pthread_join(swriter, &result) == -1)
+    printf("Can't join thread t1");
+
+  printf("About to exit??");
+return 0;
 }
