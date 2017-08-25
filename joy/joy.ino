@@ -1,10 +1,5 @@
-/*
-const uint8_t sensor_ids[] = {
-    0x00, 0xA1, 0x22, 0x83, 0xE4, 0x45, 0x67,
-    0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
-};
-*/
-//#define JOY_SEND_DEBUG_ASCII
+
+//#define JOY_SEND_DEBUG_ASCII //uncomment for some debugging information printed
 
 #include "jt-constants.h"
 
@@ -239,8 +234,6 @@ void sport_tryUsbInput()
       }
       return;
     }
-    //Serial.print("About to deal with: ");
-    //Serial.println(usbIn,HEX);
     usb_addSafeByte(usbIn);
   }
 }
@@ -265,20 +258,7 @@ void sport_telemetry()
   tele_validity = 0;
 
   if(rByte==SPORT_ONLY_SENSOR_ID)
-  {
-/*    bool found = false;
-    for(int i = 0; false && i < tele_DATA_COUNT; i++)
-    {
-      if(tele_changed[i])
-      {
-        tele_mod = i;
-        found = true;
-        break;
-      }
-    }
-*/   // tele_testChangeArray = found;
-    bool decide = false;
-    
+  {    
     long long currMs = millis();
     for(int i = 0; i < tele_DATA_COUNT; i++)
     {
@@ -291,19 +271,23 @@ void sport_telemetry()
     }
     if (!decide && updateStoreIndex > updateSentIndex)
     {
-      //Serial.print("Gotten Behind by ");
-      //Serial.print(((uint16_t) updateStoreIndex- updateSentIndex));
-      //Serial.print(" and curr index is ");
+      #ifdef JOY_SEND_DEBUG_ASCII
+        Serial.print("Gotten Behind by ");
+        Serial.print(((uint16_t) updateStoreIndex- updateSentIndex));
+        Serial.print(" and curr index is ");
+      #endif
+
       tele_mod = updateIndiciesBuffer[(updateSentIndex++)%10000];
-      
-      //Serial.println(tele_mod);
+
+      #ifdef JOY_SEND_DEBUG_ASCII
+        Serial.println(tele_mod);
+      #endif
       decide = true;
     }
     if(decide)
     {
       sport_sendData(tele_ids[tele_mod],tele_data[tele_mod]);
       tele_msUpdated[tele_mod] = millis();
-      //tele_mod = (++tele_mod) % tele_DATA_COUNT;
     }
   }
 }
@@ -314,9 +298,7 @@ void sport_setup()
 	digitalWrite(13,LOW);
 	sport_hdInit();
   Serial.begin(9600);
-  #ifdef JOY_SEND_DEBUG_ASCII
   Serial.println("INIT");
-  #endif
 }
 
 void sport_loop() 
@@ -458,8 +440,6 @@ void sbus_loop()
 
 void sbus_setup() {
   Serial1.begin(100000, SERIAL_8E1_RXINV);
-  //Serial.begin(9600);
-  //Serial.println("THIS SHOULD SHOW UP");
   Joystick.useManualSend(true);
 }
 

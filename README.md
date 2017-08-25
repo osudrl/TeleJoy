@@ -288,6 +288,8 @@ For this test program, all sensor ids are ignored except for id 0x83.
 
 ## Setting the Telemetry Data (4)
 
+TODO update this section.
+
 <strike>
 As shown in [serial-test.c](https://github.com/osudrl/TeleJoy/blob/0a33e0476821aa8a80c84cd690e4cee085026572/serial-test.c#L24-L27), it takes four bytes to change the displayed value for a given telemetry id.
 
