@@ -21,40 +21,47 @@ int main()
       printf("ACM0 is also NULL. Exiting.\n");
       return 1;
     }
-  }
+  }    
 
-
-    
-    int count = 0;
-
-  fprintf(output,"%c",251);
-    fprintf(output,"%c",1);
-    fprintf(output,"%c",77);
-    fprintf(output,"%c",0x00);
-    fflush(output); 
-
-  //fscanf(input, "&#37;s",text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, text);
-  // fscanf(input, text);
+ int count = 0;
   int index = 0;
-  
+  int n = 0;
+  int plus = 0;
+  long offset = 0;
   while(true)
   {
     char ch = getc (input);
 
-    if(count < (cpMillis())/5000)
+    if(count < (cpMillis()-offset)/400)
     {
-    fprintf(output,"%c",251);
-    fprintf(output,"%c",count);
-    fprintf(output,"%c",77);
-    fprintf(output,"%c",0x00);
-    fflush(output); 
-    count++;
+      if(count == 0)
+        fprintf(output,"%c",0xfe);
+      else if(count == 1)
+        fprintf(output,"%c",0x88);
+      else if (count == 20)
+      {
+        fprintf(output,"%c",0xfe);
+        fprintf(output,"%c",0xfe);
+      }
+      else if(count % 2 == 0)
+      {
+        n = ((count-6)/2) -1;
+        fprintf(output,"%c",n*n+plus);
+        //printf("TESTTT %d\n",n*n);
+      }
+      else
+      {
+        fprintf(output,"%c",0);
+      }
+      fflush(output); 
+      count++;
+      if(count > 60)
+      {
+        offset = cpMillis();
+        count = 0;
+        plus = (cpMillis()/10000);
+        //cpSleep(4000);
+      }
     }
 
     if( ch == EOF)

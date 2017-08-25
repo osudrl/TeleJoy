@@ -134,18 +134,31 @@ uint8_t usb_lsb = 0;
 void usb_addSafeByte(uint8_t safe)
 {
   if(usb_currIndex < 0 || !(usb_currIndex<tele_DATA_COUNT))
+  {
+    Serial.print("BAILING ON THIS BYTE: ");
+    Serial.println(safe,HEX);
     return;
+  }
 
   if(usb_lsbSet)
   {
     uint16_t bigLsb = (((uint16_t) usb_lsb) & 0x00ff);
     uint16_t bigMsb = (((( uint16_t) safe) << 8) & 0xff00);
     tele_data[usb_currIndex] = (bigLsb | bigMsb);
+    Serial.print("INDEX");
+    Serial.print(usb_currIndex);
+    Serial.print("'s TOTAL SET TO ");
+    Serial.println(tele_data[usb_currIndex]);
     usb_currIndex++;
     usb_lsbSet = false;
+
   }
   else
   {
+    Serial.print("INDEX");
+    Serial.print(usb_currIndex);
+    Serial.print("'s lsb set to ");
+    Serial.println(safe);
     usb_lsb = safe;
     usb_lsbSet = true;
   }
@@ -167,6 +180,7 @@ void sport_tryUsbInput()
     if(!usb_wasEscaped && usbIn == USB_ESCAPE_BYTE)
     {
       usb_wasEscaped = true;
+      Serial.println("ESCAPE TURNED ON");
       return;
     }
 
@@ -175,17 +189,21 @@ void sport_tryUsbInput()
       usb_wasEscaped = false;
       if(usbIn == USB_HEADER_BYTE)
       {
+        Serial.println("HEADER FOUND, ESCAPE TURNED OFF");
         usb_currIndex = 0;
         usb_lsbSet = false;
         return;
       }
       if(usbIn == USB_ESCAPE_BYTE)
       {
+        Serial.println("ESCAPE LITERAL FOUND, ESCAPE TURNED OFF");
         usb_addSafeByte(usbIn);
         return;
       }
       return;
     }
+    //Serial.print("About to deal with: ");
+    //Serial.println(usbIn,HEX);
     usb_addSafeByte(usbIn);
   }
 }
