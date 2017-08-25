@@ -1,16 +1,75 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include "cpTime.h"
+#include <pthread.h>
 
-int main()
+void* serial_read()
 {
   FILE* input;
-  FILE* output;
   char text[10000];
+  input = fopen("/dev/ttyACM1", "r"); 
+  int index = 0;
 
+  while(true || cpMillis() < 60000)
+  {
+    char ch = getc (input);
 
-  input = fopen("/dev/ttyACM1", "r");      //open the terminal keyboard
+    if( ch == EOF)
+      continue;
+    if ( ch != '\n')
+     text[index++] = ch;
+      else 
+    {
+    text[index] = '\0';
+    index = 0;
 
+   printf ( "%s\n", text );
+    }
+  }
+}
+
+int16_t sourceInts[14];
+uint8_t printBuffer[58];
+FILE* output;
+int build_escaped_buffer(int16_t* source, uint8_t* result)
+{
+  int buildIndex = 0;
+  result[buildIndex++] = 0xfe;
+  result[buildIndex++] = 0x88;
+  for(int i = 0; i < 14; i++)
+  {
+    uint8_t lsb = (uint8_t) (source[i] & 0x00ff);
+    uint8_t msb = (uint8_t) ((source[i] & 0xff00) >> 8);
+    if(lsb == 0xfe)
+    {
+      result[buildIndex++] = 0xfe;
+      result[buildIndex++] = 0xfe;
+    }
+    else
+      result[buildIndex++] = lsb;
+
+    if(msb == 0xfe)
+    {
+      result[buildIndex++] = 0xfe;
+      result[buildIndex++] = 0xfe;
+    }
+    else
+      result[buildIndex++] = msb;
+  }
+  return buildIndex;
+}
+
+void sendBuffer(uint8_t* buf, int filled)
+{
+  for(int i = 0; i < filled; i++)
+    fprintf(output,"%c",buf[i]);
+  fflush(output);
+}
+
+void* serial_write()
+{
+  
   output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
   if ( output == NULL )
   {
@@ -22,56 +81,42 @@ int main()
       return 1;
     }
   }
-
-
-    
-    int count = 0;
-
-  fprintf(output,"%c",251);
-    fprintf(output,"%c",1);
-    fprintf(output,"%c",77);
-    fprintf(output,"%c",0x00);
-    fflush(output); 
-
-  //fscanf(input, "&#37;s",text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, "%s",  text);
-  // fscanf(input, text);
-  // fscanf(input, text);
-  int index = 0;
-  
+  cpSleep(2000);
   while(true)
   {
-    char ch = getc (input);
-
-    if(count < (cpMillis())/5000)
+    for(int i = 0; i < 14; i+=1 )
     {
-    fprintf(output,"%c",251);
-    fprintf(output,"%c",count);
-    fprintf(output,"%c",77);
-    fprintf(output,"%c",0x00);
-    fflush(output); 
-    count++;
+      if (i == 7)
+        sourceInts[i] = 1010;
+      else if (i == 9)
+        sourceInts[i] = (cpMillis()+1500)/3000;
+     else if (i == 11)
+        sourceInts[i] = cpMillis()/10000;
+      else
+      sourceInts[i] = ((cpMillis()+(i*100)) / 1000);
     }
-
-    if( ch == EOF)
-      continue;
-    if ( ch != '\n')
-       text[index++] = ch;
-    else 
-    {
-            text[index] = '\0';
-            index = 0;
-
-            printf ( "%s\n", text );
-    }
+    int howMany = build_escaped_buffer(sourceInts,printBuffer);
+    sendBuffer(printBuffer, howMany);
+    cpSleep(15);
   }
+  fclose(output);
+}
 
+int main()
+{
+  pthread_t sreader;
+  pthread_t swriter;
+  void*result;
 
-fclose(output);
-fclose(input);
-  return 0;
+  if (pthread_create(&sreader, NULL, serial_read, NULL) == -1)
+    printf("Can't create thread t0");
+  if (pthread_create(&swriter, NULL, serial_write, NULL) == -1)
+    printf("Can't create thread t1");
+  if (pthread_join(sreader, &result) == -1)
+    printf("Can't join thread t0");
+  if (pthread_join(swriter, &result) == -1)
+    printf("Can't join thread t1");
+
+  printf("About to exit??");
+return 0;
 }
