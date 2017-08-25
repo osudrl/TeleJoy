@@ -4,6 +4,8 @@ const uint8_t sensor_ids[] = {
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 */
+#define JOY_SEND_DEBUG_ASCII
+
 const int tele_DATA_COUNT = 14;
 const uint8_t SPORT_REQUEST_HEADER = 0x7e;
 const uint8_t SPORT_ONLY_SENSOR_ID = 0x83;
@@ -135,8 +137,10 @@ void usb_addSafeByte(uint8_t safe)
 {
   if(usb_currIndex < 0 || !(usb_currIndex<tele_DATA_COUNT))
   {
-    Serial.print("BAILING ON THIS BYTE: ");
-    Serial.println(safe,HEX);
+    #ifdef JOY_SEND_DEBUG_ASCII
+      Serial.print("BAILING ON THIS BYTE: ");
+      Serial.println(safe,HEX);
+    #endif
     return;
   }
 
@@ -145,20 +149,24 @@ void usb_addSafeByte(uint8_t safe)
     uint16_t bigLsb = (((uint16_t) usb_lsb) & 0x00ff);
     uint16_t bigMsb = (((( uint16_t) safe) << 8) & 0xff00);
     tele_data[usb_currIndex] = (bigLsb | bigMsb);
-    Serial.print("INDEX");
-    Serial.print(usb_currIndex);
-    Serial.print("'s TOTAL SET TO ");
-    Serial.println(tele_data[usb_currIndex]);
+    #ifdef JOY_SEND_DEBUG_ASCII
+      Serial.print("INDEX");
+      Serial.print(usb_currIndex);
+      Serial.print("'s TOTAL SET TO ");
+      Serial.println(tele_data[usb_currIndex]);
+    #endif
     usb_currIndex++;
     usb_lsbSet = false;
 
   }
   else
   {
-    Serial.print("INDEX");
-    Serial.print(usb_currIndex);
-    Serial.print("'s lsb set to ");
-    Serial.println(safe);
+    #ifdef JOY_SEND_DEBUG_ASCII
+      Serial.print("INDEX");
+      Serial.print(usb_currIndex);
+      Serial.print("'s lsb set to ");
+      Serial.println(safe);
+    #endif
     usb_lsb = safe;
     usb_lsbSet = true;
   }
@@ -172,15 +180,19 @@ void sport_tryUsbInput()
 
     if(millis() < 4000)
     {
-      Serial.print("TOO EARLY ");
-      Serial.println(usbIn,HEX);
+      #ifdef JOY_SEND_DEBUG_ASCII
+        Serial.print("TOO EARLY ");
+        Serial.println(usbIn,HEX);
+      #endif
       return;
     }
 
     if(!usb_wasEscaped && usbIn == USB_ESCAPE_BYTE)
     {
       usb_wasEscaped = true;
-      Serial.println("ESCAPE TURNED ON");
+      #ifdef JOY_SEND_DEBUG_ASCII
+        Serial.println("ESCAPE TURNED ON");
+      #endif
       return;
     }
 
@@ -189,14 +201,18 @@ void sport_tryUsbInput()
       usb_wasEscaped = false;
       if(usbIn == USB_HEADER_BYTE)
       {
-        Serial.println("HEADER FOUND, ESCAPE TURNED OFF");
+        #ifdef JOY_SEND_DEBUG_ASCII
+          Serial.println("HEADER FOUND, ESCAPE TURNED OFF");
+        #endif
         usb_currIndex = 0;
         usb_lsbSet = false;
         return;
       }
       if(usbIn == USB_ESCAPE_BYTE)
       {
-        Serial.println("ESCAPE LITERAL FOUND, ESCAPE TURNED OFF");
+        #ifdef JOY_SEND_DEBUG_ASCII
+          Serial.println("ESCAPE LITERAL FOUND, ESCAPE TURNED OFF");
+        #endif
         usb_addSafeByte(usbIn);
         return;
       }
@@ -257,7 +273,9 @@ void sport_setup()
 	digitalWrite(13,LOW);
 	sport_hdInit();
   Serial.begin(9600);
+  #ifdef JOY_SEND_DEBUG_ASCII
   Serial.println("INIT");
+  #endif
 }
 
 void sport_loop() 
