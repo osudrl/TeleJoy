@@ -59,12 +59,12 @@ void* serial_write()
       }
       else
       {
-        fprintf(output,"%c",1+(cpMillis()/1000));
+        fprintf(output,"%c",1+((cpMillis()+(i*1000))/10000));
         fprintf(output,"%c",0);
       }
     }
     fflush(output);
-    cpSleep(10);
+    cpSleep(5);
   }
   fclose(output);
 }

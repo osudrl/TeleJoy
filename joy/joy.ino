@@ -47,6 +47,16 @@ uint16_t tele_data[tele_DATA_COUNT] =
 
 };
 
+long long tele_msUpdated[tele_DATA_COUNT] =
+{
+  77,77,77,77,77,
+
+  1,4,9,
+  16,25,36,
+  49,64,81
+
+};
+
 union sport_reply_packet {
   //! byte[8] presentation
   uint8_t byte[8];
@@ -132,6 +142,9 @@ bool usb_wasEscaped = false;
 int usb_currIndex = -1; 
 bool usb_lsbSet = false;
 uint8_t usb_lsb = 0;
+uint8_t updateIndiciesBuffer[10000];
+int updateStoreIndex = 0;
+int updateSentIndex = 0;
 
 void usb_addSafeByte(uint8_t safe)
 {
@@ -148,7 +161,13 @@ void usb_addSafeByte(uint8_t safe)
   {
     uint16_t bigLsb = (((uint16_t) usb_lsb) & 0x00ff);
     uint16_t bigMsb = (((( uint16_t) safe) << 8) & 0xff00);
-    tele_data[usb_currIndex] = (bigLsb | bigMsb);
+    uint16_t past =  tele_data[usb_currIndex];
+    uint16_t newval = (bigLsb | bigMsb);
+    if( past != newval)
+    {
+      tele_data[usb_currIndex] = newval;
+      updateIndiciesBuffer[updateStoreIndex++] = usb_currIndex;
+    }
     #ifdef JOY_SEND_DEBUG_ASCII
       Serial.print("INDEX");
       Serial.print(usb_currIndex);
@@ -245,7 +264,7 @@ void sport_telemetry()
 
   if(rByte==SPORT_ONLY_SENSOR_ID)
   {
-    bool found = false;
+/*    bool found = false;
     for(int i = 0; false && i < tele_DATA_COUNT; i++)
     {
       if(tele_changed[i])
@@ -255,13 +274,34 @@ void sport_telemetry()
         break;
       }
     }
-   // tele_testChangeArray = found;
-    
-
-    if( (millis()/100) %2==0 || tele_changed[tele_mod])
+*/   // tele_testChangeArray = found;
+    bool decide = false;
+    /*
+    long long currMs = millis();
+    for(int i = 0; i < tele_DATA_COUNT; i++)
+    {
+      if(currMs - tele_msUpdated[i] > 5000)
+      {
+        tele_mod = i;
+        decide = true;
+        break;
+      }
+    }
+    */
+    if (!decide && updateStoreIndex > updateSentIndex)
+    {
+      tele_mod = updateIndiciesBuffer[updateSentIndex++];
+      Serial.print("Gotten Behind by ");
+      Serial.print(updateStoreIndex- updateSentIndex);
+      Serial.print(" and curr index is ");
+      Serial.println(tele_mod);
+      decide = true;
+    }
+    if(decide || (millis()/100) %2==0 )
     {
       tele_changed[tele_mod] = 0;
       sport_sendData(tele_ids[tele_mod],tele_data[tele_mod]);
+      tele_msUpdated[tele_mod] = millis();
       tele_mod = (++tele_mod) % tele_DATA_COUNT;
     }
   }
