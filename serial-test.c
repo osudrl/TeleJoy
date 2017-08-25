@@ -10,7 +10,7 @@ void* serial_read()
   input = fopen("/dev/ttyACM1", "r"); 
   int index = 0;
 
-  while(cpMillis() < 60000)
+  while(true || cpMillis() < 60000)
   {
     char ch = getc (input);
 
@@ -30,7 +30,6 @@ void* serial_read()
 
 void* serial_write()
 {
-  printf("ahi");
   FILE* output;
   output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
   if ( output == NULL )
@@ -43,14 +42,29 @@ void* serial_write()
       return 1;
     }
   }
-
   cpSleep(2000);
+/*  cpSleep(2000);
   fprintf(output,"%c",0xfe);
   fprintf(output,"%c",0x88);
   fflush(output); 
-  while(cpMillis()<60000)
+*/  
+  while(true  || cpMillis()<60000)
   {
-    ;
+    for(int i = 0; i < 20; i++)
+    {
+      if(i == 0)
+      {
+        fprintf(output,"%c",0xfe);
+        fprintf(output,"%c",0x88);
+      }
+      else
+      {
+        fprintf(output,"%c",1+(cpMillis()/1000));
+        fprintf(output,"%c",0);
+      }
+    }
+    fflush(output);
+    cpSleep(10);
   }
   fclose(output);
 }

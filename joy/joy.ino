@@ -4,7 +4,7 @@ const uint8_t sensor_ids[] = {
     0x48, 0x6A, 0xCB, 0xAC, 0x0D, 0x8E, 0x2F
 };
 */
-#define JOY_SEND_DEBUG_ASCII
+//#define JOY_SEND_DEBUG_ASCII
 
 const int tele_DATA_COUNT = 14;
 const uint8_t SPORT_REQUEST_HEADER = 0x7e;
