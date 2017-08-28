@@ -305,6 +305,8 @@ Note that the two-byte values are built up from the two bytes that are sent from
 
 ### Examples
 
+#### Squares
+
 For example, say the program is trying to send the square of each index of the array as the telemetry data.
 
 ![indecies](http://i.imgur.com/WtIWs2G.png)
@@ -317,7 +319,7 @@ Now add the two initial header bytes and convert each square to hex, with the le
 
 ![hex](http://i.imgur.com/qw8ExIl.png)
 
-If that string of bytes is sent over USB Serial like [this](https://github.com/osudrl/TeleJoy/blob/1713f972fc0746f4776ab2ba474475c2d345f146/serial/others/send-sqares.c):
+If that string of bytes is sent over USB Serial like [this](https://github.com/osudrl/TeleJoy/blob/1713f972fc0746f4776ab2ba474475c2d345f146/serial/others/send-sqares.c),
 
 ```c
 int main()
@@ -363,9 +365,72 @@ int main()
 }
 ```
 
-The result will look like this on the Taranis:
+...the result will look like this on the TARANIS looks like this:
 
-![taranis sqares](http://i.imgur.com/R0Llq89.jpg)
+<img src="http://i.imgur.com/R0Llq89.jpg" width="400"> 
+
+#### Using 254 as a value
+
+If for some reason, the above example needed to be modified so that the value at index 6 was 254, the resulting hex string would look like this:
+
+![hex 254](http://i.imgur.com/08hkw6z.png)
+
+Notice that it takes three bytes to describe telemetry value 6, but that is because of of the `0xFE` bytes is escaping the other to produce a literal `0xFE`.
+
+By sending that string to the Teensy with [this code](TODO invalid link),
+
+```c
+int main()
+{
+  FILE* output = fopen("/dev/ttyACM1", "w");
+
+  //header bytes
+  fprintf(output,"%c",0xfe);
+  fprintf(output,"%c",0x88);
+
+  //the rest are numbers  
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x01);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x04);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x09);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x10);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x19);
+  fprintf(output,"%c",0x00);
+
+  //modified value 6
+  //fprintf(output,"%c",0x24);
+  fprintf(output,"%c",0xFE); // escape byte
+  fprintf(output,"%c",0xFE); // tells teensy the value actually is 254
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x31);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x40);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x51);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x64);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x79);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x90);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0xA9);
+  fprintf(output,"%c",0x00);
+
+  fflush(output);
+  fclose(output);
+}
+```
+
+...the result on the TARANIS should look like this:
+
+<img src="http://i.imgur.com/Wd3Gc03.jpg" width="400">
 
 ## Teensy as Joystick (5)
 
