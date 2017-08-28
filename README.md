@@ -144,13 +144,10 @@ The Technical Table:
 			<td>PC USB --> Teensy MicroUSB</td>
 			<td>USB Serial</td>
 			<td>
-				<strike>
-				<p>Packet: </p>
 				<ul>
-					<li>Header Bytes (0xFE88)</li>
+					<li>Two-byte header: (0xFE88)</li>
 					<li>14 int16s conerted to ~28 escaped bytes</li>
 				</ul>
-				</strike>
 			</td>
 		</tr>
 		<tr>
@@ -298,18 +295,32 @@ For this test program, all sensor ids are ignored except for id 0x83.
 
 ## Setting the Telemetry Data (4)
 
-TODO update this section.
+There are fourteen (however editable in [joy/jt-constants.h](https://github.com/osudrl/TeleJoy/blob/master/joy/jt-constants.h)) telemetry vales that can be updated *as frequently or as infrequently\** as necessesary. 
+
+To maximize efficiency, all fourteen values are sent in a big packet all at once.
+
+A valid packet needs to begin with the [header byte](https://github.com/osudrl/TeleJoy/blob/5fb77209bf02b2036a5e0dda2002f5201d3f5446/joy/jt-constants.h#L6) `0x88`, but it needs to have the [escape byte](https://github.com/osudrl/TeleJoy/blob/5fb77209bf02b2036a5e0dda2002f5201d3f5446/joy/jt-constants.h#L5) `0xFE` preceeding it to differentiate it from the number 136.  With this protocol, to send a literal `0xFE (254)`, two `0xFE`'s should be send one right after another which will by interpreted by the joy sketch as `254`.  
+
+Note that the values are built up from bytes sent frp
 
 <strike>
-As shown in [serial-test.c](https://github.com/osudrl/TeleJoy/blob/0a33e0476821aa8a80c84cd690e4cee085026572/serial-test.c#L24-L27), it takes four bytes to change the displayed value for a given telemetry id.
 
-* One header byte `0xFB` or `DEC 251`
-* One id byte
-* Two value bytes
+### Examples
 
-At this point in the program, the id byte is matched with elements of the `tele_ezmatch` so that the resulting index that is set corrosponds to the displayed channels on the controller.  With this current setup, passing an id of 2 will edit the value that displays as `UCH2` on the controller, despite `UCH2`'s actual id being 7.
+For example, say the program is trying to send the square of each index of the array as the telemetry data.
 
-The two value bytes need to transferred from least to most significant, and will being interpreted by the controller as a **signed** 16 bit number.
+![indecies](http://i.imgur.com/WtIWs2G.png)
+
+Now square each index:
+
+![squares](http://i.imgur.com/I6gtrEE.png)
+
+Now add the header bytes and convert each square to hexadecimal:
+
+![hex](http://i.imgur.com/BNhpzqZ.png)
+
+The above string can be 
+
 </strike>
 
 ## Teensy as Joystick (5)
