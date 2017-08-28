@@ -301,7 +301,7 @@ To maximize efficiency, all fourteen values are sent in a big packet all at once
 
 A valid packet needs to begin with the [header byte](https://github.com/osudrl/TeleJoy/blob/5fb77209bf02b2036a5e0dda2002f5201d3f5446/joy/jt-constants.h#L6) `0x88`, but it needs to have the [escape byte](https://github.com/osudrl/TeleJoy/blob/5fb77209bf02b2036a5e0dda2002f5201d3f5446/joy/jt-constants.h#L5) `0xFE` preceeding it to differentiate it from the number 136.  With this protocol, to send a literal `0xFE (254)`, two `0xFE`'s should be send one right after another which will by interpreted by the joy sketch as `254`.  
 
-Note that the values are built up from bytes sent frp
+Note that the two-byte values are built up from the two bytes that are sent from least significant to most significant.
 
 ### Examples
 
@@ -315,9 +315,9 @@ Now square each index:
 
 Now add the two initial header bytes and convert each square to hex, with the least sigificant bytes precedig the most significant:
 
-![hex](http://i.imgur.com/BNhpzqZ.png)
+![hex](http://i.imgur.com/qw8ExIl.png)
 
-If that string of bytes is sent over USB Serial like this:
+If that string of bytes is sent over USB Serial like [this](https://github.com/osudrl/TeleJoy/blob/1713f972fc0746f4776ab2ba474475c2d345f146/serial/others/send-sqares.c):
 
 ```c
 int main()
@@ -366,7 +366,6 @@ int main()
 The result will look like this on the Taranis:
 
 ![taranis sqares](http://i.imgur.com/R0Llq89.jpg)
-
 
 ## Teensy as Joystick (5)
 
