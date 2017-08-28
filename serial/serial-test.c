@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "cpTime.h"
 #include <pthread.h>
-#include "joy/jt-constants.h"
+#include "../joy/jt-constants.h"
 
 void* serial_read()
 {

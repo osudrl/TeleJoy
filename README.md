@@ -136,11 +136,13 @@ The Technical Table:
 			<td>PC USB --> Teensy MicroUSB</td>
 			<td>USB Serial</td>
 			<td>
+				<strike>
 				<p>Packet: </p>
 				<ul>
 					<li>Header Bytes (0xFE88)</li>
 					<li>14 int16s conerted to ~28 escaped bytes</li>
 				</ul>
+				</strike>
 			</td>
 		</tr>
 		<tr>
