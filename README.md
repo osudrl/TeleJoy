@@ -367,7 +367,7 @@ int main()
 
 ...the result will look like this on the TARANIS looks like this:
 
-<img src="http://i.imgur.com/R0Llq89.jpg" width="400"> 
+<img src="http://i.imgur.com/R0Llq89.jpg" width="600"> 
 
 #### Using 254 as a value
 
@@ -377,7 +377,7 @@ If for some reason, the above example needed to be modified so that the value at
 
 Notice that it takes three bytes to describe telemetry value 6, but that is because of of the `0xFE` bytes is escaping the other to produce a literal `0xFE`.
 
-By sending that string to the Teensy with [this code](TODO invalid link),
+By sending that string to the Teensy with [this code](https://github.com/osudrl/TeleJoy/blob/db175aa74467dbf404a476b2932b8337b2586808/serial/others/send-escaped.c),
 
 ```c
 int main()
@@ -430,7 +430,7 @@ int main()
 
 ...the result on the TARANIS should look like this:
 
-<img src="http://i.imgur.com/Wd3Gc03.jpg" width="400">
+<img src="http://i.imgur.com/Wd3Gc03.jpg" width="600">
 
 ## Teensy as Joystick (5)
 
