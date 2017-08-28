@@ -87,14 +87,20 @@ void* serial_write()
   {
     for(int i = 0; i < tele_DATA_COUNT; i+=1 )
     {
+      int currMod = sourceInts[i];
       if (i == 7)
-        sourceInts[i] = 1010;
+        currMod = 1010;
       else if (i == 9)
-        sourceInts[i] = (cpMillis()+1500)/3000;
-     else if (i == 11)
-        sourceInts[i] = cpMillis()/10000;
+        currMod = (cpMillis()+1500)/3000;
+      else if (i == 11)
+        currMod = cpMillis()/10000;
       else
-      sourceInts[i] = ((cpMillis()+(i*100)) / 1000);
+        currMod = ((cpMillis()+(i*100)) / 1000);
+
+      if(currMod == 2313)
+        printf("im currently doing a bad");
+
+      sourceInts[i] = currMod;
     }
     int howMany = build_escaped_buffer(sourceInts,printBuffer);
     sendBuffer(printBuffer, howMany);

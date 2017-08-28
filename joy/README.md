@@ -36,11 +36,21 @@ Calculates the proper checksum byte given the beginning of the reply packet to b
 
 ### sport_flushInputBuffer()
 
-### sport_setRX()
+Reads and throws out any bytes that haven't been read from the buffer from the half-duplexed telemetry line.  Is called before switching between RX and TX mode on the [half-duplexed line](https://github.com/osudrl/TeleJoy/#on-half-duplexing).
+
+### sport_setRX(), hdInit(), setTX()
+
+Puts Serial3 (Pin8) in RX mode despite that Pin8 is the TX pin of the Serial3 UART.  This is done through changing individual bit registries on the Teensy.  See the section in the README [on half duplexing](https://github.com/osudrl/TeleJoy/#on-half-duplexing) for more information.  
 
 ### sport_hdInit()
 
+Sets up the Serial3 UART for inverted serial at 57600 baud in half-duplex mode.
+See the section in the README [on half duplexing](https://github.com/osudrl/TeleJoy/#on-half-duplexing) for more information.  
+
 ### sport_setTX()
+
+Puts the Serial3 UART in TX mode by changing the registries.
+See the section in the README [on half duplexing](https://github.com/osudrl/TeleJoy/#on-half-duplexing) for more information.  
 
 ### sport_sendData()
 

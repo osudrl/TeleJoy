@@ -10,7 +10,7 @@ const int JOY_MAX = 62000;
 const int IN_MIN = -820;
 const int IN_MAX = 819;
 const int DEADZONE_MITIGATION_CONSTANT = 3800; // 0 for very sticky deadzone, 3800 is normally pretty good
-const int TELE_ALLOWED_IDLE_TIME = 5000;
+const int TELE_ALLOWED_IDLE_TIME = 7000;
 
 uint8_t tele_ids[tele_DATA_COUNT] = {
     0, 1,  2, 3, 4,
