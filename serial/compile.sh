@@ -1,1 +1,1 @@
-gcc *.c *.h -lpthread
+gcc *.c -lpthread

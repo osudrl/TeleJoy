@@ -67,10 +67,22 @@ uint8_t sport_CRC (uint8_t *packet) {
   return ~crc;
 }
 
+bool usb_wasEscaped = false;
+int usb_currIndex = -1; 
+bool usb_lsbSet = false;
+uint8_t usb_lsb = 0;
+uint8_t updateIndiciesBuffer[10000];
+uint64_t updateStoreIndex = 0;
+uint64_t updateSentIndex = 0;
+
 void sport_flushInputBuffer(void)  
 {
   while (Serial3.available())
     Serial3.read();
+  usb_wasEscaped = false;
+  usb_currIndex = -1;
+  usb_lsbSet = false;
+  usb_lsb = 0;
 }
 
 void sport_setRX()
@@ -126,15 +138,6 @@ void sport_sendData (uint16_t id, int32_t val) {
   sport_setRX();
 }
 
-
-
-bool usb_wasEscaped = false;
-int usb_currIndex = -1; 
-bool usb_lsbSet = false;
-uint8_t usb_lsb = 0;
-uint8_t updateIndiciesBuffer[10000];
-uint64_t updateStoreIndex = 0;
-uint64_t updateSentIndex = 0;
 
 void usb_addSafeByte(uint8_t safe)
 {
