@@ -12,7 +12,15 @@ This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
 See the proper [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) towards the bottom of this readme for information about how to get the program working as intended.
 
-# Six Protocols
+## In this Respository
+
+* [joy](https://github.com/osudrl/TeleJoy/tree/master/joy): The "main" program that most of this repository's documentation references.  Meant to uploaded to the Teensy 3.2 to act as a Joystick HID based on the input from the radio controller.
+* [ExtrmeJoystickTest](https://github.com/osudrl/TeleJoy/tree/master/ExtremeJoystickTest): Use this sketch to test if the Teensy has been properly configured as a "big" joystick.
+* [sdl-test](https://github.com/osudrl/TeleJoy/tree/master/sdl-test): A simple C program to show that SDL can "see" and interface with the Teensy as a joystick.
+* [serial](https://github.com/osudrl/TeleJoy/tree/master/serial): A simple C program to send telemetry values to the Teensy and in turn to the controller.  Use as an example of how to change the Telemetry values over USB Serial.
+* [rulesetup](https://github.com/osudrl/TeleJoy/blob/master/rulesetup.sh): A simple shell script to update the linux udev rules to properly upload to the Teensy with Teensyduino.
+
+# Six Serial Protocols
 
 > When [links to code snippets](https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60) from this project's source are included in this secion, they link to **outdated snapshots of the source code**.  Do not copy/paste source code from these linked files or try to use the code that is not highlited in yellow by the snippet link.  The **highlighted code provides an example or context** for some feature that is explained in the documentation.  For the most up-to-date version of the code to work with, see [the master branch](https://github.com/osudrl/TeleJoy/tree/master/).
 
@@ -332,7 +340,9 @@ Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere i
 
 On Linux, follow the instructions in Step2 on the [download page](https://www.pjrc.com/teensy/td_download.html) to setup proper udev rules for the Teensy.
 
-Alternatively, run `bash rulesetup.sh` in the repository directory to have a shell script do the process described in the PJRC page's "Step2" for you.
+Alternatively, run `bash rulesetup.sh` in the repository directory to have a shell script do the process described in the PJRC page's "Step2".
+
+If Teensyduino is having problems properly uploading to the Teensy, your linux user may need to be added to the dialout group as [described here](https://askubuntu.com/questions/58119/changing-permissions-on-serial-port).
 
 ## Allow for "Extreme Joystick"
 
@@ -358,7 +368,7 @@ Once extreme joystick is set by `#define JOYSTICK_SIZE 64`, the teensy should be
 
 ## Uploading to the Teensy
 
-To upload the telejoy sketch (`thisrepository/teensysrc/telejoy/telejoy.ino`) to the Teensy, reference the [PJRC page on Teensyduino usage](https://www.pjrc.com/teensy/td_usage.html) to complete the following:
+To upload the joy sketch (`TeleJoy/joy/joy.ino`) to the Teensy, reference the [PJRC page on Teensyduino usage](https://www.pjrc.com/teensy/td_usage.html) to complete the following steps:
 
 1. Connect the Teensy board to the computer via micro-usb
 2. Open the telejoy.ino sketch in the Arduino IDE
