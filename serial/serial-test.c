@@ -36,24 +36,24 @@ FILE* output;
 int build_escaped_buffer(int16_t* source, uint8_t* result)
 {
   int buildIndex = 0;
-  result[buildIndex++] = USB_ESCAPE_BYTE;
-  result[buildIndex++] = USB_HEADER_BYTE;
+  result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
+  result[buildIndex++] = USB_HEADER_BYTE /*0x88*/;
   for(int i = 0; i < tele_DATA_COUNT; i++)
   {
     uint8_t lsb = (uint8_t) (source[i] & 0x00ff);
     uint8_t msb = (uint8_t) ((source[i] & 0xff00) >> 8);
     if(lsb == USB_ESCAPE_BYTE)
     {
-      result[buildIndex++] = USB_ESCAPE_BYTE;
-      result[buildIndex++] = USB_ESCAPE_BYTE;
+      result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
+      result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/; 
     }
     else
       result[buildIndex++] = lsb;
 
     if(msb == USB_ESCAPE_BYTE)
     {
-      result[buildIndex++] = USB_ESCAPE_BYTE;
-      result[buildIndex++] = USB_ESCAPE_BYTE;
+      result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
+      result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
     }
     else
       result[buildIndex++] = msb;

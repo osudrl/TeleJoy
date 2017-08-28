@@ -432,6 +432,8 @@ int main()
 
 <img src="http://i.imgur.com/Wd3Gc03.jpg" width="600">
 
+See [serial/serial-test.c](https://github.com/osudrl/TeleJoy/blob/master/serial/serial-test.c) for a more elaborate example using this protocol and for [build escaped buffer](https://github.com/osudrl/TeleJoy/blob/0b005872f7bd91e1a9c9ad27ea22dafa2410691c/serial/serial-test.c#L36-L62) function that can be copy/pasted which takes an arrary of signed 16 bit integers and fills a buffer with the header and approximately 28 raw, excaped bytes to send over serial.
+
 ## Teensy as Joystick (5)
 
 If the proper USB HID is selected in the Usb Type menu in the Teensyduino software when the code is being written onto the Teensy, then the Teensy will show up as a Joystick device.  See the sdl-example.c code for an example on how to interface with the emulated Joystick device using SDL.
