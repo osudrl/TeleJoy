@@ -303,8 +303,6 @@ A valid packet needs to begin with the [header byte](https://github.com/osudrl/T
 
 Note that the values are built up from bytes sent frp
 
-<strike>
-
 ### Examples
 
 For example, say the program is trying to send the square of each index of the array as the telemetry data.
@@ -315,13 +313,60 @@ Now square each index:
 
 ![squares](http://i.imgur.com/I6gtrEE.png)
 
-Now add the header bytes and convert each square to hexadecimal:
+Now add the two initial header bytes and convert each square to hex, with the least sigificant bytes precedig the most significant:
 
 ![hex](http://i.imgur.com/BNhpzqZ.png)
 
-The above string can be 
+If that string of bytes is sent over USB Serial like this:
 
-</strike>
+```c
+int main()
+{
+  FILE* output = fopen("/dev/ttyACM1", "w");
+
+  //header bytes
+  fprintf(output,"%c",0xfe);
+  fprintf(output,"%c",0x88);
+
+  //the rest are numbers  
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x01);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x04);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x09);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x10);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x19);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x24);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x31);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x40);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x51);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x64);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x79);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x90);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0xA9);
+  fprintf(output,"%c",0x00);
+
+  fflush(output);
+  fclose(output);
+}
+```
+
+The result will look like this on the Taranis:
+
+![taranis sqares](http://i.imgur.com/R0Llq89.jpg)
+
 
 ## Teensy as Joystick (5)
 
