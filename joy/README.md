@@ -18,6 +18,54 @@ JOY_ MAX | 62000 | See above and the [mapAnalog() function](https://github.com/o
 IN_ MIN | -820 | The minimum analog joystick supplied by the input from the sbus line from the radio reciever.
 IN_ MAX | 819 | See above.
 DEADZONE_ MITIGATION_ CONSTANT | 3800 | The operating system interprets joysticks as having a pretty large deadzone around 0.  Approximately, all values between -3800 to 3800 will be interpreted as exactly zero by the os. This value can be tuned based on experimentation.
-TELE_ ALLOWED_ IDLE_ TIME | 5000 | The amount of time that the joy program will wait before re-sending a telemetry value that hasn't changed to the reciever.  See the sport_telemetry() function and the tele_msUpdated[] array for more information.
+TELE_ ALLOWED_ IDLE_ TIME | 5000 | The amount of time that the joy program will wait before re-sending a telemetry value that hasn't changed to the reciever.  See the sport_telemetry() function and the tele_msUpdated[ ] array for more information. TODO add links.
+
+## Telemetry Arrays
+
+Name | Purpose
+--- | ---
+tele_ids | Contains the fourteen different data ids that the TARANIS will display.  For instance, with the current setup, ids 1-4 refer to the error codes that are displayed on page1, while the rest of the array is the ids of the 9 different channels displayed on the following telemetry page.
+tele_data | Contains the values that corrospond to ids contained in `tele_ids` at the same index
+tele_msUpdated | Holds the number of milliseconds that had elapsed when the value at that index was most recently updated.  Used to ensure that a value doesn't go un-updated for longer than `TELE_ALLOWED_IDLE_TIME`.
+
+## Telemetry (SPORT) Functions
+
+### sport_CRC()
+
+Calculates the proper checksum byte given the beginning of the reply packet to be sent at the end of the reply packet.
+
+### sport_flushInputBuffer()
+
+### sport_setRX()
+
+### sport_hdInit()
+
+### sport_setTX()
+
+### sport_sendData()
+
+### usb_addSafeByte()
+
+### sport_tryUsbInput()
+
+### sport_telemetry()
+
+### sport_setup()
+
+### sport_loop()
+
+## Controller / SBUS Functions
+
+### sbus_decode_packet() 
+
+### sendJoyOutput()
+
+### mapAnalog()
+
+### sbus_loop()
+
+### sbus_setup()
+
+
 
 

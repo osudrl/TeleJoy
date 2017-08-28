@@ -22,7 +22,7 @@ uint8_t tele_ids[tele_DATA_COUNT] = {
 
 uint16_t tele_data[tele_DATA_COUNT] =
 {
-  77,77,77,77,77,
+  100,99,98,97,96,
 
   1,4,9,
   16,25,36,
@@ -253,6 +253,7 @@ void sport_telemetry()
   if(rByte==SPORT_ONLY_SENSOR_ID)
   {    
     long long currMs = millis();
+    bool decide = false;
     for(int i = 0; i < tele_DATA_COUNT; i++)
     {
       if(currMs - tele_msUpdated[i] > TELE_ALLOWED_IDLE_TIME)
