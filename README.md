@@ -295,7 +295,7 @@ For this test program, all sensor ids are ignored except for id 0x83.
 
 ## Setting the Telemetry Data (4)
 
-There are fourteen (however editable in [joy/jt-constants.h](https://github.com/osudrl/TeleJoy/blob/master/joy/jt-constants.h)) telemetry vales that can be updated *as frequently or as infrequently\** as necessesary. 
+There are fourteen (however editable in [joy/jt-constants.h](https://github.com/osudrl/TeleJoy/blob/master/joy/jt-constants.h)) telemetry vales that can be updated as frequently or as infrequentlys as necessesary. 
 
 To maximize efficiency, all fourteen values are sent in a big packet all at once.
 
