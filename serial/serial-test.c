@@ -118,7 +118,7 @@ void* serial_write()
   fclose(output);
 }
 
-#elif SERIAL_TEST_ESCAPING
+#elif defined SERIAL_TEST_ESCAPING
 
 void* serial_write()
 {
@@ -182,7 +182,7 @@ void* serial_write()
 
 #else
 
-int main()
+void* serial_write()
 {
   printf("Squares Serial Test\n");
   #warning "Squares Serial Test"

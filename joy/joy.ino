@@ -1,5 +1,5 @@
 
-// #define JOY_SEND_DEBUG_ASCII
+#define JOY_SEND_DEBUG_ASCII
 
 #include "jt-constants.h"
 
