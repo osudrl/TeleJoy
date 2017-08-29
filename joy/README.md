@@ -38,7 +38,7 @@ Calculates the proper checksum byte given the beginning of the reply packet to b
 
 Reads and throws out any bytes that haven't been read from the buffer from the half-duplexed telemetry line.  Is called before switching between RX and TX mode on the [half-duplexed line](https://github.com/osudrl/TeleJoy/#on-half-duplexing).
 
-### sport_setRX(), hdInit(), setTX()
+### sport_setRX()
 
 Puts Serial3 (Pin8) in RX mode despite that Pin8 is the TX pin of the Serial3 UART.  This is done through changing individual bit registries on the Teensy.  See the section in the README [on half duplexing](https://github.com/osudrl/TeleJoy/#on-half-duplexing) for more information.  
 
@@ -53,6 +53,22 @@ Puts the Serial3 UART in TX mode by changing the registries.
 See the section in the README [on half duplexing](https://github.com/osudrl/TeleJoy/#on-half-duplexing) for more information.  
 
 ### sport_sendData()
+
+Sends a reply packet to update a value id with new data.  This function is called by `sport_telemetry()`.
+
+Arguments:
+No. | Name | Usage
+--- | --- | ---
+0 | id | The value id being updated.  See [tele_ids](https://github.com/osudrl/TeleJoy/tree/master/joy#telemetry-arrays) for the valid value ids that may be used for the current setup
+1 | val | The value that will display on the TARANIS given the current id.  Although the fuction takes a uint32_t and four value bytes are sent over the half-duplexed line as per the SPORT protocol, testing has only gotten a signed 16 bit integer to work, with the last two bytes that are sent on the half-duplexed line being zeros. 
+
+Function procedures:
+1. Create a sport_reply_packet type and fill it with the information from the arguments
+2. Set the half-duplexed line to TX mode.
+3. Generate the checksum byte based on the current reply paket
+4. Iterate over all the bytes in the packet and add the byte to the out buffer.  If the byte needs to be escaped according to the SPORT protocol, add the proper bytes to the out buffer.
+5. Write the out buffer to the Serial3 UART
+6. Put the half-duplexed line (Serial3) into RX mode.
 
 ### usb_addSafeByte()
 
