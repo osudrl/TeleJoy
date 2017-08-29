@@ -85,7 +85,7 @@ Name | Conditions | Actions
 --- | --- | ---
 Bail | Current index is invalid | Do nothing with the byte
 Set LSB | Current index is valid **and** LSB **not** set | Save the lsb for later and remember that LSB has been set
-Set MSB | Current index valid **and** LSB **is** set | Construct a 16bit int from the two bytes, increment index
+Set MSB | Current index valid **and** LSB **is** set | Construct a `int16_t` from the two bytes, increment index
 
 >TODO: Explain the updateIndeciesBuffer
 
