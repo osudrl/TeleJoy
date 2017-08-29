@@ -79,10 +79,6 @@ void sport_flushInputBuffer(void)
 {
   while (Serial3.available())
     Serial3.read();
-  usb_wasEscaped = false;
-  usb_currIndex = -1;
-  usb_lsbSet = false;
-  usb_lsb = 0;
 }
 
 void sport_setRX()
