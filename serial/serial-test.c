@@ -5,6 +5,10 @@
 #include <pthread.h>
 #include "../joy/jt-constants.h"
 
+#define SERIAL_TEST_COUNTING
+// #define SERIAL_TEST_ESCAPING
+// #define SERIAL_TEST_SQAURES
+
 void* serial_read()
 {
   FILE* input;
@@ -30,9 +34,12 @@ void* serial_read()
   }
 }
 
+FILE* output;
+
+#ifdef SERIAL_TEST_COUNTING
+
 int16_t sourceInts[tele_DATA_COUNT];
 uint8_t printBuffer[tele_MAX_BUF];
-FILE* output;
 int build_escaped_buffer(int16_t* source, uint8_t* result)
 {
   int buildIndex = 0;
@@ -70,7 +77,9 @@ void sendBuffer(uint8_t* buf, int filled)
 
 void* serial_write()
 {
-  
+  printf("The Counting Serial Test\n");
+  #warning "The Counting Serial Test"
+
   output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
   if ( output == NULL )
   {
@@ -79,10 +88,10 @@ void* serial_write()
     if (output == NULL)
     {
       printf("ACM0 is also NULL. Exiting.\n");
-      return 1;
+      return (void*) 1;
     }
   }
-  cpSleep(2000);
+  cpSleep(100);
   while(true)
   {
     for(int i = 0; i < tele_DATA_COUNT; i+=1 )
@@ -108,6 +117,141 @@ void* serial_write()
   }
   fclose(output);
 }
+
+#elif SERIAL_TEST_ESCAPING
+
+void* serial_write()
+{
+  printf("Escaped Serial Test\n");
+  #warning "Escaped Serial Test"
+  output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
+  if ( output == NULL )
+  {
+    printf("ACM1 is NULL, trying ACM0.\n");
+    output = fopen("/dev/ttyACM0", "w");
+    if (output == NULL)
+    {
+      printf("ACM0 is also NULL. Exiting.\n");
+      return (void*) 1;
+    }
+  }
+
+  cpSleep(100);
+  fprintf(output,"%c",0xfe);
+  fprintf(output,"%c",0x88);
+
+  //the rest are numbers  
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x01);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x04);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x09);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x10);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x19);
+  fprintf(output,"%c",0x00);
+
+  //modified value 6
+  //fprintf(output,"%c",0x24);
+  fprintf(output,"%c",0xFE); // escape byte
+  fprintf(output,"%c",0xFE); // tells teensy the value actually is 254
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x31);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x40);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x51);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x64);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x79);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x90);
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0xA9);
+  fprintf(output,"%c",0x00);
+
+  fflush(output);
+  fclose(output);
+
+}
+
+#else
+
+int main()
+{
+  printf("Squares Serial Test\n");
+  #warning "Squares Serial Test"
+  output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
+  if ( output == NULL )
+  {
+    printf("ACM1 is NULL, trying ACM0.\n");
+    output = fopen("/dev/ttyACM0", "w");
+    if (output == NULL)
+    {
+      printf("ACM0 is also NULL. Exiting.\n");
+      return (void*) 1;
+    }
+  }
+
+  cpSleep(100);
+
+  //header bytes
+  fprintf(output,"%c",0xfe);
+  fprintf(output,"%c",0x88);
+
+  //the rest are numbers  
+  fprintf(output,"%c",0x00);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x01);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x04);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x09);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x10);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x19);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x24);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x31);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x40);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x51);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x64);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x79);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0x90);
+  fprintf(output,"%c",0x00);
+
+  fprintf(output,"%c",0xA9);
+  fprintf(output,"%c",0x00);
+
+  fflush(output);
+  fclose(output);
+}
+
+#endif
 
 int main()
 {

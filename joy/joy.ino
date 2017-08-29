@@ -1,5 +1,5 @@
 
-//#define JOY_SEND_DEBUG_ASCII //uncomment for some debugging information printed
+#define JOY_SEND_DEBUG_ASCII //uncomment for some debugging information printed
 
 #include "jt-constants.h"
 
@@ -270,7 +270,8 @@ void sport_telemetry()
     {
       #ifdef JOY_SEND_DEBUG_ASCII
         Serial.print("Gotten Behind by ");
-        Serial.print(((uint16_t) updateStoreIndex- updateSentIndex));
+        int printdiff = ((uint16_t) updateStoreIndex- updateSentIndex);
+        Serial.print(printdiff);
         Serial.print(" and curr index is ");
       #endif
 
