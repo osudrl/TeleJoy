@@ -70,7 +70,6 @@ void sendBuffer(uint8_t* buf, int filled)
 
 void* serial_write()
 {
-  
   output = fopen("/dev/ttyACM1", "w");     //open the terminal screen
   if ( output == NULL )
   {
@@ -79,32 +78,35 @@ void* serial_write()
     if (output == NULL)
     {
       printf("ACM0 is also NULL. Exiting.\n");
-      return 1;
+      return (void*) 1;
     }
   }
-  cpSleep(2000);
+  cpSleep(100);
   while(true)
   {
     for(int i = 0; i < tele_DATA_COUNT; i+=1 )
     {
       int currMod = sourceInts[i];
-      if (i == 7)
-        currMod = 1010;
+/*      if (i == 7)
+        currMod = 1077;
       else if (i == 9)
-        currMod = (cpMillis()+1500)/3000;
+        currMod = 1099;
+      else if (i == 10)
+        currMod = 8;
       else if (i == 11)
-        currMod = cpMillis()/10000;
+        currMod = 9;
+      else if (i == 12)
+        currMod = 10;
       else
-        currMod = ((cpMillis()+(i*100)) / 1000);
-
-      if(currMod == 2313)
-        printf("im currently doing a bad");
-
+        currMod = cpMillis()/1000;
+*/     
+      currMod = i+10;
       sourceInts[i] = currMod;
     }
     int howMany = build_escaped_buffer(sourceInts,printBuffer);
     sendBuffer(printBuffer, howMany);
-    cpSleep(15);
+    cpSleep(100);
+    break;
   }
   fclose(output);
 }
