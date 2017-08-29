@@ -551,6 +551,10 @@ gcc sdl-example.c -lSDL2
 
 Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
 
+## Other Examples
+
+>TODO provide docs on other examples in the serial folder
+
 # Feedback
 
 Written by [Kevin Kellar](https://github.com/kkevlar) for Oregon State University's [Dynamic Robotics Laboratory](http://mime.oregonstate.edu/research/drl/).  For issues, comments, or suggestions with this guide, contact the developer or open an issue.
