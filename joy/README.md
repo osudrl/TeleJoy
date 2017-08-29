@@ -78,6 +78,8 @@ Num | Name | Usage
 This function is called by tryUsbInput() to process a byte which is guaranteed to be the actual data that was intended to be sent over USB Serial.
 If there was no escaping/headers required for updating packets of telemetry data, then each individual byte of data could be passed to this function.  
 
+#### Procedures
+
 As per the USB Serial updating protcol (number 4 in the repository's README), the least significant byte is sent first, followed by the most significant byte.
 The function has three different operations based on the current state.
 
@@ -87,7 +89,11 @@ Bail | Current index is invalid | Do nothing with the byte
 Set LSB | Current index is valid **and** LSB **not** set | Save the lsb for later and remember that LSB has been set
 Set MSB | Current index valid **and** LSB **is** set | Construct a `int16_t` from the two bytes, increment index
 
+#### "Current Index"
+
 >TODO: Explain the index
+
+#### Update Indecies Buffer
 
 >TODO: Explain the updateIndeciesBuffer
 
