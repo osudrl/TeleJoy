@@ -1,1 +1,1 @@
-gcc *.c -lpthread
+gcc *.c -lSDL2 -lm -pthread
