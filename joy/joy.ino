@@ -1,5 +1,5 @@
 
-//#define JOY_SEND_DEBUG_ASCII //uncomment for some debugging information printed
+// #define JOY_SEND_DEBUG_ASCII
 
 #include "jt-constants.h"
 
@@ -79,10 +79,6 @@ void sport_flushInputBuffer(void)
 {
   while (Serial3.available())
     Serial3.read();
-  usb_wasEscaped = false;
-  usb_currIndex = -1;
-  usb_lsbSet = false;
-  usb_lsb = 0;
 }
 
 void sport_setRX()
@@ -270,7 +266,8 @@ void sport_telemetry()
     {
       #ifdef JOY_SEND_DEBUG_ASCII
         Serial.print("Gotten Behind by ");
-        Serial.print(((uint16_t) updateStoreIndex- updateSentIndex));
+        int printdiff = ((uint16_t) updateStoreIndex- updateSentIndex);
+        Serial.print(printdiff);
         Serial.print(" and curr index is ");
       #endif
 
@@ -294,8 +291,10 @@ void sport_setup()
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
 	sport_hdInit();
-  Serial.begin(9600);
-  Serial.println("INIT");
+  Serial.begin(9600);     //will actually be at 1.2M baud or something see Teensy site
+  #ifdef JOY_SEND_DEBUG_ASCII
+    Serial.println("INIT"); 
+  #endif
 }
 
 void sport_loop() 
