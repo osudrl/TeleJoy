@@ -56,20 +56,22 @@ See the section in the README [on half duplexing](https://github.com/osudrl/Tele
 
 Sends a reply packet to update a value id with new data.  This function is called by `sport_telemetry()`.
 
-Arguments:
+#### Arguments
 
 Num | Name | Usage
 --- | --- | ---
 0 | id | The value id being updated.  See [tele_ids](https://github.com/osudrl/TeleJoy/tree/master/joy#telemetry-arrays) for the valid value ids that may be used for the current setup
 1 | val | The value that will display on the TARANIS given the current id.  Although the fuction takes a uint32_t and four value bytes are sent over the half-duplexed line as per the SPORT protocol, testing has only gotten a signed 16 bit integer to work, with the last two bytes that are sent on the half-duplexed line being zeros. 
 
-Function procedures:
+#### Function procedures 
 1. Create a sport_reply_packet type and fill it with the information from the arguments
 2. Set the half-duplexed line to TX mode.
 3. Generate the checksum byte based on the current reply paket
 4. Iterate over all the bytes in the packet and add the byte to the out buffer.  If the byte needs to be escaped according to the SPORT protocol, add the proper bytes to the out buffer.
 5. Write the out buffer to the Serial3 UART
 6. Put the half-duplexed line (Serial3) into RX mode.
+
+> See the [SPORT protocol section](https://github.com/osudrl/TeleJoy/#sport-23) in the TeleJoy README for more information.
 
 ### usb_addSafeByte()
 
