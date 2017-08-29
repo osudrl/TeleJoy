@@ -1,5 +1,5 @@
 
-#define JOY_SEND_DEBUG_ASCII //uncomment for some debugging information printed
+// #define JOY_SEND_DEBUG_ASCII
 
 #include "jt-constants.h"
 
@@ -295,8 +295,10 @@ void sport_setup()
 	pinMode(13, OUTPUT);
 	digitalWrite(13,LOW);
 	sport_hdInit();
-  Serial.begin(9600);
-  Serial.println("INIT");
+  Serial.begin(9600);     //will actually be at 1.2M baud or something see Teensy site
+  #ifdef JOY_SEND_DEBUG_ASCII
+    Serial.println("INIT"); 
+  #endif
 }
 
 void sport_loop() 
