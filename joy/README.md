@@ -57,6 +57,7 @@ See the section in the README [on half duplexing](https://github.com/osudrl/Tele
 Sends a reply packet to update a value id with new data.  This function is called by `sport_telemetry()`.
 
 Arguments:
+
 Num | Name | Usage
 --- | --- | ---
 0 | id | The value id being updated.  See [tele_ids](https://github.com/osudrl/TeleJoy/tree/master/joy#telemetry-arrays) for the valid value ids that may be used for the current setup
