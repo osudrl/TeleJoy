@@ -92,15 +92,15 @@ The above image shows:
 
 #### tryUsbInput()
 
-The job of `tryUsbInput()` sort out telemtry data from headers and escape bytes.  It has the following flow:
+The job of `tryUsbInput()` is to sort out telemtry data from headers and escape bytes.  It has the following flow:
 
 <img src="http://i.imgur.com/ugFIKXG.png" width="600">
-
-#### addSafeByte()
 
 `usb_addSafeByte()` is called by `tryUsbInput()` to process a byte which is guaranteed to be the actual data (**blue X** in the diagram above) that was intended to be sent over USB Serial.
 
 >If no escaping/headers was required for updating packets of telemetry data, then each individual byte of data could be passed to `usb_addSafeByte()`.  
+
+#### addSafeByte()
 
 As per the USB Serial updating protcol (number 4 in the main README), the least significant byte is sent first, followed by the most significant byte.
 `usb_addSafeByte()` has three different operations based on the current state.
@@ -115,10 +115,17 @@ The following flowchart illustrates the information in the above table:
 
 <img src="http://i.imgur.com/N8mYxGk.png" width="600">
 
+Unless is valid header is seen in tryUsbInput(), the currentIndex will be -1, which is invalid, and all the bytes will get ignored.
+
+Most importantly, `addSafeByte()` is the only method which directly updates the `tele_data[]` array as shown in the [joy master flowchart](http://i.imgur.com/4GLNSDM.png). 
 
 ### sport_telemetry()
 
+Sport telemetry reads and recieves the request packets over serial from the radio reciever.  It checks to make sure that these packets are valid, and then, if valid, can decide to send a response packet which will update the telemetry value for a specific value id.
+
 <img src="http://i.imgur.com/EhLFhsw.png" width="600">
+
+>The table in the above diagram checks that the sensor id is 0x22 because that is the [currently (when this documentation was written)](https://github.com/osudrl/TeleJoy/blob/a3defc924a38f9ea9222f368a4a72c7ff03cf73e/joy/joy.ino#L7) single sensor id that the code tests for. 
 
 ### sport_setup()
 
