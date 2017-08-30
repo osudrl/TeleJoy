@@ -123,7 +123,7 @@ Most importantly, `addSafeByte()` is the only method which directly updates the 
 
 Sport telemetry reads and recieves the request packets over serial from the radio reciever.  It checks to make sure that these packets are valid, and then, if valid, can decide to send a response packet which will update the telemetry value for a specific value id.
 
-<img src="http://i.imgur.com/EhLFhsw.png" width="600" align="middle">
+<img src="http://i.imgur.com/EhLFhsw.png" width="600">
 
 The table in the above diagram checks that the sensor id is 0x22 because that is the [currently (when this documentation was written)](https://github.com/osudrl/TeleJoy/blob/a3defc924a38f9ea9222f368a4a72c7ff03cf73e/joy/joy.ino#L7) single sensor id that the code tests for. 
 
