@@ -135,7 +135,10 @@ This function is called by the arduino function `setup()`.  It sets up the "spor
 
 Calls tryUsbInput() and sport_telemetry() if applicable so they can be constantly testing their inputs.  
 
-It also turns off the onboard LED on the Teensy every 10 seconds.  In `sport_telemetry()`, the led is turned back on, so if `sport_telemetry()` is never called because no more requests are coming in on the Serial3 UART, then the onboard LED will stay off.  In the past, not following the expected SPORT protocol with the radio reciever would cause it to stop sending request packets- ending all telemetry data exchange.  If this happens, there will be an indication by the onbard LED not lighting.
+It also turns off the onboard LED on the Teensy every 10 seconds.
+In `sport_telemetry()`, the led is turned back on, so if `sport_telemetry()` is never called because no more requests are coming in on the Serial3 UART, then the onboard LED will stay off.
+A past, bugged version of the joy sketch would not properly follow the expected SPORT protocol with the radio reciever, and the radio reciever would stop sending request packets- ending all telemetry data exchange.
+If this happens, there will be an indication by the onbard LED not lighting.
 
 ## Controller / SBUS Functions
 
@@ -146,6 +149,14 @@ It also turns off the onboard LED on the Teensy every 10 seconds.  In `sport_tel
 ### sendJoyOutput()
 
 ### mapAnalog()
+
+Source | Left Range | Right Range
+---|---|---
+.analog[] from sbus_ data_ t | -820 to 0 | 0 to 820
+Sent to USB Joystick (`Joystick.`) | \~3950 to 32975\* | \*32975 to ~62000
+Recieved in SDL `SDL_ Joystick Get Axis()` | -32768 to 0 | 0 to 32768
+
+![axes transformations](http://i.imgur.com/MrhnZZ2.png)
 
 ### sbus_loop()
 
