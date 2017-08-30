@@ -90,6 +90,12 @@ The above image shows:
 3. Those bytes are sent over USB serial
 4. tryUsbInput recieves those bytes and rebuilds the original desired telemetry values
 
+#### tryUsbInput()
+
+The job of `tryUsbInput()` sort out telemtry data from headers and escape bytes.  It has the following flow:
+
+<img src="http://i.imgur.com/ugFIKXG.png" width="600">
+
 #### addSafeByte()
 
 `usb_addSafeByte()` is called by `tryUsbInput()` to process a byte which is guaranteed to be the actual data (**blue X** in the diagram above) that was intended to be sent over USB Serial.
@@ -108,13 +114,6 @@ Set MSB | Current index valid **and** LSB **is** set | Construct a `int16_t` fro
 The following flowchart illustrates the information in the above table:
 
 <img src="http://i.imgur.com/N8mYxGk.png" width="600">
-
-
-#### tryUsbInput()
-
-The job of `tryUsbInput()` sort out telemtry data from headers and escape bytes.  It has the following flow:
-
-<img src="http://i.imgur.com/ugFIKXG.png" width="600">
 
 
 ### sport_telemetry()
