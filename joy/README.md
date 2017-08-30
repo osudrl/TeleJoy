@@ -163,8 +163,8 @@ Passing an axis value of 3950 to `Joystick.slider()` or `Joystick.X()` results i
 
 \*When testing, the operating system was creating an artificial deadzone around the neutral position **(0 in SDL)**.
 When passing any value within 3800 values of 32975, the mean ((62000-3950) /2 =**32975**), jstest would show the axis at 0.
-For all values from **29175 to 36775** that were passed to the Teensy Joystick interface, the result in jstest would be **0**.
-To counteract this software-enforced deadzone, no values from **29175 to 36775** are sent to the Joystick interface, and instead the **left** (negative) values are mapped from  **[-820 to 0]** to **[3950 to 29175]** and the **right** (positive) values are mapped from **[0 to 820]** to **[36775 to 62000]**.
+For all values from **29175 to 36775** that were passed to the Teensy `Joystick` interface, the result in jstest would be **0**.
+To counteract this software-enforced deadzone, no values from **29175 to 36775** are sent to the `Joystick` interface, and instead the **left** (negative) values are mapped from  **[-820 to 0]** to **[3950 to 29175]** and the **right** (positive) values are mapped from **[0 to 820]** to **[36775 to 62000]**.
 The mapping and transformation of the analog axis data is illustrated in the below diagram and is able to be tweaked (or turned off) by modifying the `DEADZONE_MITIGATION_CONSTANT` defined at the top of the joy sketch.
 
 ![axes transformations](http://i.imgur.com/MrhnZZ2.png)
