@@ -129,9 +129,17 @@ The table in the above diagram checks that the sensor id is 0x22 because that is
 
 ### sport_setup()
 
+This function is called by the arduino function `setup()`.  It sets up the "sport" side of the code.  Most notably, it calls `sport_hdInit()` which sets up the Serial3 UART to be half-duplexed.
+
 ### sport_loop()
 
+Calls tryUsbInput() and sport_telemetry() if applicable so they can be constantly testing their inputs.  
+
+It also turns off the onboard LED on the Teensy every 10 seconds.  In `sport_telemetry()`, the led is turned back on, so if `sport_telemetry()` is never called because no more requests are coming in on the Serial3 UART, then the onboard LED will stay off.  In the past, not following the expected SPORT protocol with the radio reciever would cause it to stop sending request packets- ending all telemetry data exchange.  If this happens, there will be an indication by the onbard LED not lighting.
+
 ## Controller / SBUS Functions
+
+
 
 ### sbus_decode_packet() 
 
