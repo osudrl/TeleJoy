@@ -153,7 +153,7 @@ If this happens, there will be an indication by the onbard LED not lighting.
 Source | Left Range | Right Range
 ---|---|---
 .analog[ ] from sbus_data_t | -820 to 0 | 0 to 820
-Sent to USB Joystick (`Joystick.`) | \~3950 to 32975\* | \*32975 to ~62000
+Sent to USB Joystick (`Joystick.`) | \~3950 to 32975\* | 32975\* to ~62000
 Recieved in SDL `SDL_JoystickGetAxis()` | -32768 to 0 | 0 to 32768
 
 The approximate values above are determined from experimenting with the joy code and interfacing it with the jstest program.
@@ -161,10 +161,10 @@ Their values are set in the constants at the top of joy.ino but can be tuned or 
 
 Passing an axis value of 3950 to `Joystick.slider()` or `Joystick.X()` results in the leftmost value (-32768) observed in SDL, and passing a value of 62000 to the Joystick interface on the Teensy will result in the rightmost value (32768) read in SDL. 
 
-However, when testing, the operating system was creating an artificial deadzone around the neutral position (0 in SDL).
-When passing any value within 3800 of 32975, the mean ((62000-3950) /2 =32975), jstest would show the axis at 0.
-For all values from 29175 to 36775 that were passed to the Teensy Joystick interface, the result in jstest would be 0.
-To counteract this software-enforced deadzone, no values from 29175 to 36775 are sent to the Joystick interface, and instead the left (negative) values are mapped from [-820 to 0] to [3950 to 29175] and the right (positive) values are mapped from [0 to 820] to [36775 to 62000].  
+\*When testing, the operating system was creating an artificial deadzone around the neutral position **(0 in SDL)**.
+When passing any value within **3800 of 32975**, the mean ((62000-3950) /2 =**32975**), jstest would show the axis at 0.
+For all values from **29175 to 36775** that were passed to the Teensy Joystick interface, the result in jstest would be **0**.
+To counteract this software-enforced deadzone, no values from **29175 to 36775** are sent to the Joystick interface, and instead the **left** (negative) values are mapped from  **[-820 to 0]** to **[3950 to 29175]** and the **right** (positive) values are mapped from **[0 to 820]** to **[36775 to 62000]**.
 The mapping and transformation of the analog axis data is illustrated in the below diagram and is able to be tweaked (or turned off) by modifying the `DEADZONE_MITIGATION_CONSTANT` defined at the top of the joy sketch.
 
 ![axes transformations](http://i.imgur.com/MrhnZZ2.png)
