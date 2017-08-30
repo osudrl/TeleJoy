@@ -73,31 +73,35 @@ Num | Name | Usage
 
 > See the [SPORT protocol section](https://github.com/osudrl/TeleJoy/#sport-23) in the TeleJoy README for more information.
 
-### usb_addSafeByte()
+### Setting Telemetry Values (Protocol 4)
 
-This function is called by tryUsbInput() to process a byte which is guaranteed to be the actual data that was intended to be sent over USB Serial.
+The two functions that deal with updating the telemetry values are `usb_addSafeByte()` and `sport_tryUsbInput()`.
+
+![bytes](http://i.imgur.com/KtNfuiW.png)
+
+The above image shows how the integers that are intended to be set to the telemetry data on the TARANIS controller are sent as individual bytes and then parsed and recombined to construct the fourteen integers that were sent.
+
+`usb_addSafeByte()` is called by `tryUsbInput()` to process a byte which is guaranteed to be the actual data **(blue X in the diagram above)** that was intended to be sent over USB Serial.
 If there was no escaping/headers required for updating packets of telemetry data, then each individual byte of data could be passed to this function.  
 
-#### Procedures
-
-As per the USB Serial updating protcol (number 4 in the repository's README), the least significant byte is sent first, followed by the most significant byte.
-The function has three different operations based on the current state.
+As per the USB Serial updating protcol (number 4 in the main README), the least significant byte is sent first, followed by the most significant byte.
+`usb_addSafeByte()` has three different operations based on the current state.
 
 Name | Conditions | Actions
 --- | --- | ---
-Bail | Current index is invalid | Do nothing with the byte
+Bail | Current index **(red #s above)** is invalid | Do nothing with the byte
 Set LSB | Current index is valid **and** LSB **not** set | Save the lsb for later and remember that LSB has been set
 Set MSB | Current index valid **and** LSB **is** set | Construct a `int16_t` from the two bytes, increment index
 
-#### "Current Index"
+The job of tryUsbInput() sort out telemtry data from headers and escape bytes.  It has the following flow.
 
->TODO: Explain the index
+![try flow](http://i.imgur.com/ugFIKXG.png)
 
 #### Update Indecies Buffer
 
 >TODO: Explain the updateIndeciesBuffer
 
-### sport_tryUsbInput()
+### 
 
 ### sport_telemetry()
 
