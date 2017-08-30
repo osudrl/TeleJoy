@@ -24,9 +24,8 @@ See the proper [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) towa
 
 To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
 
-<b>
-If all of the hardware that was used in development has remained unchaned and the Teensy's program has not yet been overwritten, skip to the [testing section](https://github.com/osudrl/TeleJoy#testing-the-virtual-joystick) or, more speficially, the testing [using the C SDL library](https://github.com/osudrl/TeleJoy#sdl2-in-c) section.
-</b>
+
+**If all of the hardware that was used in development has remained unchaned and the Teensy's program has not yet been overwritten, skip to the [testing section](https://github.com/osudrl/TeleJoy#testing-the-virtual-joystick) or, more speficially, the testing [using the C SDL library](https://github.com/osudrl/TeleJoy#sdl2-in-c) section.**
 
 1. Teensyduino setup (Teensy for the Arduino IDE)
 2. Patching teensy cores to allow for more axes to be sent to the operating system
