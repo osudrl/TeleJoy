@@ -93,7 +93,7 @@ Bail | Current index **(red #s above)** is invalid | Do nothing with the byte
 Set LSB | Current index is valid **and** LSB **not** set | Save the lsb for later and remember that LSB has been set
 Set MSB | Current index valid **and** LSB **is** set | Construct a `int16_t` from the two bytes, increment index
 
-The job of tryUsbInput() sort out telemtry data from headers and escape bytes.  It has the following flow.
+The job of `tryUsbInput()` sort out telemtry data from headers and escape bytes.  It has the following flow:
 
 ![try flow](http://i.imgur.com/ugFIKXG.png)
 
