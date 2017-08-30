@@ -79,7 +79,7 @@ Num | Name | Usage
 
 The two functions that deal with updating the telemetry values are `usb_addSafeByte()` and `sport_tryUsbInput()`.
 
-![bytes](http://i.imgur.com/KtNfuiW.png)
+<img src="http://i.imgur.com/KtNfuiW.png" width="600">
 
 The above image shows 
 
@@ -90,7 +90,7 @@ The above image shows
 
 #### addSafeByte()
 
-`usb_addSafeByte()` is called by `tryUsbInput()` to process a byte which is guaranteed to be the actual data **(blue X in the diagram above)** that was intended to be sent over USB Serial.
+`usb_addSafeByte()` is called by `tryUsbInput()` to process a byte which is guaranteed to be the actual data (**blue X** in the diagram above) that was intended to be sent over USB Serial.
 
 >If no escaping/headers was required for updating packets of telemetry data, then each individual byte of data could be passed to `usb_addSafeByte()`.  
 
@@ -99,7 +99,7 @@ As per the USB Serial updating protcol (number 4 in the main README), the least 
 
 Name | Conditions | Actions
 --- | --- | ---
-Bail | Current index **(red #s above)** is invalid | Do nothing with the byte
+Bail | Current index (**red #s** above) is invalid | Do nothing with the byte
 Set LSB | Current index is valid **and** LSB **not** set | Save the lsb for later and remember that LSB has been set
 Set MSB | Current index valid **and** LSB **is** set | Construct a `int16_t` from the two bytes, increment index
 
