@@ -142,11 +142,15 @@ If this happens, there will be an indication by the onbard LED not lighting.
 
 ## Controller / SBUS Functions
 
-
+The second half of the program (roughly the bottom half of [the flowchart](http://i.imgur.com/4GLNSDM.png)) deals with the current state of the radio controller and relaying those states to the `Joystick` interface on the Teensy which allows the Teensy to act like a proper Joystick device that can be interfaced with using libraries such as SDL.
 
 ### sbus_decode_packet() 
 
+As illustrated in the [joy flowchart](http://i.imgur.com/4GLNSDM.png), the `sbus_decode_packet()` function takes a buffer of 25 bytes of data that was recieved from the reciever's SBUS line and decodes it to fill a `sbus_data_t` struct which contains the current states of the 16 analog axes.  Is called by `sport_loop` and `sendJoyOutput()` is called by `sport_loop()` after this function returns.
+
 ### sendJoyOutput()
+
+This function is left out of the [joy flowchart](http://i.imgur.com/4GLNSDM.png) but is responsible for sending the data from the newly updated `sbus_data_t` struct to the Teensy`Joystick` interface.  `sendJoyOutput()` is called right after `sbus_decode_packet()` returns by `sbus_loop()` and each analog axis in the sbus data struct is translated to an axis on the emulated `Joystick` and then sent over USB.
 
 ### mapAnalog()
 
@@ -171,8 +175,11 @@ The mapping and transformation of the analog axis data is illustrated in the bel
 
 ### sbus_loop()
 
+`sbus_loop()` is called by the Arduino-mandated `loop()` function.
+
 ### sbus_setup()
 
+Sets up the Serial1 UART so that it can RX data sent over the SBUS line from the radio reciever.  The protocol and baudrate that is used by the SBUS protocol is unusual and specific so [this line](https://github.com/osudrl/TeleJoy/blob/a3defc924a38f9ea9222f368a4a72c7ff03cf73e/joy/joy.ino#L438) is needed to properly setup Serial1.
 
 
 
