@@ -79,9 +79,9 @@ Num | Name | Usage
 
 The two functions that deal with updating the telemetry values are `usb_addSafeByte()` and `sport_tryUsbInput()`.
 
-<img src="http://i.imgur.com/KtNfuiW.png" width="600">
+![prot4 bytes](http://i.imgur.com/KtNfuiW.png)
 
-The above image shows 
+The above image shows:
 
 1. How the intended telemetry data is filled into an array
 2. This data is converted a longer array of single bytes
@@ -107,15 +107,15 @@ Set MSB | Current index valid **and** LSB **is** set | Construct a `int16_t` fro
 
 The job of `tryUsbInput()` sort out telemtry data from headers and escape bytes.  It has the following flow:
 
-![try flow](http://i.imgur.com/ugFIKXG.png)
+<img src="http://i.imgur.com/ugFIKXG.png" width="600">
 
 #### Update Indecies Buffer
 
 >TODO: Explain the updateIndeciesBuffer
 
-### 
-
 ### sport_telemetry()
+
+TODO
 
 ### sport_setup()
 
