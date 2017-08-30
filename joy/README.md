@@ -105,16 +105,19 @@ Bail | Current index (**red #s** above) is invalid | Do nothing with the byte
 Set LSB | Current index is valid **and** LSB **not** set | Save the lsb for later and remember that LSB has been set
 Set MSB | Current index valid **and** LSB **is** set | Construct a `int16_t` from the two bytes, increment index
 
+<img src="http://i.imgur.com/N8mYxGk.png" width="500">
+
+
 #### tryUsbInput()
 
 The job of `tryUsbInput()` sort out telemtry data from headers and escape bytes.  It has the following flow:
 
-<img src="http://i.imgur.com/ugFIKXG.png" width="400">
+<img src="http://i.imgur.com/ugFIKXG.png" width="500">
 
 
 ### sport_telemetry()
 
-<img src="http://i.imgur.com/EhLFhsw.png" width="600">
+<img src="http://i.imgur.com/EhLFhsw.png" width="500">
 
 ### sport_setup()
 
