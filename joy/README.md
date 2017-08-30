@@ -1,5 +1,7 @@
 # Joy Sketch Documentation
 
+![joy sketch flow](http://i.imgur.com/4GLNSDM.png)
+
 The Joy sketch is intended to be uploaded to a Teensy 3.2 to perform the following tasks.
 
 1. Recieve information about the current state of the radio controller (axes, buttons, etc.) and relay that information as a virtual joystick device to be interfaced with using libraries such as SDL.
@@ -107,15 +109,12 @@ Set MSB | Current index valid **and** LSB **is** set | Construct a `int16_t` fro
 
 The job of `tryUsbInput()` sort out telemtry data from headers and escape bytes.  It has the following flow:
 
-<img src="http://i.imgur.com/ugFIKXG.png" width="600">
+<img src="http://i.imgur.com/ugFIKXG.png" width="400">
 
-#### Update Indecies Buffer
-
->TODO: Explain the updateIndeciesBuffer
 
 ### sport_telemetry()
 
-TODO
+<img src="http://i.imgur.com/EhLFhsw.png" width="600">
 
 ### sport_setup()
 
