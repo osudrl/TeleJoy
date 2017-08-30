@@ -20,6 +20,119 @@ See the proper [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) towa
 * [serial](https://github.com/osudrl/TeleJoy/tree/master/serial): A simple C program to send telemetry values to the Teensy and in turn to the controller.  Use as an example of how to change the Telemetry values over USB Serial.
 * [rulesetup](https://github.com/osudrl/TeleJoy/blob/master/rulesetup.sh): A simple shell script to update the linux udev rules to properly upload to the Teensy with Teensyduino.
 
+# Setup Guide
+
+To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
+
+<b>
+If all of the hardware that was used in development has remained unchaned and the Teensy's program has not yet been overwritten, skip to the [testing section](https://github.com/osudrl/TeleJoy#testing-the-virtual-joystick) or, more speficially, the testing [using the C SDL library](https://github.com/osudrl/TeleJoy#sdl2-in-c) section.
+</b>
+
+1. Teensyduino setup (Teensy for the Arduino IDE)
+2. Patching teensy cores to allow for more axes to be sent to the operating system
+3. Uploading the source to the teensy
+4. Binding with the TARANIS plus
+5. Testing the teensy's output
+
+## Teensy installation for Arduino IDE
+
+Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere in your home folder.  Next, download and install the Teensyduino add-on from the [PJRC download page](https://www.pjrc.com/teensy/td_download.html) and select the folder where the Arduino IDE was installed.  Install everything that Teensyduino has to offer (default).
+
+### Udev Rules
+
+On Linux, follow the instructions in Step2 on the [download page](https://www.pjrc.com/teensy/td_download.html) to setup proper udev rules for the Teensy.
+
+Alternatively, run `bash rulesetup.sh` in the repository directory to have a shell script do the process described in the PJRC page's "Step2".
+
+If Teensyduino is having problems properly uploading to the Teensy, your linux user may need to be added to the dialout group as [described here](https://askubuntu.com/questions/58119/changing-permissions-on-serial-port).
+
+## Allow for "Extreme Joystick"
+
+Navigate to the Arduino/Teensyduino installation, and open `hardware/teensy/avr/cores/teensy3/usb_desc.h` in a text editor.  The line numbers below might be different with newer versions of Teensyduino, but find the `JOYSTICK_SIZE` definition under the `USB_SERIAL_HID` line and change the size from 12 to 64.
+
+```c
+#ifndef _usb_desc_h_
+#define _usb_desc_h_
+
+// Scroll to line 215
+
+#elif defined(USB_SERIAL_HID)
+
+// Scroll to line 252
+
+#define JOYSTICK_ENDPOINT     6
+#define JOYSTICK_SIZE         64	//  12 = normal, 64 = extreme joystick
+#define JOYSTICK_INTERVAL     1
+
+```
+
+Once extreme joystick is set by `#define JOYSTICK_SIZE 64`, the teensy should be able relay enough joystick axes to the operating system.
+
+## Uploading to the Teensy
+
+To upload the joy sketch (`TeleJoy/joy/joy.ino`) to the Teensy, reference the [PJRC page on Teensyduino usage](https://www.pjrc.com/teensy/td_usage.html) to complete the following steps:
+
+1. Connect the Teensy board to the computer via micro-usb
+2. Open the telejoy.ino sketch in the Arduino IDE
+3. Select `Teensy 3.2 / 3.1` from `Tools -> Boards`
+4. Select `Serial + Keyboard + Mouse + Joystick` from `Tools -> USB Type`
+  * The sketch may need to be uploaded to the board first before this option becomes availible
+5. Upload the sketch to the Teensy as explained on the PJRC page linked above
+6. Ensure that `Serial + Keyboard + Mouse + Joystick` is still selected from `Tools -> USB Type`
+
+That's it! The telejoy code should now be loaded onto the Teensy.
+
+## Binding with the TARANIS plus
+
+The TARANIS plus controller:
+
+<img src="http://cdn.shopify.com/s/files/1/0412/2761/products/taranis-x9d-plus3_grande.jpg?v=1468705173" width="400"> 
+
+When the reciever is searching for a controller to bind to, the **red LED will flash about once a second**.  If the red LED is solid, it may need to be put into binding mode by holding down the button on the bottom right of the chip while simultaneously plugging in the power for the device, and then releasing the button.
+
+While properly bound to a controller and recieving data, the reciever will keep the green LED lit:
+
+<img src="http://i.imgur.com/f1CMw7O.jpg?1" width="600">
+
+If there are issues getting the reciever properly bound to the radio controller, the following steps, as detailed in this [video tutorial](https://www.youtube.com/watch?v=1IYg5mQdLVI) may fix the issue: 
+1. Create/duplicate a new model in the TARANIS `MENU` 
+2. In that new model's `PAGE`, towards the bottom, set the `Channel Range` to `Ch1-16` 
+3. A different `Recivever No.` may be selected (currently `1` is selected) 
+4. Press `ENT` while `BIND` is highlighted.  Try binding while the reciever is on, off, being turned on, and being turned off until the green LED lights and stays lit as shown in the above example image.
+
+## Testing the virtual joystick
+
+### jstest
+
+The easiest way to test the output of the Teensy as a joystick input device is with the application jstest-gtk, availible via aptitude.
+
+```shell
+sudo apt install jstest-gtk
+# Check that the Teensy is connected and that the TARANIS is properly bound.
+jstest-gtk
+```
+If no joysticks show up, check that the right usb type was selected when uploading to the board.
+
+If more than one joysticks show up in the jstest application, only one will work.  In my tests, js1 was the proper board.
+
+### SDL2 in C
+
+First, install SDL2.
+
+```shell
+sudo apt install libsdl2-dev
+```
+Next, compile and run sdl-example.c
+
+```shell
+gcc sdl-example.c -lSDL2
+./a.out
+```
+
+Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
+
+**TODO INCOMPLETE**
+
 # Six Serial Protocols
 
 > When [links to code snippets](https://github.com/osudrl/TeleJoy/blob/552806b4f3a114bf1baaf2a7d394ab663f4caab5/telejoy/telejoy.ino#L60) from this project's source are included in this secion, they link to **outdated snapshots of the source code**.  Do not copy/paste source code from these linked files or try to use the code that is not highlited in yellow by the snippet link.  The **highlighted code provides an example or context** for some feature that is explained in the documentation.  For the most up-to-date version of the code to work with, see [the master branch](https://github.com/osudrl/TeleJoy/tree/master/).
@@ -449,119 +562,6 @@ If the proper USB HID is selected in the Usb Type menu in the Teensyduino softwa
 ## Serial Debug Information (6)
 
 Although the Teensy reads individual bytes of hex from USB serial as input to change the data that is send to the telemetry menu, the debug output over USB serial is in ASCII.  Each byte that is sent should be read as an ASCII character and can be displayed to stdout or ignored based on the needs of the client program.
-
-# Setup Guide
-
-To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
-
-<b>
-If all of the hardware that was used in development has remained unchaned and the Teensy's program has not yet been overwritten, skip to the [testing section](https://github.com/osudrl/TeleJoy#testing-the-virtual-joystick) or, more speficially, the testing [using the C SDL library](https://github.com/osudrl/TeleJoy#sdl2-in-c) section.
-</b>
-
-1. Teensyduino setup (Teensy for the Arduino IDE)
-2. Patching teensy cores to allow for more axes to be sent to the operating system
-3. Uploading the source to the teensy
-4. Binding with the TARANIS plus
-5. Testing the teensy's output
-
-## Teensy installation for Arduino IDE
-
-Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere in your home folder.  Next, download and install the Teensyduino add-on from the [PJRC download page](https://www.pjrc.com/teensy/td_download.html) and select the folder where the Arduino IDE was installed.  Install everything that Teensyduino has to offer (default).
-
-### Udev Rules
-
-On Linux, follow the instructions in Step2 on the [download page](https://www.pjrc.com/teensy/td_download.html) to setup proper udev rules for the Teensy.
-
-Alternatively, run `bash rulesetup.sh` in the repository directory to have a shell script do the process described in the PJRC page's "Step2".
-
-If Teensyduino is having problems properly uploading to the Teensy, your linux user may need to be added to the dialout group as [described here](https://askubuntu.com/questions/58119/changing-permissions-on-serial-port).
-
-## Allow for "Extreme Joystick"
-
-Navigate to the Arduino/Teensyduino installation, and open `hardware/teensy/avr/cores/teensy3/usb_desc.h` in a text editor.  The line numbers below might be different with newer versions of Teensyduino, but find the `JOYSTICK_SIZE` definition under the `USB_SERIAL_HID` line and change the size from 12 to 64.
-
-```c
-#ifndef _usb_desc_h_
-#define _usb_desc_h_
-
-// Scroll to line 215
-
-#elif defined(USB_SERIAL_HID)
-
-// Scroll to line 252
-
-#define JOYSTICK_ENDPOINT     6
-#define JOYSTICK_SIZE         64	//  12 = normal, 64 = extreme joystick
-#define JOYSTICK_INTERVAL     1
-
-```
-
-Once extreme joystick is set by `#define JOYSTICK_SIZE 64`, the teensy should be able relay enough joystick axes to the operating system.
-
-## Uploading to the Teensy
-
-To upload the joy sketch (`TeleJoy/joy/joy.ino`) to the Teensy, reference the [PJRC page on Teensyduino usage](https://www.pjrc.com/teensy/td_usage.html) to complete the following steps:
-
-1. Connect the Teensy board to the computer via micro-usb
-2. Open the telejoy.ino sketch in the Arduino IDE
-3. Select `Teensy 3.2 / 3.1` from `Tools -> Boards`
-4. Select `Serial + Keyboard + Mouse + Joystick` from `Tools -> USB Type`
-  * The sketch may need to be uploaded to the board first before this option becomes availible
-5. Upload the sketch to the Teensy as explained on the PJRC page linked above
-6. Ensure that `Serial + Keyboard + Mouse + Joystick` is still selected from `Tools -> USB Type`
-
-That's it! The telejoy code should now be loaded onto the Teensy.
-
-## Binding with the TARANIS plus
-
-The TARANIS plus controller:
-
-<img src="http://cdn.shopify.com/s/files/1/0412/2761/products/taranis-x9d-plus3_grande.jpg?v=1468705173" width="400"> 
-
-When the reciever is searching for a controller to bind to, the **red LED will flash about once a second**.  If the red LED is solid, it may need to be put into binding mode by holding down the button on the bottom right of the chip while simultaneously plugging in the power for the device, and then releasing the button.
-
-While properly bound to a controller and recieving data, the reciever will keep the green LED lit:
-
-<img src="http://i.imgur.com/f1CMw7O.jpg?1" width="600">
-
-If there are issues getting the reciever properly bound to the radio controller, the following steps, as detailed in this [video tutorial](https://www.youtube.com/watch?v=1IYg5mQdLVI) may fix the issue: 
-1. Create/duplicate a new model in the TARANIS `MENU` 
-2. In that new model's `PAGE`, towards the bottom, set the `Channel Range` to `Ch1-16` 
-3. A different `Recivever No.` may be selected (currently `1` is selected) 
-4. Press `ENT` while `BIND` is highlighted.  Try binding while the reciever is on, off, being turned on, and being turned off until the green LED lights and stays lit as shown in the above example image.
-
-## Testing the virtual joystick
-
-### jstest
-
-The easiest way to test the output of the Teensy as a joystick input device is with the application jstest-gtk, availible via aptitude.
-
-```shell
-sudo apt install jstest-gtk
-# Check that the Teensy is connected and that the TARANIS is properly bound.
-jstest-gtk
-```
-If no joysticks show up, check that the right usb type was selected when uploading to the board.
-
-If more than one joysticks show up in the jstest application, only one will work.  In my tests, js1 was the proper board.
-
-### SDL2 in C
-
-First, install SDL2.
-
-```shell
-sudo apt install libsdl2-dev
-```
-Next, compile and run sdl-example.c
-
-```shell
-gcc sdl-example.c -lSDL2
-./a.out
-```
-
-Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
-
-**TODO INCOMPLETE**
 
 # Feedback
 
