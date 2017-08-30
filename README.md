@@ -303,6 +303,8 @@ A valid packet needs to begin with the [header byte](https://github.com/osudrl/T
 
 Note that the two-byte values are built up from the two bytes that are sent from least significant to most significant.
 
+Documentation on how specficially the joy sketch decodes this packet can be found on the [joy documentation page](https://github.com/osudrl/TeleJoy/tree/master/joy#setting-telemetry-values-protocol-4)
+
 ### Examples
 
 #### Squares
@@ -452,6 +454,10 @@ Although the Teensy reads individual bytes of hex from USB serial as input to ch
 
 To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
 
+<b>
+If all of the hardware that was used in development has remained unchaned and the Teensy's program has not yet been overwritten, skip to the [testing section](https://github.com/osudrl/TeleJoy#testing-the-virtual-joystick) or, more speficially, the testing [using the C SDL library](https://github.com/osudrl/TeleJoy#sdl2-in-c) section.
+</b>
+
 1. Teensyduino setup (Teensy for the Arduino IDE)
 2. Patching teensy cores to allow for more axes to be sent to the operating system
 3. Uploading the source to the teensy
@@ -555,9 +561,7 @@ gcc sdl-example.c -lSDL2
 
 Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
 
-## Other Examples
-
->TODO provide docs on other examples in the serial folder
+**TODO INCOMPLETE**
 
 # Feedback
 
