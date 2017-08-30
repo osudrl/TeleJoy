@@ -156,7 +156,7 @@ Source | Left Range | Right Range
 Sent to USB Joystick (`Joystick.`) | \~3950 to 32975\* | 32975\* to ~62000
 Recieved in SDL `SDL_JoystickGetAxis()` | -32768 to 0 | 0 to 32768
 
-The approximate values above are determined from experimenting with the joy code and interfacing it with the jstest program.
+The **approximate values** above were determined **from experimenting** with the joy code and interfacing it with the **jstest program**.
 Their values are set in the constants at the top of joy.ino but can be tuned or changed as more testing is done and if any issues are found with the range or responsiveness.
 
 Passing an axis value of 3950 to `Joystick.slider()` or `Joystick.X()` results in the leftmost value (-32768) observed in SDL, and passing a value of 62000 to the Joystick interface on the Teensy will result in the rightmost value (32768) read in SDL. 
