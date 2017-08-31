@@ -133,6 +133,13 @@ Note that as of now, the only way to exit the sdl-example application is to pres
 
 ## Writing a Serial+SDL Program to use with the Teensy
 
+A program to interface with the joy sketch on the Teensy needs to interpret Joystick data and also send updates to the telemetry data over Serial.
+The [serial-test.c](https://github.com/osudrl/TeleJoy/blob/master/serial/serial-test.c) program with only `SERIAL_TEST_SDLSTATES` [defined](https://github.com/osudrl/TeleJoy/blob/9e670139f6f5e3446ecd3cccc188370dc8d6feb7/serial/serial-test.c#L13-L16).
+Running this program while the Teensy is connected and bound to the radio controller should show a screen where UCH1-9 show 1.
+As the different switches and sticks are moved, the telemetry data values should increase from 1 to 3 or 5 (depending on if it is a stick or a switch). 
+
+Even if the serial-test project doesn't run properly, the rest of this section will detail how the serial-test project was developed and similar project can be developed and adapted as needed.
+
 
 
 **TODO INCOMPLETE**
