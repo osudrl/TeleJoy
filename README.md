@@ -362,7 +362,7 @@ Note that voltage is pulled low when both lines are listening or for the stop bi
 
 ![0x22 ignored](http://i.imgur.com/uUY5qGx.png)
 
-A request packet where the XSR reciever requests data from sensor 0x22 by first sending a valid header (0x7E) and then the sensor id in question (0x22).  The current code is programmed to [only respond to sensor (0x83)](https://github.com/osudrl/TeleJoy/blob/61096cde4488af96ef5abe7e2536eb1a9d7395c9/sport-half-duplex/sport-half-duplex.ino#L182) with data.
+A request packet where the XSR reciever requests data from sensor 0x22 by first sending a valid header (0x7E) and then the sensor id in question (0x22).  The ~current code~ *past code* is programmed to [only respond to sensor (0x83)](https://github.com/osudrl/TeleJoy/blob/61096cde4488af96ef5abe7e2536eb1a9d7395c9/sport-half-duplex/sport-half-duplex.ino#L182) with data.
 
 #### Teensy decides to repsond
 
@@ -387,9 +387,11 @@ The first two bytes were sent by the XSR Reciver, and following 8 bytes were sen
 
 ![test3](http://i.imgur.com/ORMPBTY.png)
 
-As shown above, the XSR polled sensor 0x83 with a properly formed request packet, but through testing with the XSR Reciever, it is **best to only send a reply packet** if a **value has changed** recently and needs to be updated **or it has been awhile** since a value has been updated (>10 seconds).
+As shown above, the XSR polled sensor 0x83 with a properly formed request packet, but through testing with the XSR Reciever, ~it is **best to only send a reply packet** if a **value has changed** recently and needs to be updated **or it has been awhile** since a value has been updated (>10 seconds).~
 
-If an id is "updated" with the same data repetedly, the XSR firmware assumes that the value is outdated and it starts flashing on the TARANIS screen.
+~If an id is "updated" with the same data repetedly, the XSR firmware assumes that the value is outdated and it starts flashing on the TARANIS screen.~
+
+**See the [flowchart](https://camo.githubusercontent.com/e77e158237bc03e69b47e3245b3309d69bb12aa0/687474703a2f2f692e696d6775722e636f6d2f45684c466873772e706e67) in `sport_telemetry()` [documentation](https://github.com/osudrl/TeleJoy/tree/master/joy#sport_telemetry) for the joy sketch for an explaination of the decisionmaking that the joy sketch on whether or not to send the response packet.**
 
 #### Teensy responding again 
 
