@@ -173,14 +173,17 @@ Even if the serial-test project doesn't run properly, the rest of this section w
 The easiest way to interface with a USB Joystick in C is to use the SDL2 library.
 
 ```shell
+# Install SDL2
 sudo apt install libsdl2-dev
 ```
 
 ```c
+// Inclue in the C program
 #include <SDL2/SDL.h>
 ```
 
 ```shell
+# Linking with SDL2 library at runtime
 gcc mytest.c -lSDL2
 ```
 
