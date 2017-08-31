@@ -110,6 +110,7 @@ FILE* output;
 #if defined(SERIAL_SHOULD_READ)
 void* serial_read()
 {
+
     FILE* input;
     char text[10000];
     input = fopen("/dev/ttyACM1", "r");
@@ -136,6 +137,7 @@ int16_t sourceInts[tele_DATA_COUNT];
 uint8_t printBuffer[tele_MAX_BUF];
 int build_escaped_buffer(int16_t* source, uint8_t* result)
 {
+
     int buildIndex = 0;
     result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
     result[buildIndex++] = USB_HEADER_BYTE /*0x88*/;
@@ -161,6 +163,7 @@ int build_escaped_buffer(int16_t* source, uint8_t* result)
 
 void sendBuffer(uint8_t* buf, int filled)
 {
+
     for (int i = 0; i < filled; i++)
         fprintf(output, "%c", buf[i]);
     fflush(output);
@@ -169,6 +172,7 @@ void sendBuffer(uint8_t* buf, int filled)
 #if defined(SERIAL_TEST_COUNTING)
 void* serial_write()
 {
+
     printf("The Counting Serial Test\n");
     #warning "The Counting Serial Test"
 
@@ -208,6 +212,7 @@ void* serial_write()
 #elif defined(SERIAL_TEST_ESCAPING)
 void* serial_write()
 {
+
     printf("Escaped Serial Test\n");
     #warning "Escaped Serial Test"
     output = fopen("/dev/ttyACM1", "w"); //open the terminal screen
@@ -265,6 +270,7 @@ void* serial_write()
 #elif defined(SERIAL_TEST_SQAURES)
 void* serial_write()
 {
+
     printf("Squares Serial Test\n");
     #warning "Squares Serial Test"
     output = fopen("/dev/ttyACM1", "w"); //open the terminal screen
@@ -317,6 +323,7 @@ void* serial_write()
 #elif defined(SERIAL_TEST_SDLSTATES)
 void* serial_write()
 {
+
     printf("SDL States Serial Test\n");
     #warning "SDL States Serial Test"
     output = fopen("/dev/ttyACM1", "w"); //open the terminal screen
@@ -345,6 +352,7 @@ void* serial_write()
 
 int main(void)
 {
+
     void* result;
 
     pthread_t swriter;

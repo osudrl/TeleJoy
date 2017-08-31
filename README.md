@@ -133,10 +133,13 @@ Note that as of now, the only way to exit the sdl-example application is to pres
 
 ## Writing a Serial+SDL Program to use with the Teensy
 
+### Serial Test Example
+
 A program to interface with the joy sketch on the Teensy needs to interpret Joystick data and also send updates to the telemetry data over Serial.
 The [serial-test.c](https://github.com/osudrl/TeleJoy/blob/master/serial/serial-test.c) program with only `SERIAL_TEST_SDLSTATES` [defined](https://github.com/osudrl/TeleJoy/blob/9e670139f6f5e3446ecd3cccc188370dc8d6feb7/serial/serial-test.c#L13-L16).
 
 ```c
+// serial-test.c
 // ...
 
 // #define SERIAL_TEST_COUNTING
@@ -146,6 +149,7 @@ The [serial-test.c](https://github.com/osudrl/TeleJoy/blob/master/serial/serial-
 
 // ...
 ```
+Run the serial-test like this:
 
 ```shell
 cd TeleJoy/serial
@@ -164,7 +168,74 @@ As the different switches and sticks are moved, the telemetry data values should
 
 Even if the serial-test project doesn't run properly, the rest of this section will detail how the serial-test project was developed and similar project can be developed and adapted as needed.
 
-**TODO INCOMPLETE**
+### Program to read Joystick Data
+
+The easiest way to interface with a USB Joystick in C is to use the SDL2 library.
+
+```shell
+sudo apt install libsdl2-dev
+```
+
+```c
+#include <SDL2/SDL.h>
+```
+
+```shell
+gcc mytest.c -lSDL2
+```
+
+To get the Teensy Joystick as an SDL Joystick:
+
+```c
+#include <SDL2/SDL.h>
+#include <string.h>
+
+SDL_Joystick* get_joystick()
+{
+
+    const int n = SDL_NumJoysticks();
+    char name[] = "Teensyduino Serial/Keyboard/Mouse/Joystick";
+    for (int i = 0; i < n; ++i) {
+        if (strncmp(SDL_JoystickNameForIndex(i), name, sizeof name) == 0)
+            return SDL_JoystickOpen(i);
+    }
+    return NULL;
+}
+```
+
+And to read the Joystick axes:
+
+```c
+int main()
+{
+	SDL_Init(SDL_INIT_JOYSTICK);
+    SDL_Joystick* ctrl = get_joystick();
+    int analog[16];
+    while (ctrl) 
+    {
+        SDL_JoystickUpdate();
+        for (int i = 0; i < 16; i++) 
+            analog[i] = SDL_JoystickGetAxis(ctrl, i);
+    }
+    SDL_Quit();
+}
+```
+
+This code should properly read Joystick data using SDL2.
+
+### Setting Telemtry Data over USB
+
+To send data to the Teensy over USB, first find what port the Teensy is on according to the operating system.
+Open the Arduino IDE and select the Teensy device from `Tools -> Port`.  Make note of the port (in this case it was `/dev/ACM0`).
+
+<img src="http://i.imgur.com/I01n4ix.png" width="600">
+
+Next, test that serial communication is working by opening the ArduinoIDE's serial monitor and typing some letters into the input field and pressing enter.
+The output on the serial monitor should complain that it is "BAILING" on a whole bunch of bytes.
+
+<img src="http://i.imgur.com/TEU8NMT.png" width="600">
+
+Next, write a simple C program to communicate with the Teensy.
 
 # Six Serial Protocols
 
@@ -213,7 +284,7 @@ The Friendly Table:
 	</tbody>
 </table>
 
-The Technical Table:
+The Less Friendly Table:
 
 <table>
 	<tbody>
@@ -465,7 +536,7 @@ Now square each index:
 
 ![squares](http://i.imgur.com/I6gtrEE.png)
 
-Now add the two initial header bytes and convert each square to hex, with the least sigificant bytes precedig the most significant:
+Now add the two initial header bytes and convert each square to hex, with the least sigificant bytes preceeding the most significant:
 
 ![hex](http://i.imgur.com/qw8ExIl.png)
 
@@ -555,9 +626,7 @@ int main()
 
 See [serial/serial-test.c](https://github.com/osudrl/TeleJoy/blob/master/serial/serial-test.c) for a more elaborate example using this protocol and for [build escaped buffer](https://github.com/osudrl/TeleJoy/blob/28fff54aa91298a251d4542c6deb46d1ea543529/serial/serial-test.c#L36-L62) function that can be copy/pasted which takes an arrary of signed 16 bit integers and fills a buffer with the header and approximately 28 raw, excaped bytes to send over serial.
 
-For more examples of the USB Serial protocol used to set the telemtry data in this project, see 
-
->TODO insert link to joy documentation
+For more examples of the USB Serial protocol used to set the telemtry data in this project, see the [joy sketch doc](https://github.com/osudrl/TeleJoy/tree/master/joy#setting-telemetry-values-protocol-4).
 
 ## Teensy as Joystick (5)
 
