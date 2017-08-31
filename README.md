@@ -259,9 +259,9 @@ void sendBuffer(uint8_t* buf, int filled)
 }
 ```
 
-However as explained [in this readme](https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4) and in [the joy readme](https://github.com/osudrl/TeleJoy/tree/master/joy#setting-telemetry-values-protocol-4), the Teensy expects that the data follows a specific protocol.
-
-To simplify the process, copy the [build_escaped_buffer() function](https://github.com/osudrl/TeleJoy/blob/26ffbd2b70b2d35eaf762c511694e5a1f9c1cce3/serial/serial-test.c#L138-L162) into your project.  It takes an array of `int16_t`'s filled with the desired telemtry values and an array that it should fill with the buffer of bytes that should be sent to the Teensy.  It returns how many bytes of the array the sending function should send.
+However as explained [in this readme](https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4) and in [the joy readme](https://github.com/osudrl/TeleJoy/tree/master/joy#setting-telemetry-values-protocol-4), the Teensy expects a specific protocol.
+To simplify the process, copy the [build_escaped_buffer() function](https://github.com/osudrl/TeleJoy/blob/26ffbd2b70b2d35eaf762c511694e5a1f9c1cce3/serial/serial-test.c#L138-L162) into your project.
+It takes an array of `int16_t`'s filled with the desired telemtry values and an array that it should fill with the buffer of bytes that should be sent to the Teensy, and returns how many bytes of the array the sending function should send.
 
 ```c
 #include "../joy/jt-constants.h"
