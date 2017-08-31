@@ -387,23 +387,23 @@ The first two bytes were sent by the XSR Reciver, and following 8 bytes were sen
 
 ![test3](http://i.imgur.com/ORMPBTY.png)
 
-As shown above, the XSR polled sensor 0x83 with a properly formed request packet, but through testing with the XSR Reciever, ~it is **best to only send a reply packet** if a **value has changed** recently and needs to be updated **or it has been awhile** since a value has been updated (>10 seconds).~
-
-~If an id is "updated" with the same data repetedly, the XSR firmware assumes that the value is outdated and it starts flashing on the TARANIS screen.~
+As shown above, the XSR polled sensor 0x83 with a properly formed request packet, ~it is **best to only send a reply packet** if a **value has changed** recently and needs to be updated **or it has been awhile** since a value has been updated (>10 seconds).~ 
 
 **See the [flowchart](https://camo.githubusercontent.com/e77e158237bc03e69b47e3245b3309d69bb12aa0/687474703a2f2f692e696d6775722e636f6d2f45684c466873772e706e67) in `sport_telemetry()` [documentation](https://github.com/osudrl/TeleJoy/tree/master/joy#sport_telemetry) for the joy sketch for an explaination of the decisionmaking that the joy sketch on whether or not to send the response packet.**
+
+If an id is "updated" with the same data repetedly, the XSR firmware assumes that the value is outdated and it starts flashing on the TARANIS screen.
 
 #### Teensy responding again 
 
 ![test4](http://i.imgur.com/fCrMjeW.png)
 
-This time, the Teensy replies to the sensor id 0x83 with the id of `0x000D=13` and value of `0x00000007=7`.  As shown in the test program's [telemetry data buffer declaration](https://github.com/osudrl/TeleJoy/blob/master/sport-half-duplex/sport-half-duplex.ino#L14-L16), `telemetry_data_buffer[13] = 7`, so the exchange continues to work as expected.
+This time, the Teensy replies to the sensor id 0x83 with the id of `0x000D=13` and value of `0x00000007=7`.
 
 #### 0xE4 ignored 
 
 ![test5](http://i.imgur.com/8WBMcs3.png)
 
-For this test program, all sensor ids are ignored except for id 0x83.
+For ~this test program~ *the past implementation*, all sensor ids ~are~ were ignored except for `0x83`.
 
 ### Helpful links on the SPORT Protocol
 * [Frsky Sp Repo](https://github.com/jcheger/arduino-frskysp)
