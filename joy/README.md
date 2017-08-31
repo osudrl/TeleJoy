@@ -4,31 +4,12 @@
 
 The Joy sketch is intended to be uploaded to a Teensy 3.2 to perform the following tasks.
 
-1. Recieve information about the current state of the radio controller (axes, buttons, etc.) and relay that information as a virtual joystick device to be interfaced with using libraries such as SDL.
-2. Send telemetery values to display on the TARANIS controller based on the information read over USB Serial.
+1. Recieve information about the current state of the radio controller (axes, buttons, etc.) and relay that information as a virtual joystick device to be interfaced with using libraries such as SDL (roughly the bottom half of the diagram above).
+2. Send telemetery values to display on the TARANIS controller based on the information read over USB Serial (roughly the top half of the diagram).
 
 Functions/variables dealing with the first task often have the `sbus_` prefix, while ones implementing the second task often have the `tele_` or `sport_` prefix.
 
-## Initial Constants ([lines 4-13](https://github.com/osudrl/TeleJoy/blob/d402bd79707f8b4f5290dc375cd43663402ff82e/joy/joy.ino#L4-L13))
-
-Name | Value | Purpose
---- | --- | ---
-SPORT_ REQUEST_ HEADER | 0x7e | The header byte that validates a proper request packet for the [SPORT protocol](https://github.com/osudrl/TeleJoy#sport-23).
-SPORT_ ONLY_ SENSOR_ ID | 0x22 | The only sensor id that the telemetry (sport) code sends a reply to with this implementation of the SPORT protocol.  Can be any of the sensorids that the reciever polls, but replying to all the sensors will cause the reciever to not respond.
-JOY_ MIN | 3950 | Approximately the value that corresponds to the most negative input that the operating system supports for analog joystick axes
-JOY_ MAX | 62000 | See above and the [mapAnalog() function](https://github.com/osudrl/TeleJoy/blob/d402bd79707f8b4f5290dc375cd43663402ff82e/joy/joy.ino#L400-L408).
-IN_ MIN | -820 | The minimum analog joystick supplied by the input from the sbus line from the radio reciever.
-IN_ MAX | 819 | See above.
-DEADZONE_ MITIGATION_ CONSTANT | 3800 | The operating system interprets joysticks as having a pretty large deadzone around 0.  Approximately, all values between -3800 to 3800 will be interpreted as exactly zero by the os. This value can be tuned based on experimentation.
-TELE_ ALLOWED_ IDLE_ TIME | 5000 | The amount of time that the joy program will wait before re-sending a telemetry value that hasn't changed to the reciever.  See the sport_telemetry() function and the tele_msUpdated[ ] array for more information. TODO add links.
-
-## Telemetry Arrays
-
-Name | Purpose
---- | ---
-tele_ids | Contains the fourteen different data ids that the TARANIS will display.  For instance, with the current setup, ids 1-4 refer to the error codes that are displayed on page1, while the rest of the array is the ids of the 9 different channels displayed on the following telemetry page.
-tele_data | Contains the values that corrospond to ids contained in `tele_ids` at the same index
-tele_msUpdated | Holds the number of milliseconds that had elapsed when the value at that index was most recently updated.  Used to ensure that a value doesn't go un-updated for longer than `TELE_ALLOWED_IDLE_TIME`.
+The global constants and fields are documented at the [bottom of this page](https://github.com/osudrl/TeleJoy/tree/master/joy#initial-constants-lines-4-13).
 
 ## Telemetry (SPORT) Functions
 
@@ -79,7 +60,7 @@ Num | Name | Usage
 
 #### Overview
 
-The two functions that deal with updating the telemetry values are `usb_addSafeByte()` and `sport_tryUsbInput()`.
+The two functions that deal with [updating the telemetry values](https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4) are `usb_addSafeByte()` and `sport_tryUsbInput()`.
 
 ![prot4 bytes](http://i.imgur.com/KtNfuiW.png)
 
@@ -137,12 +118,12 @@ Calls tryUsbInput() and sport_telemetry() if applicable so they can be constantl
 
 It also turns off the onboard LED on the Teensy every 10 seconds.
 In `sport_telemetry()`, the led is turned back on, so if `sport_telemetry()` is never called because no more requests are coming in on the Serial3 UART, then the onboard LED will stay off.
-A past, bugged version of the joy sketch would not properly follow the expected SPORT protocol with the radio reciever, and the radio reciever would stop sending request packets- ending all telemetry data exchange.
+A past, bugged version of the joy sketch would not properly follow the expected [SPORT protocol](https://github.com/osudrl/TeleJoy#sport-23) with the radio reciever, and the radio reciever would stop sending request packets- ending all telemetry data exchange.
 If this happens, there will be an indication by the onbard LED not lighting.
 
-## Controller / SBUS Functions
+## Controller / [SBUS](https://github.com/osudrl/TeleJoy#sbus-1) Functions
 
-The second half of the program (roughly the bottom half of [the flowchart](http://i.imgur.com/4GLNSDM.png)) deals with the current state of the radio controller and relaying those states to the `Joystick` interface on the Teensy which allows the Teensy to act like a proper Joystick device that can be interfaced with using libraries such as SDL.
+The second half of the program (roughly the bottom half of [the flowchart](http://i.imgur.com/4GLNSDM.png)) deals with the current state of the radio controller and relaying those states to the `Joystick` interface on the Teensy which allows the Teensy to act like a proper Joyhttps://github.com/osudrl/TeleJoy/tree/master/joy#initial-constants-lines-4-13stick device that can be interfaced with using libraries such as SDL.
 
 ### sbus_decode_packet() 
 
@@ -179,7 +160,26 @@ The mapping and transformation of the analog axis data is illustrated in the bel
 
 ### sbus_setup()
 
-Sets up the Serial1 UART so that it can RX data sent over the SBUS line from the radio reciever.  The protocol and baudrate that is used by the SBUS protocol is unusual and specific so [this line](https://github.com/osudrl/TeleJoy/blob/a3defc924a38f9ea9222f368a4a72c7ff03cf73e/joy/joy.ino#L438) is needed to properly setup Serial1.
+Sets up the Serial1 UART so that it can RX data sent over the SBUS line from the radio reciever.  The protocol and baudrate that is used by the [SBUS protocol](https://github.com/osudrl/TeleJoy#sbus-1)  is unusual and specific so [this line](https://github.com/osudrl/TeleJoy/blob/a3defc924a38f9ea9222f368a4a72c7ff03cf73e/joy/joy.ino#L438) is needed to properly setup Serial1.
 
+## Initial Constants ([lines 4-13](https://github.com/osudrl/TeleJoy/blob/d402bd79707f8b4f5290dc375cd43663402ff82e/joy/joy.ino#L4-L13))
 
+Name | Value | Purpose
+--- | --- | ---
+SPORT_ REQUEST_ HEADER | 0x7e | The header byte that validates a proper request packet for the [SPORT protocol](https://github.com/osudrl/TeleJoy#sport-23).
+SPORT_ ONLY_ SENSOR_ ID | 0x22 | The only sensor id that the telemetry (sport) code sends a reply to with this implementation of the SPORT protocol.  Can be any of the sensorids that the reciever polls, but replying to all the sensors will cause the reciever to not respond.
+JOY_ MIN | 3950 | Approximately the value that corresponds to the most negative input that the operating system supports for analog joystick axes
+JOY_ MAX | 62000 | See above and the [mapAnalog() function](https://github.com/osudrl/TeleJoy/blob/d402bd79707f8b4f5290dc375cd43663402ff82e/joy/joy.ino#L400-L408).
+IN_ MIN | -820 | The minimum analog joystick supplied by the input from the sbus line from the radio reciever.
+IN_ MAX | 819 | See above.
+DEADZONE_ MITIGATION_ CONSTANT | 3800 | The operating system interprets joysticks as having a pretty large deadzone around 0.  Approximately, all values between -3800 to 3800 will be interpreted as exactly zero by the os. This value can be tuned based on experimentation.
+TELE_ ALLOWED_ IDLE_ TIME | 5000 | The amount of time that the joy program will wait before re-sending a telemetry value that hasn't changed to the reciever.  See the sport_telemetry() function and the tele_msUpdated[ ] array for more information. TODO add links.
+
+## Telemetry Arrays
+
+Name | Purpose
+--- | ---
+tele_ids | Contains the fourteen different data ids that the TARANIS will display.  For instance, with the current setup, ids 1-4 refer to the error codes that are displayed on page1, while the rest of the array is the ids of the 9 different channels displayed on the following telemetry page.
+tele_data | Contains the values that corrospond to ids contained in `tele_ids` at the same index
+tele_msUpdated | Holds the number of milliseconds that had elapsed when the value at that index was most recently updated.  Used to ensure that a value doesn't go un-updated for longer than `TELE_ALLOWED_IDLE_TIME`.
 

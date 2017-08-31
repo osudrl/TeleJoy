@@ -12,6 +12,8 @@ This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
 See the [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) for information about how to get the program working as intended.
 
+Also see the [documentation written](https://github.com/osudrl/TeleJoy/blob/master/joy/README.md) specifically for the [joy sketch](https://github.com/osudrl/TeleJoy/tree/master/joy) which goes into depth about how the code works if modifications are needed or a similar project is being developed.
+
 ## In this Respository
 
 * [joy](https://github.com/osudrl/TeleJoy/tree/master/joy): The "main" program that most of this repository's documentation references.  Meant to uploaded to the Teensy 3.2 to act as a Joystick HID based on the input from the radio controller.
