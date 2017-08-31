@@ -22,7 +22,7 @@ See the [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) for informa
 
 # Setup Guide
 
-**If all of the hardware that was used in development has remained unchaned and the Teensy's program has not yet been overwritten, skip to the [testing section](https://github.com/osudrl/TeleJoy#testing-the-virtual-joystick) or, more speficially, the testing [using the C SDL library section](https://github.com/osudrl/TeleJoy#serialsdl-examples).**
+**If all of the hardware that was used in development has remained unchaned and the Teensy's program has not yet been overwritten, skip to the [testing section](https://github.com/osudrl/TeleJoy#testing-the-virtual-joystick) or, more speficially, the [writing custom software to interface with the Teensy section](https://github.com/osudrl/TeleJoy#writing-a-serialsdl-program-to-use-with-the-teensy).**
 
 This Setup Guide has the following sections.
 
@@ -129,7 +129,7 @@ gcc sdl-example.c -lSDL2
 
 Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
 
-### Writing a Serial+SDL Program to use with the Teensy
+## Writing a Serial+SDL Program to use with the Teensy
 
 
 
