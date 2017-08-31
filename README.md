@@ -247,7 +247,8 @@ output = fopen("/dev/ttyACM0", "w");
 
 Now `output` acts like any other file "object" in C and can be written to as is done in the [sendBuffer() function](https://github.com/osudrl/TeleJoy/blob/26ffbd2b70b2d35eaf762c511694e5a1f9c1cce3/serial/serial-test.c#L164-L170):
 
-```c 
+```c
+int16_t sourceInts[tele_DATA_COUNT];
 uint8_t printBuffer[tele_MAX_BUF];
 void sendBuffer(uint8_t* buf, int filled)
 {
