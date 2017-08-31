@@ -347,15 +347,14 @@ Notes:
 
 To illustrate the flow described above, a logic analyzer has been set up as shown below to generate screenshots of what is happening on the S.PORT line as the two devices communicate.
 
-<img src="http://i.imgur.com/q0sjXb4.jpg" width="600"> 
+<img src="http://i.imgur.com/q0sjXb4.jpg" width="400"> 
 
 The analyzer probe is clipped to the yellow S.PORT wire.
 
-<img src="http://i.imgur.com/fx9B7tU.jpg" width="600"> 
+<img src="http://i.imgur.com/fx9B7tU.jpg" width="400"> 
 
 The following screenshots are snippets from the above logic analyzer setup reading the voltage on the SPORT line during **the execution of a past version of the program**.
-In the current implementation of joy, the only sensor which the Teensy responds to is [0x22](https://github.com/osudrl/TeleJoy/blob/1751baa7e642dfd4466d4a23cb8cfadb82bcdf71/joy/joy.ino#L7) and not [0x83](https://github.com/osudrl/TeleJoy/blob/61096cde4488af96ef5abe7e2536eb1a9d7395c9/sport-half-duplex/sport-half-duplex.ino#L182)
-but the software is otherwise the same.
+In the current implementation of joy, the only sensor which the Teensy responds to **is [0x22](https://github.com/osudrl/TeleJoy/blob/1751baa7e642dfd4466d4a23cb8cfadb82bcdf71/joy/joy.ino#L7) and not [0x83](https://github.com/osudrl/TeleJoy/blob/61096cde4488af96ef5abe7e2536eb1a9d7395c9/sport-half-duplex/sport-half-duplex.ino#L182)**.
 
 Note that voltage is pulled low when both lines are listening or for the stop bits as per the inverted serial protocol.  Note that they aren't necessesarily in any order.
 
