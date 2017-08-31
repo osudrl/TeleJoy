@@ -6,11 +6,11 @@ The Teensy 3.2 (left) connected to the XSR reciever (right):
 
 <img src="http://i.imgur.com/vlCQ2Rf.jpg?1" width="600"> 
 
-Note that in the above image, the S.PORT line isn't connected to the Teensy.
+Note that in the above image, the yellow S.PORT line isn't connected to the Teensy.
 
 This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
-See the proper [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) towards the bottom of this readme for information about how to get the program working as intended.
+See the [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) for information about how to get the program working as intended.
 
 ## In this Respository
 
@@ -22,10 +22,9 @@ See the proper [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) towa
 
 # Setup Guide
 
-To get this project running, make sure the hardare is wired as shown above and that the each of the following sections of the guide below are followed.
-
-
 **If all of the hardware that was used in development has remained unchaned and the Teensy's program has not yet been overwritten, skip to the [testing section](https://github.com/osudrl/TeleJoy#testing-the-virtual-joystick) or, more speficially, the testing [using the C SDL library section](https://github.com/osudrl/TeleJoy#serialsdl-examples).**
+
+This Setup Guide has the following sections.
 
 1. Teensyduino setup (Teensy for the Arduino IDE)
 2. Patching teensy cores to allow for more axes to be sent to the operating system
@@ -77,7 +76,7 @@ To upload the joy sketch (`TeleJoy/joy/joy.ino`) to the Teensy, reference the [P
 4. Select `Serial + Keyboard + Mouse + Joystick` from `Tools -> USB Type`
   * The sketch may need to be uploaded to the board first before this option becomes availible
 5. Upload the sketch to the Teensy as explained on the PJRC page linked above
-6. Ensure that `Serial + Keyboard + Mouse + Joystick` is still selected from `Tools -> USB Type`
+6. Select `Serial + Keyboard + Mouse + Joystick` from `Tools -> USB Type`
 
 That's it! The telejoy code should now be loaded onto the Teensy.
 
@@ -166,7 +165,7 @@ The Friendly Table:
 		<tr>
 			<td>4</td>
 			<td><a href="https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4">TELE-BUS (HEX)</a></td>    
-			<td>Set those numbers that will be sent to the screen</td>
+			<td>Set the numbers that will be sent to the TARANIS screen</td>
 		</tr>
 		<tr>
 			<td>5</td>
@@ -260,7 +259,7 @@ The Technical Table:
 			<td>
 				<ul>
 					<li>Two-byte header: (0xFE88)</li>
-					<li>14 int16s conerted to ~28 escaped bytes</li>
+					<li>14 int16s conerted to ~30 escaped bytes</li>
 				</ul>
 			</td>
 		</tr>
@@ -285,7 +284,7 @@ The Technical Table:
 
 Be sure to see the above table (under "Rules") for the serial standard that SBUS uses.
 
-First a [25 byte buffer is filled](https://github.com/osudrl/TeleJoy/blob/85d4b24102093b3bf0f52b54fe9007617539fbff/joy/joy.ino#L389-L411) is read from Pin0.
+First a [25 byte buffer](https://github.com/osudrl/TeleJoy/blob/85d4b24102093b3bf0f52b54fe9007617539fbff/joy/joy.ino#L389-L411) is read from Pin0.
 
 Once the 25 byte buffer is decoded by [sbus_decode_packet()](https://github.com/osudrl/TeleJoy/blob/85d4b24102093b3bf0f52b54fe9007617539fbff/joy/joy.ino#L310-L352) according to [this protocol](https://developer.mbed.org/users/Digixx/notebook/futaba-s-bus-controlled-by-mbed/), the result is a populated [sbus_data_t struct](https://github.com/osudrl/TeleJoy/blob/85d4b24102093b3bf0f52b54fe9007617539fbff/joy/joy.ino#L294-L302). 
 
@@ -354,7 +353,11 @@ The analyzer probe is clipped to the yellow S.PORT wire.
 
 <img src="http://i.imgur.com/fx9B7tU.jpg" width="600"> 
 
-The following screenshots are snippets from the above logic analyzer setup reading the voltage on the SPORT line during normal program execution.  Note that **voltage is pulled low** when both lines are listening or for the stop bits as per the inverted serial protocol.  Note that they aren't necessesarily in any order.
+The following screenshots are snippets from the above logic analyzer setup reading the voltage on the SPORT line during **the execution of a past version of the program**.
+In the current implementation of joy, the only sensor which the Teensy responds to is [0x22](https://github.com/osudrl/TeleJoy/blob/1751baa7e642dfd4466d4a23cb8cfadb82bcdf71/joy/joy.ino#L7) and not [0x83](https://github.com/osudrl/TeleJoy/blob/61096cde4488af96ef5abe7e2536eb1a9d7395c9/sport-half-duplex/sport-half-duplex.ino#L182)
+but the software is otherwise the same.
+
+Note that voltage is pulled low when both lines are listening or for the stop bits as per the inverted serial protocol.  Note that they aren't necessesarily in any order.
 
 #### 0x22 ignored
 
@@ -376,7 +379,6 @@ The first two bytes were sent by the XSR Reciver, and following 8 bytes were sen
   * Two value id bytes sent from least to most significant.  The resulting HEX (0x000C) converts to 12 in decimal.  
   * The following four data bytes set the current value to be displayed on the controller screen for the value id (12).  0x00000008 converts to 8 in decimal. 
   * The last bit is a checksum bit that is calculated given the previous seven bytes.  
-4. As shown in the [telemetry data buffer declaration](https://github.com/osudrl/TeleJoy/blob/master/sport-half-duplex/sport-half-duplex.ino#L14-L16) in the test program from where this data was captured, `telemetry_data_buffer[12] = 8`, so the exchange is working as expected.
 
 ##### SPORT data format
 
@@ -417,7 +419,7 @@ A valid packet needs to begin with the [header byte](https://github.com/osudrl/T
 
 Note that the two-byte values are built up from the two bytes that are sent from least significant to most significant.
 
-Documentation on how specficially the joy sketch decodes this packet can be found on the [joy documentation page](https://github.com/osudrl/TeleJoy/tree/master/joy#setting-telemetry-values-protocol-4)
+Documentation on how specficially the joy sketch decodes this packet can be found on the **[joy documentation page](https://github.com/osudrl/TeleJoy/tree/master/joy#setting-telemetry-values-protocol-4)**.
 
 ### Examples
 
