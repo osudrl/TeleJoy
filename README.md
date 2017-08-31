@@ -212,15 +212,15 @@ And to read the Joystick axes:
 int main()
 {
 	SDL_Init(SDL_INIT_JOYSTICK);
-    SDL_Joystick* ctrl = get_joystick();
-    int analog[16];
-    while (ctrl) 
-    {
-        SDL_JoystickUpdate();
-        for (int i = 0; i < 16; i++) 
-            analog[i] = SDL_JoystickGetAxis(ctrl, i);
-    }
-    SDL_Quit();
+	SDL_Joystick* ctrl = get_joystick();
+	int analog[16];
+	while (ctrl) 
+	{
+	    SDL_JoystickUpdate();
+	    for (int i = 0; i < 16; i++) 
+	        analog[i] = SDL_JoystickGetAxis(ctrl, i);
+	}
+	SDL_Quit();
 }
 ```
 
