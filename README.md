@@ -299,6 +299,12 @@ int build_escaped_buffer(int16_t* source, uint8_t* result)
 
 Note the [jt-constants file](https://github.com/osudrl/TeleJoy/blob/master/joy/jt-constants.h) in the joy/ sketch folder are essential for the program to know the proper sizes of the arrays and what bytes to escape.
 
+### Notes
+
+There are few things that weren't included above but were necessesary for the development of [serial-test.c](https://github.com/osudrl/TeleJoy/blob/f4e842b0fa42f5866335d9155ecced06a46fedd6/serial/serial-test.c):
+
+* Open the Teensy Serial interface as input with `FILE* input = fopen("/dev/ttyACM0", "r");` and can be opened for input simultanously while it has been opened for output.
+* Use multithreading to read serial, write serial, and read joystick axes all at once like is done in serial-test when [SERIAL_TEST_SDLSTATES is defined](https://github.com/osudrl/TeleJoy/blob/f4e842b0fa42f5866335d9155ecced06a46fedd6/serial/serial-test.c#L13-L16).
 
 # Six Serial Protocols
 
