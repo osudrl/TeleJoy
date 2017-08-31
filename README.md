@@ -114,7 +114,7 @@ If no joysticks show up, check that the right usb type was selected when uploadi
 
 If more than one joysticks show up in the jstest application, only one will work.  In my tests, js1 was the proper board.
 
-### SDL2 in C
+### Running the SDL Example
 
 First, install SDL2.
 
@@ -129,6 +129,8 @@ gcc sdl-example.c -lSDL2
 ```
 
 Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
+
+### Serial+SDL Examples
 
 **TODO INCOMPLETE**
 
