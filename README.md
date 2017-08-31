@@ -236,7 +236,7 @@ Open the Arduino IDE and select the Teensy device from `Tools -> Port`.  Make no
 Next, test that serial communication is working by opening the ArduinoIDE's serial monitor and typing some letters into the input field and pressing enter.
 The output on the serial monitor should complain that it is "BAILING" on a whole bunch of bytes.
 
-<img src="http://i.imgur.com/TEU8NMT.png" width="500">
+<img src="http://i.imgur.com/TEU8NMT.png" width="400">
 
 Next, write a simple C program to communicate with the Teensy.
 
