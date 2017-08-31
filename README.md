@@ -19,7 +19,7 @@ Also see the [documentation written](https://github.com/osudrl/TeleJoy/blob/mast
 * [joy](https://github.com/osudrl/TeleJoy/tree/master/joy): The "main" program that most of this repository's documentation references.  Meant to uploaded to the Teensy 3.2 to act as a Joystick HID based on the input from the radio controller.
 * [ExtrmeJoystickTest](https://github.com/osudrl/TeleJoy/tree/master/ExtremeJoystickTest): Use this sketch to test if the Teensy has been properly configured as a "big" joystick.
 * [sdl-test](https://github.com/osudrl/TeleJoy/tree/master/sdl-test): A simple C program to show that SDL can "see" and interface with the Teensy as a joystick.
-* [serial](https://github.com/osudrl/TeleJoy/tree/master/serial): A simple C program to send telemetry values to the Teensy and in turn to the controller.  Use as an example of how to change the Telemetry values over USB Serial.
+* [serial](https://github.com/osudrl/TeleJoy/tree/master/serial): A simple C program to send telemetry values to the controller.  Use as an example of how to change the Telemetry values over USB Serial.
 * [rulesetup](https://github.com/osudrl/TeleJoy/blob/master/rulesetup.sh): A simple shell script to update the linux udev rules to properly upload to the Teensy with Teensyduino.
 
 # Setup Guide
