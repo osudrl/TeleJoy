@@ -231,12 +231,12 @@ This code should properly read Joystick data using SDL2.
 To send data to the Teensy over USB, first find what port the Teensy is on according to the operating system.
 Open the Arduino IDE and select the Teensy device from `Tools -> Port`.  Make note of the port (in this case it was `/dev/ACM0`).
 
-<img src="http://i.imgur.com/I01n4ix.png" width="400">
+<img src="http://i.imgur.com/I01n4ix.png" width="500">
 
 Next, test that serial communication is working by opening the ArduinoIDE's serial monitor and typing some letters into the input field and pressing enter.
 The output on the serial monitor should complain that it is "BAILING" on a whole bunch of bytes.
 
-<img src="http://i.imgur.com/TEU8NMT.png" width="400">
+<img src="http://i.imgur.com/TEU8NMT.png" width="500">
 
 Next, write a simple C program to communicate with the Teensy.
 
