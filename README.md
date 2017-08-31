@@ -238,7 +238,64 @@ The output on the serial monitor should complain that it is "BAILING" on a whole
 
 <img src="http://i.imgur.com/TEU8NMT.png" width="400">
 
-Next, write a simple C program to communicate with the Teensy.
+Next, write a simple C program to communicate with the Teensy:
+
+```c
+FILE* output;
+output = fopen("/dev/ttyACM0", "w");
+```
+
+Now `output` acts like any other file "object" in C and can be written to as is done in the [sendBuffer() function](https://github.com/osudrl/TeleJoy/blob/26ffbd2b70b2d35eaf762c511694e5a1f9c1cce3/serial/serial-test.c#L164-L170):
+
+```c 
+uint8_t printBuffer[tele_MAX_BUF];
+void sendBuffer(uint8_t* buf, int filled)
+{
+
+    for (int i = 0; i < filled; i++)
+        fprintf(output, "%c", buf[i]);
+    fflush(output);
+}
+```
+
+However as explained [in this readme](https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4) and in [the joy readme](https://github.com/osudrl/TeleJoy/tree/master/joy#setting-telemetry-values-protocol-4), the Teensy expects that the data follows a specific protocol.
+
+To simplify the process, copy the [build_escaped_buffer() function](https://github.com/osudrl/TeleJoy/blob/26ffbd2b70b2d35eaf762c511694e5a1f9c1cce3/serial/serial-test.c#L138-L162) into your project.  It takes an array of `int16_t`'s filled with the desired telemtry values and an array that it should fill with the buffer of bytes that should be sent to the Teensy.  It returns how many bytes of the array the sending function should send.
+
+```c
+#include "../joy/jt-constants.h"
+
+int16_t sourceInts[tele_DATA_COUNT];
+uint8_t printBuffer[tele_MAX_BUF];
+int build_escaped_buffer(int16_t* source, uint8_t* result)
+{
+
+    int buildIndex = 0;
+    result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
+    result[buildIndex++] = USB_HEADER_BYTE /*0x88*/;
+    for (int i = 0; i < tele_DATA_COUNT; i++) {
+        uint8_t lsb = (uint8_t)(source[i] & 0x00ff);
+        uint8_t msb = (uint8_t)((source[i] & 0xff00) >> 8);
+        if (lsb == USB_ESCAPE_BYTE) {
+            result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
+            result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
+        }
+        else
+            result[buildIndex++] = lsb;
+
+        if (msb == USB_ESCAPE_BYTE) {
+            result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
+            result[buildIndex++] = USB_ESCAPE_BYTE /*0xFE*/;
+        }
+        else
+            result[buildIndex++] = msb;
+    }
+        return buildIndex;
+}
+```
+
+Note the [jt-constants file](https://github.com/osudrl/TeleJoy/blob/master/joy/jt-constants.h) in the joy/ sketch folder are essential for the program to know the proper sizes of the arrays and what bytes to escape.
+
 
 # Six Serial Protocols
 
