@@ -129,7 +129,9 @@ gcc sdl-example.c -lSDL2
 
 Note that as of now, the only way to exit the sdl-example application is to press `Ctrl+\`
 
-### Serial+SDL Examples
+### Writing a Serial+SDL Program to use with the Teensy
+
+
 
 **TODO INCOMPLETE**
 

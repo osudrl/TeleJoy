@@ -14,6 +14,7 @@
 // #define SERIAL_TEST_ESCAPING
 // #define SERIAL_TEST_SQAURES
 #define SERIAL_TEST_SDLSTATES
+
 FILE* output;
 
 #if defined(SERIAL_TEST_SDLSTATES)
