@@ -44,7 +44,7 @@ Sends a reply packet to update a value id with new data.  This function is calle
 Num | Name | Usage
 --- | --- | ---
 0 | id | The value id being updated.  See [tele_ids](https://github.com/osudrl/TeleJoy/tree/master/joy#telemetry-arrays) for the valid value ids that may be used for the current setup
-1 | val | The value that will display on the TARANIS given the current id.  Although the fuction takes a uint32_t and four value bytes are sent over the half-duplexed line as per the SPORT protocol, testing has only gotten a signed 16 bit integer to work, with the last two bytes that are sent on the half-duplexed line being zeros. 
+1 | val | The value that will display on the TARANIS given the current id.  Although the fuction takes a uint32_t and four value bytes are sent over the half-duplexed line as per the [SPORT protocol](https://github.com/osudrl/TeleJoy#sport-23), testing has only gotten a signed 16 bit integer to work, with the last two bytes that are sent on the half-duplexed line being zeros. 
 
 #### Function procedures 
 1. Create a sport_reply_packet type and fill it with the information from the arguments
