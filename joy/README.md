@@ -15,7 +15,7 @@ The global constants and fields are documented at the [bottom of this page](http
 
 ### sport_CRC()
 
-Calculates the proper checksum byte given the beginning of the reply packet to be sent at the end of the reply packet.
+Calculates the proper checksum byte to be sent at the end of the reply packet.
 
 ### sport_flushInputBuffer()
 
@@ -183,3 +183,6 @@ tele_ids | Contains the fourteen different data ids that the TARANIS will displa
 tele_data | Contains the values that corrospond to ids contained in `tele_ids` at the same index
 tele_msUpdated | Holds the number of milliseconds that had elapsed when the value at that index was most recently updated.  Used to ensure that a value doesn't go un-updated for longer than `TELE_ALLOWED_IDLE_TIME`.
 
+# Feedback
+
+Written by [Kevin Kellar](https://github.com/kkevlar) for Oregon State University's [Dynamic Robotics Laboratory](http://mime.oregonstate.edu/research/drl/).  For issues, comments, or suggestions with this guide, contact the developer or open an issue.

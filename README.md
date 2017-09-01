@@ -12,15 +12,15 @@ This project was written and uploaded in the Arduino IDE on Ubuntu Gnome 16.04.
 
 See the [Setup Guide](https://github.com/osudrl/TeleJoy#setup-guide) for information about how to get the program working as intended.
 
-Also see the [documentation written](https://github.com/osudrl/TeleJoy/blob/master/joy/README.md) specifically for the [joy sketch](https://github.com/osudrl/TeleJoy/tree/master/joy) which goes into depth about how the code works if modifications are needed or a similar project is being developed.
+Also see the [documentation written](https://github.com/osudrl/TeleJoy/blob/master/joy/README.md) specifically for the [joy sketch](https://github.com/osudrl/TeleJoy/tree/master/joy) which goes into depth about how the code works if modifications are needed or if a similar project is being developed.
 
 ## In this Respository
 
-* [joy](https://github.com/osudrl/TeleJoy/tree/master/joy): The "main" program that most of this repository's documentation references.  Meant to uploaded to the Teensy 3.2 to act as a Joystick HID based on the input from the radio controller.
+* [joy](https://github.com/osudrl/TeleJoy/tree/master/joy): The "main" program that most of this repository's documentation references.  Meant to uploaded to the Teensy 3.2 to act as a Joystick HID which emulates input from the radio controller.
 * [ExtrmeJoystickTest](https://github.com/osudrl/TeleJoy/tree/master/ExtremeJoystickTest): Use this sketch to test if the Teensy has been properly configured as a "big" joystick.
 * [sdl-test](https://github.com/osudrl/TeleJoy/tree/master/sdl-test): A simple C program to show that SDL can "see" and interface with the Teensy as a joystick.
 * [serial](https://github.com/osudrl/TeleJoy/tree/master/serial): A simple C program to send telemetry values to the controller.  Use as an example of how to change the Telemetry values over USB Serial.
-* [rulesetup](https://github.com/osudrl/TeleJoy/blob/master/rulesetup.sh): A simple shell script to update the linux udev rules to properly upload to the Teensy with Teensyduino.
+* [rulesetup](https://github.com/osudrl/TeleJoy/blob/master/rulesetup.sh): A simple shell script to update the linux udev rules so sketches can be properly uploaded to the Teensy with Teensyduino.
 
 # Setup Guide
 
@@ -29,7 +29,7 @@ Also see the [documentation written](https://github.com/osudrl/TeleJoy/blob/mast
 This Setup Guide has the following sections.
 
 1. Teensyduino setup (Teensy for the Arduino IDE)
-2. Patching teensy cores to allow for more axes to be sent to the operating system
+2. Modifying the teensy cores to allow for more axes to be sent to the operating system
 3. Uploading the source to the teensy
 4. Binding with the TARANIS plus
 5. Testing the teensy's output
@@ -42,9 +42,9 @@ Install the [Arduino IDE](https://www.arduino.cc/en/Main/Software) to somewere i
 
 On Linux, follow the instructions in Step2 on the [download page](https://www.pjrc.com/teensy/td_download.html) to setup proper udev rules for the Teensy.
 
-Alternatively, run `bash rulesetup.sh` in the repository directory to have a shell script do the process described in the PJRC page's "Step2".
+Alternatively, run `bash rulesetup.sh` in the repository root directory to have a shell script do the process described in the PJRC page's "Step2".
 
-If Teensyduino is having problems properly uploading to the Teensy, your linux user may need to be added to the dialout group as [described here](https://askubuntu.com/questions/58119/changing-permissions-on-serial-port).
+If Teensyduino is having problems properly uploading to the Teensy, you may need to add your linux user to the dialout group as [described here](https://askubuntu.com/questions/58119/changing-permissions-on-serial-port).
 
 ## Allow for "Extreme Joystick"
 
@@ -75,10 +75,8 @@ To upload the joy sketch (`TeleJoy/joy/joy.ino`) to the Teensy, reference the [P
 1. Connect the Teensy board to the computer via micro-usb
 2. Open the telejoy.ino sketch in the Arduino IDE
 3. Select `Teensy 3.2 / 3.1` from `Tools -> Boards`
-4. Select `Serial + Keyboard + Mouse + Joystick` from `Tools -> USB Type`
-  * The sketch may need to be uploaded to the board first before this option becomes availible
-5. Upload the sketch to the Teensy as explained on the PJRC page linked above
-6. Select `Serial + Keyboard + Mouse + Joystick` from `Tools -> USB Type`
+4. Upload the sketch to the Teensy as explained on the PJRC page linked above
+5. Select `Serial + Keyboard + Mouse + Joystick` from `Tools -> USB Type`
 
 That's it! The telejoy code should now be loaded onto the Teensy.
 
@@ -245,7 +243,7 @@ FILE* output;
 output = fopen("/dev/ttyACM0", "w");
 ```
 
-Now `output` acts like any other file "object" in C and can be written to as is done in the [sendBuffer() function](https://github.com/osudrl/TeleJoy/blob/26ffbd2b70b2d35eaf762c511694e5a1f9c1cce3/serial/serial-test.c#L164-L170):
+Now `output` acts like any other file "object" in C and writing is done in the [sendBuffer() function](https://github.com/osudrl/TeleJoy/blob/26ffbd2b70b2d35eaf762c511694e5a1f9c1cce3/serial/serial-test.c#L164-L170):
 
 ```c
 int16_t sourceInts[tele_DATA_COUNT];
@@ -259,9 +257,9 @@ void sendBuffer(uint8_t* buf, int filled)
 }
 ```
 
-However as explained [in this readme](https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4) and [in the joy readme](https://github.com/osudrl/TeleJoy/tree/master/joy#setting-telemetry-values-protocol-4), the Teensy expects a specific protocol.
+However as explained [towards the bottom of this page](https://github.com/osudrl/TeleJoy#setting-the-telemetry-data-4) and [in the joy readme](https://github.com/osudrl/TeleJoy/tree/master/joy#setting-telemetry-values-protocol-4), the Teensy expects a specific protocol.
 To simplify the process, copy the [build_escaped_buffer() function](https://github.com/osudrl/TeleJoy/blob/26ffbd2b70b2d35eaf762c511694e5a1f9c1cce3/serial/serial-test.c#L138-L162) into your project.
-It takes an array of `int16_t`'s filled with the desired telemtry values and an array that it should fill with the buffer of bytes that should be sent to the Teensy, and returns how many bytes of the array the sending function should send.
+It takes an array of `int16_t`'s filled with the desired telemtry values and a buffer to fill with the bytes to be sent to the Teensy, and returns how many bytes of the array the sending function should send.
 
 ```c
 #include "../joy/jt-constants.h"
@@ -705,7 +703,7 @@ If the proper USB HID is selected in the Usb Type menu in the Teensyduino softwa
 
 ## Serial Debug Information (6)
 
-Although the Teensy reads individual bytes of hex from USB serial as input to change the data that is send to the telemetry menu, the debug output over USB serial is in ASCII.  Each byte that is sent should be read as an ASCII character and can be displayed to stdout or ignored based on the needs of the client program.
+Although the Teensy reads individual bytes of hex from USB serial to change the data that shows up on the TARANIS telemetry page, the output over USB serial is in ASCII.  Each byte that is sent should be read as an ASCII character and can be displayed to stdout.
 
 # Feedback
 
